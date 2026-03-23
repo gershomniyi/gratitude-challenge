@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Gratitude Challenge — GOW</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --gold:#C6A85B;--gold-light:#F5EDD6;--gold-dark:#9A7D3A;
+  --bg:#F8F8F6;--surface:#FFFFFF;--text:#0A0A0A;
+  --muted:rgba(10,10,10,0.42);--border:rgba(10,10,10,0.07);--border-mid:rgba(10,10,10,0.11);
+  --r:16px;--rsm:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;color:#0A0A0A;-webkit-font-smoothing:antialiased;}
+.shell{max-width:420px;margin:0 auto;background:#F8F8F6;min-height:100vh;box-shadow:0 0 60px rgba(0,0,0,0.18);}
+.screen{display:none;flex-direction:column;min-height:100vh;}
+.screen.active{display:flex;}
+
+/* LOADING */
+.loading-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(248,248,246,0.92);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;gap:14px;}
+.loading-overlay.hidden{display:none;}
+.spinner{width:28px;height:28px;border:2px solid var(--border-mid);border-top-color:var(--gold);border-radius:50%;animation:spin 0.7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-text{font-size:13px;color:var(--muted);font-weight:500;}
+
+/* TOAST */
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);background:#0A0A0A;color:#fff;font-size:13px;font-weight:500;padding:10px 20px;border-radius:20px;opacity:0;transition:all 0.3s;pointer-events:none;white-space:nowrap;z-index:998;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ONBOARDING */
+.ob-screen{display:none;flex-direction:column;min-height:100vh;background:#0A0A0A;}
+.ob-screen.active{display:flex;}
+.ob-slides{flex:1;position:relative;overflow:hidden;}
+.ob-slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:48px 32px 40px;opacity:0;transform:translateX(30px);transition:all 0.4s ease;pointer-events:none;}
+.ob-slide.active{opacity:1;transform:translateX(0);pointer-events:all;}
+.ob-slide.exit{opacity:0;transform:translateX(-30px);}
+.ob-num{font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;}
+.ob-title{font-size:30px;font-weight:700;color:#FFFFFF;line-height:1.15;margin-bottom:16px;hyphens:none;}
+.ob-text{font-size:15px;color:rgba(255,255,255,0.5);line-height:1.75;}
+.ob-footer{padding:24px 32px 40px;display:flex;align-items:center;justify-content:space-between;background:#0A0A0A;}
+.ob-dots{display:flex;gap:6px;align-items:center;}
+.ob-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.2);transition:all 0.3s;}
+.ob-dot.active{background:var(--gold);width:18px;border-radius:3px;}
+.ob-btn{background:var(--gold);color:#0A0A0A;border:none;border-radius:8px;padding:12px 28px;font-size:14px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;}
+.ob-skip{font-size:12px;font-weight:600;color:rgba(255,255,255,0.3);cursor:pointer;border:none;background:none;font-family:'DM Sans',sans-serif;}
+
+/* AUTH */
+.auth-top{padding:60px 28px 44px;background:#0A0A0A;position:relative;overflow:hidden;}
+.auth-top::after{content:'';position:absolute;width:280px;height:280px;border-radius:50%;border:1px solid rgba(198,168,91,0.12);top:-100px;right:-80px;pointer-events:none;}
+.auth-eyebrow{font-size:10px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:22px;}
+.auth-headline{font-size:40px;font-weight:700;color:#FFFFFF;line-height:1.08;margin-bottom:12px;hyphens:none;}
+.auth-sub{font-size:13px;color:rgba(255,255,255,0.4);line-height:1.75;}
+.auth-body{background:#FFFFFF;flex:1;padding:34px 24px;}
+.auth-tabs{display:flex;border-bottom:1px solid var(--border-mid);margin-bottom:28px;}
+.auth-tab{flex:1;padding:12px 0;font-size:13px;font-weight:600;color:var(--muted);border:none;background:transparent;cursor:pointer;font-family:'DM Sans',sans-serif;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;}
+.auth-tab.active{color:#0A0A0A;border-bottom-color:#0A0A0A;}
+.form-group{margin-bottom:16px;}
+.form-label{display:block;font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.form-input{display:block;width:100%;padding:13px 16px;background:#F8F8F6;border:1px solid var(--border-mid);border-radius:var(--rsm);font-size:15px;font-family:'DM Sans',sans-serif;color:#0A0A0A;outline:none;transition:border 0.2s;}
+.form-input:focus{border-color:#0A0A0A;background:#FFFFFF;}
+.form-input::placeholder{color:rgba(10,10,10,0.28);}
+.btn-primary{display:block;width:100%;padding:14px;background:#0A0A0A;color:#FFFFFF;border:none;border-radius:var(--rsm);font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:8px;transition:opacity 0.2s;}
+.btn-primary:hover{opacity:0.82;}
+.btn-primary:disabled{opacity:0.4;cursor:not-allowed;}
+.auth-error{font-size:13px;color:#CC3333;margin-top:10px;text-align:center;font-weight:500;}
+.divider{display:flex;align-items:center;gap:14px;margin:20px 0;font-size:12px;color:var(--muted);}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border-mid);}
+.btn-google{display:flex;width:100%;align-items:center;justify-content:center;gap:10px;padding:13px;background:#FFFFFF;border:1px solid var(--border-mid);border-radius:var(--rsm);font-size:14px;font-weight:500;font-family:'DM Sans',sans-serif;color:#0A0A0A;cursor:pointer;transition:border-color 0.2s;}
+.btn-google:hover{border-color:#0A0A0A;}
+
+/* TOPBAR */
+.topbar{background:#FFFFFF;padding:16px 20px 13px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.t-title{font-size:17px;font-weight:700;color:#0A0A0A;hyphens:none;}
+.t-sub{font-size:10px;color:var(--muted);font-weight:500;margin-top:2px;letter-spacing:0.04em;text-transform:uppercase;}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.day-tag{font-size:11px;font-weight:600;color:var(--gold-dark);background:var(--gold-light);padding:5px 13px;border-radius:20px;}
+.notif-btn{width:36px;height:36px;border-radius:50%;background:#F8F8F6;border:1px solid var(--border-mid);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;position:relative;}
+.ndot{position:absolute;top:5px;right:5px;width:7px;height:7px;border-radius:50%;background:#0A0A0A;border:2px solid #FFFFFF;}
+
+/* PROGRESS */
+.prog-wrap{background:#FFFFFF;padding:0 20px 15px;border-bottom:1px solid var(--border);}
+.prog-labels{display:flex;justify-content:space-between;font-size:10px;font-weight:600;color:var(--muted);letter-spacing:0.04em;text-transform:uppercase;margin-bottom:8px;}
+.prog-track{height:2px;background:var(--border-mid);border-radius:1px;}
+.prog-fill{height:100%;background:var(--gold);border-radius:1px;transition:width 0.5s;}
+
+/* STREAK */
+.streak-banner{margin:16px 20px 0;background:#0A0A0A;border-radius:var(--r);padding:20px 22px;display:flex;align-items:center;justify-content:space-between;}
+.streak-label{font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:5px;}
+.streak-count{font-size:26px;font-weight:700;color:#FFFFFF;line-height:1;}
+.streak-sub{font-size:12px;color:rgba(255,255,255,0.38);margin-top:5px;}
+.streak-icon{font-size:30px;}
+
+/* COMPOSE */
+.compose-section{padding:16px 20px 0;}
+.compose-label{font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.compose{background:#FFFFFF;border:1px solid var(--border-mid);border-radius:var(--r);}
+.compose-hint{font-size:13px;font-style:italic;color:var(--gold-dark);padding:13px 16px 0;opacity:0.8;}
+.compose-field{width:100%;border:none;background:transparent;font-size:15px;font-family:'DM Sans',sans-serif;color:#0A0A0A;resize:none;outline:none;line-height:1.65;padding:10px 16px 13px;min-height:72px;}
+.compose-field::placeholder{color:rgba(10,10,10,0.28);}
+.compose-foot{display:flex;align-items:center;justify-content:space-between;padding:10px 16px 13px;border-top:1px solid var(--border);}
+.compose-char{font-size:11px;color:var(--muted);}
+.share-btn{background:#0A0A0A;color:#FFFFFF;border:none;border-radius:8px;padding:9px 22px;font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:opacity 0.2s;}
+.share-btn:hover{opacity:0.78;}
+.share-btn:disabled{opacity:0.4;cursor:not-allowed;}
+
+/* PENDING */
+.pending-note{margin:10px 20px 0;background:var(--gold-light);border-radius:var(--rsm);padding:10px 14px;font-size:13px;font-weight:500;color:var(--gold-dark);display:none;align-items:center;gap:8px;}
+
+/* FEED */
+.feed-header{display:flex;align-items:center;justify-content:space-between;padding:20px 20px 10px;}
+.feed-title{font-size:10px;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;color:var(--muted);}
+.feed-count{font-size:11px;color:var(--muted);}
+.post-card{margin:0 20px 10px;background:#FFFFFF;border:1px solid var(--border);border-radius:var(--r);padding:17px;animation:fu 0.3s ease;}
+@keyframes fu{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.post-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.post-name{font-size:14px;font-weight:700;color:#0A0A0A;}
+.post-meta{font-size:12px;color:var(--muted);margin-left:7px;}
+.post-day{font-size:10px;font-weight:600;color:var(--gold-dark);background:var(--gold-light);padding:3px 9px;border-radius:20px;white-space:nowrap;}
+.post-text{font-size:15px;color:#0A0A0A;line-height:1.7;margin-bottom:13px;hyphens:none;}
+.post-actions{display:flex;align-items:center;gap:6px;padding-top:11px;border-top:1px solid var(--border);}
+.act-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;border-radius:6px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:1px solid var(--border-mid);background:#F8F8F6;color:#0A0A0A;transition:all 0.15s;}
+.act-btn:hover{background:#0A0A0A;color:#FFFFFF;border-color:#0A0A0A;}
+.act-btn.liked{background:#0A0A0A;color:#FFFFFF;border-color:#0A0A0A;}
+.act-btn.amened{background:var(--gold-light);color:var(--gold-dark);border-color:rgba(198,168,91,0.25);}
+.empty-feed{text-align:center;padding:40px 20px;color:var(--muted);font-size:14px;line-height:1.7;}
+
+/* BOTTOM NAV */
+.bnav{background:#FFFFFF;border-top:1px solid var(--border);display:flex;padding:12px 0 22px;margin-top:auto;}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:2px 0;border:none;background:none;font-family:'DM Sans',sans-serif;}
+.ni-icon{font-size:20px;opacity:0.35;}
+.ni-label{font-size:10px;font-weight:600;color:var(--muted);letter-spacing:0.03em;text-transform:uppercase;}
+.ni.active .ni-icon{opacity:1;}
+.ni.active .ni-label{color:var(--gold-dark);}
+
+/* INNER SCREENS */
+.inner-bar{background:#FFFFFF;padding:15px 20px 13px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;}
+.back-btn{background:none;border:none;font-size:22px;cursor:pointer;color:#0A0A0A;padding:0;line-height:1;flex-shrink:0;}
+.inner-title{font-size:16px;font-weight:600;color:#0A0A0A;}
+
+/* NOTIFICATIONS */
+.notif-body{padding:16px 20px;flex:1;background:#F8F8F6;}
+.notif-item{display:flex;gap:12px;padding:13px;border-radius:var(--r);margin-bottom:6px;background:#FFFFFF;border:1px solid var(--border);}
+.notif-item.unread{border-color:rgba(198,168,91,0.28);background:#FFFDF8;}
+.notif-icon{width:40px;height:40px;border-radius:50%;background:#F8F8F6;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.notif-txt{font-size:13px;color:#0A0A0A;line-height:1.55;}
+.notif-txt strong{font-weight:700;}
+.notif-time{font-size:11px;color:var(--muted);margin-top:3px;font-weight:500;}
+
+/* PROFILE */
+.prof-hero{background:#0A0A0A;padding:44px 24px 28px;text-align:center;}
+.prof-av-ring{width:70px;height:70px;border-radius:50%;border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;}
+.prof-av{font-size:22px;font-weight:700;color:#FFFFFF;}
+.prof-name{font-size:20px;font-weight:700;color:#FFFFFF;hyphens:none;}
+.prof-handle{font-size:11px;color:rgba(255,255,255,0.35);margin-top:4px;letter-spacing:0.04em;}
+.prof-stats{display:flex;justify-content:center;margin-top:22px;border-top:1px solid rgba(255,255,255,0.08);padding-top:18px;}
+.pstat{flex:1;text-align:center;}
+.pstat+.pstat{border-left:1px solid rgba(255,255,255,0.08);}
+.pstat-n{font-size:20px;font-weight:700;color:#FFFFFF;}
+.pstat-l{font-size:9px;color:rgba(255,255,255,0.35);margin-top:2px;text-transform:uppercase;letter-spacing:0.06em;}
+.prof-body{padding:20px;flex:1;background:#F8F8F6;}
+.sec-head{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:10px;margin-top:4px;}
+.settings-card{background:#FFFFFF;border-radius:var(--r);border:1px solid var(--border);overflow:hidden;margin-bottom:18px;}
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);font-size:14px;font-weight:500;color:#0A0A0A;cursor:pointer;transition:background 0.15s;}
+.setting-row:hover{background:#F8F8F6;}
+.setting-row:last-child{border:none;}
+.logout-btn{width:100%;padding:14px;background:#FFFFFF;color:#0A0A0A;border:1px solid var(--border-mid);border-radius:var(--rsm);font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;}
+.logout-btn:hover{background:#0A0A0A;color:#FFFFFF;}
+
+/* TOGGLES */
+.tog{position:relative;display:inline-block;width:42px;height:22px;margin-left:auto;flex-shrink:0;}
+.tog input{opacity:0;width:0;height:0;}
+.tog-s{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#E0DFDB;border-radius:22px;transition:.25s;}
+.tog-s:before{position:absolute;content:'';height:16px;width:16px;left:3px;bottom:3px;background:#FFFFFF;border-radius:50%;transition:.25s;}
+.tog input:checked+.tog-s{background:var(--gold);}
+.tog input:checked+.tog-s:before{transform:translateX(20px);}
+
+/* CONTENT */
+.content-body{padding:20px;flex:1;background:#F8F8F6;}
+.info-card{background:#FFFFFF;border:1px solid var(--border);border-radius:var(--r);padding:18px;margin-bottom:12px;}
+.info-title{font-size:14px;font-weight:700;color:#0A0A0A;margin-bottom:8px;}
+.info-text{font-size:14px;color:var(--muted);line-height:1.72;}
+.link-row{display:flex;gap:8px;margin-top:14px;}
+.link-btn{flex:1;padding:12px;border-radius:8px;text-align:center;text-decoration:none;font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;transition:opacity 0.2s;}
+.link-btn:hover{opacity:0.78;}
+.lb-dark{background:#0A0A0A;color:#FFFFFF;}
+.lb-light{background:#F8F8F6;border:1px solid var(--border-mid);color:#0A0A0A;}
+
+/* GENESIAH */
+.gen-hero{background:#0A0A0A;padding:44px 24px 36px;text-align:center;}
+.gen-wordmark{font-size:34px;font-weight:700;letter-spacing:0.14em;color:#FFFFFF;}
+.gen-rule{width:28px;height:1px;background:var(--gold);margin:14px auto;}
+.gen-tagline{font-size:11px;color:rgba(255,255,255,0.35);letter-spacing:0.08em;text-transform:uppercase;}
+
+/* ADMIN */
+.admin-bar{background:#0A0A0A;padding:15px 20px 13px;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;gap:12px;}
+.admin-title{font-size:16px;font-weight:600;color:#FFFFFF;}
+.admin-sub{font-size:10px;color:rgba(255,255,255,0.35);margin-top:2px;text-transform:uppercase;letter-spacing:0.05em;}
+.admin-badge{margin-left:auto;background:var(--gold);color:#0A0A0A;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;white-space:nowrap;}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:14px 20px 8px;}
+.stat-box{background:#FFFFFF;border:1px solid var(--border);border-radius:var(--rsm);padding:12px;text-align:center;}
+.stat-n{font-size:22px;font-weight:700;color:#0A0A0A;}
+.stat-l{font-size:9px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-top:2px;}
+.mod-head{font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);padding:8px 20px 10px;}
+.mod-card{margin:0 20px 8px;background:#FFFFFF;border:1px solid var(--border);border-radius:var(--r);padding:16px;animation:fu 0.25s ease;}
+.mod-top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px;}
+.mod-name{font-size:14px;font-weight:700;color:#0A0A0A;}
+.mod-time{font-size:12px;color:var(--muted);}
+.mod-text{font-size:14px;color:#0A0A0A;line-height:1.68;margin-bottom:13px;hyphens:none;}
+.mod-actions{display:flex;gap:8px;}
+.mod-ok{flex:1;padding:10px;background:#0A0A0A;color:#FFFFFF;border:none;border-radius:8px;font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:opacity 0.2s;}
+.mod-ok:hover{opacity:0.75;}
+.mod-no{flex:1;padding:10px;background:#F8F8F6;color:#0A0A0A;border:1px solid var(--border-mid);border-radius:8px;font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;}
+.mod-no:hover{border-color:#0A0A0A;}
+.mod-empty{text-align:center;padding:36px 20px;color:var(--muted);font-size:14px;font-weight:500;}
+.spacer{height:20px;}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<div class="loading-overlay hidden" id="loading">
+  <div class="spinner"></div>
+  <div class="loading-text" id="loading-text">Loading...</div>
+</div>
+<div class="toast" id="toast"></div>
+
+<!-- ONBOARDING -->
+<div class="ob-screen" id="screen-onboarding">
+  <div class="ob-slides">
+    <div class="ob-slide active" id="ob-slide-0">
+      <div class="ob-num">01 of 03</div>
+      <div class="ob-title">A generation living by the Word</div>
+      <div class="ob-text">GOW — Generation Of The Word — exists to raise up a generation that does not just know the Word of God, but lives by it. Identity. Purpose. Faith.</div>
+    </div>
+    <div class="ob-slide" id="ob-slide-1">
+      <div class="ob-num">02 of 03</div>
+      <div class="ob-title">30 days of becoming more grateful</div>
+      <div class="ob-text">Every April, the GOW community posts one thing they are grateful for every single day. It is not just a challenge. It is a habit that changes how you see everything.</div>
+    </div>
+    <div class="ob-slide" id="ob-slide-2">
+      <div class="ob-num">03 of 03</div>
+      <div class="ob-title">You are not here by accident</div>
+      <div class="ob-text">This community was built for people who are still figuring out who they are — and believe the answer is in God. Welcome. You belong here.</div>
+    </div>
+  </div>
+  <div class="ob-footer">
+    <button class="ob-skip" onclick="finishOnboarding()">Skip</button>
+    <div class="ob-dots">
+      <div class="ob-dot active" id="od-0"></div>
+      <div class="ob-dot" id="od-1"></div>
+      <div class="ob-dot" id="od-2"></div>
+    </div>
+    <button class="ob-btn" id="ob-btn" onclick="obNext()">Next</button>
+  </div>
+</div>
+
+<!-- AUTH -->
+<div class="screen active" id="screen-auth">
+  <div class="auth-top">
+    <div class="auth-eyebrow">Generation Of The Word</div>
+    <div class="auth-headline">Gratitude Challenge</div>
+    <div class="auth-sub">A community becoming more grateful — one day at a time.</div>
+  </div>
+  <div class="auth-body">
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">Sign in</button>
+      <button class="auth-tab" id="tab-signup" onclick="switchTab('signup')">Create account</button>
+    </div>
+    <div id="login-form">
+      <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" placeholder="you@email.com" id="login-email"/></div>
+      <div class="form-group">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+          <label class="form-label" style="margin-bottom:0;">Password</label>
+          <span onclick="showScreen('screen-forgot')" style="font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;letter-spacing:0.02em;">Forgot password?</span>
+        </div>
+        <input class="form-input" type="password" placeholder="••••••••" id="login-pass"/>
+      </div>
+      <button class="btn-primary" id="login-btn" onclick="doLogin()">Sign in</button>
+      <div class="auth-error" id="login-error"></div>
+    </div>
+    <div id="signup-form" style="display:none">
+      <div class="form-group"><label class="form-label">Full name</label><input class="form-input" type="text" placeholder="Your name" id="signup-name"/></div>
+      <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" placeholder="you@email.com" id="signup-email"/></div>
+      <div class="form-group"><label class="form-label">Password</label><input class="form-input" type="password" placeholder="Min 6 characters" id="signup-pass"/></div>
+      <button class="btn-primary" id="signup-btn" onclick="doSignup()">Create account</button>
+      <div class="auth-error" id="signup-error"></div>
+    </div>
+    <div class="divider">or</div>
+    <button class="btn-google" onclick="doGoogleLogin()">
+      <svg width="18" height="18" viewBox="0 0 18 18"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 6.293C4.672 4.166 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+      Continue with Google
+    </button>
+  </div>
+</div>
+
+<!-- HOME -->
+<div class="screen" id="screen-home">
+  <div class="topbar">
+    <div><div class="t-title">Gratitude Challenge</div><div class="t-sub">by GOW</div></div>
+    <div class="topbar-right">
+      <div class="day-tag" id="day-tag">Day 1</div>
+      <button class="notif-btn" onclick="showScreen('screen-notifs')">🔔<div class="ndot" id="ndot" style="display:none;"></div></button>
+    </div>
+  </div>
+  <div class="prog-wrap">
+    <div class="prog-labels"><span>April Challenge</span><span id="prog-label">Day 1 of 30</span></div>
+    <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:3%"></div></div>
+  </div>
+  <div class="streak-banner">
+    <div>
+      <div class="streak-label">Your streak</div>
+      <div class="streak-count" id="streak-count">0 days</div>
+      <div class="streak-sub" id="streak-sub">Post today to start your streak</div>
+    </div>
+    <div class="streak-icon">🔥</div>
+  </div>
+  <div class="pending-note" id="pending-note">⏳ Your post is in review — it appears once approved</div>
+  <div class="compose-section">
+    <div class="compose-label">Today's gratitude</div>
+    <div class="compose">
+      <div class="compose-hint" id="compose-hint">Day 1 of becoming more grateful.</div>
+      <textarea class="compose-field" id="compose-text" placeholder="What are you grateful for today?" rows="2" maxlength="300" oninput="updateChar(this)"></textarea>
+      <div class="compose-foot">
+        <span class="compose-char" id="char-left">300</span>
+        <button class="share-btn" id="share-btn" onclick="submitPost()">Share</button>
+      </div>
+    </div>
+  </div>
+  <div class="feed-header">
+    <div class="feed-title">Community</div>
+    <div class="feed-count" id="feed-count"></div>
+  </div>
+  <div id="feed-container"></div>
+  <div class="spacer"></div>
+  <div class="bnav">
+    <button class="ni active" onclick="showScreen('screen-home')"><span class="ni-icon">🏠</span><span class="ni-label">Home</span></button>
+    <button class="ni" onclick="showScreen('screen-notifs')"><span class="ni-icon">🔔</span><span class="ni-label">Alerts</span></button>
+    <button class="ni" onclick="showScreen('screen-genesiah')"><span class="ni-icon">👕</span><span class="ni-label">Shop</span></button>
+    <button class="ni" onclick="showScreen('screen-profile')"><span class="ni-icon">👤</span><span class="ni-label">Profile</span></button>
+  </div>
+</div>
+
+<!-- NOTIFICATIONS -->
+<div class="screen" id="screen-notifs">
+  <div class="inner-bar"><button class="back-btn" onclick="showScreen('screen-home')">←</button><div class="inner-title">Notifications</div></div>
+  <div class="notif-body" id="notif-list">
+    <div class="notif-item"><div class="notif-icon">🔥</div><div><div class="notif-txt"><strong>Welcome to the Gratitude Challenge!</strong> Post your first gratitude today.</div><div class="notif-time">Just now</div></div></div>
+  </div>
+  <div class="bnav">
+    <button class="ni" onclick="showScreen('screen-home')"><span class="ni-icon">🏠</span><span class="ni-label">Home</span></button>
+    <button class="ni active"><span class="ni-icon">🔔</span><span class="ni-label">Alerts</span></button>
+    <button class="ni" onclick="showScreen('screen-genesiah')"><span class="ni-icon">👕</span><span class="ni-label">Shop</span></button>
+    <button class="ni" onclick="showScreen('screen-profile')"><span class="ni-icon">👤</span><span class="ni-label">Profile</span></button>
+  </div>
+</div>
+
+<!-- PROFILE -->
+<div class="screen" id="screen-profile">
+  <div class="prof-hero">
+    <div class="prof-av-ring"><div class="prof-av" id="prof-av">?</div></div>
+    <div class="prof-name" id="prof-name">Loading...</div>
+    <div class="prof-handle" id="prof-handle">GOW Community</div>
+    <div class="prof-stats">
+      <div class="pstat"><div class="pstat-n" id="p-posts">0</div><div class="pstat-l">Posts</div></div>
+      <div class="pstat"><div class="pstat-n" id="p-streak">0</div><div class="pstat-l">Streak</div></div>
+      <div class="pstat"><div class="pstat-n" id="p-days">0</div><div class="pstat-l">Days in</div></div>
+    </div>
+  </div>
+  <div class="prof-body">
+    <div class="sec-head">Account</div>
+    <div class="settings-card">
+      <div class="setting-row" onclick="showScreen('screen-notif-prefs')">🔔 Notification preferences <span style="color:#B0B0B0;">›</span></div>
+      <div class="setting-row" onclick="showScreen('screen-privacy')">🛡️ Privacy and safety <span style="color:#B0B0B0;">›</span></div>
+    </div>
+    <div class="sec-head">Explore</div>
+    <div class="settings-card">
+      <div class="setting-row" onclick="showScreen('screen-about-gow')">📖 About GOW <span style="color:#B0B0B0;">›</span></div>
+    </div>
+    <div id="admin-section" style="display:none;">
+      <div class="sec-head">Admin</div>
+      <div class="settings-card">
+        <div class="setting-row" onclick="showScreen('screen-admin')" style="color:var(--gold-dark);font-weight:600;">🛠️ Moderation dashboard <span style="color:#B0B0B0;">›</span></div>
+      </div>
+    </div>
+    <button class="logout-btn" onclick="doLogout()">Sign out</button>
+  </div>
+  <div class="bnav">
+    <button class="ni" onclick="showScreen('screen-home')"><span class="ni-icon">🏠</span><span class="ni-label">Home</span></button>
+    <button class="ni" onclick="showScreen('screen-notifs')"><span class="ni-icon">🔔</span><span class="ni-label">Alerts</span></button>
+    <button class="ni" onclick="showScreen('screen-genesiah')"><span class="ni-icon">👕</span><span class="ni-label">Shop</span></button>
+    <button class="ni active"><span class="ni-icon">👤</span><span class="ni-label">Profile</span></button>
+  </div>
+</div>
+
+<!-- NOTIF PREFS -->
+<div class="screen" id="screen-notif-prefs">
+  <div class="inner-bar"><button class="back-btn" onclick="showScreen('screen-profile')">←</button><div class="inner-title">Notifications</div></div>
+  <div class="content-body">
+    <div class="sec-head">Push</div>
+    <div class="settings-card">
+      <div class="setting-row" style="cursor:default;">Daily gratitude reminder <label class="tog"><input type="checkbox" checked/><span class="tog-s"></span></label></div>
+      <div class="setting-row" style="cursor:default;">Post approved <label class="tog"><input type="checkbox" checked/><span class="tog-s"></span></label></div>
+      <div class="setting-row" style="cursor:default;">Likes and Amens <label class="tog"><input type="checkbox" checked/><span class="tog-s"></span></label></div>
+      <div class="setting-row" style="cursor:default;border:none;">Streak milestones <label class="tog"><input type="checkbox" checked/><span class="tog-s"></span></label></div>
+    </div>
+    <div class="sec-head">Email</div>
+    <div class="settings-card">
+      <div class="setting-row" style="cursor:default;">Weekly summary <label class="tog"><input type="checkbox" checked/><span class="tog-s"></span></label></div>
+      <div class="setting-row" style="cursor:default;border:none;">GOW announcements <label class="tog"><input type="checkbox" checked/><span class="tog-s"></span></label></div>
+    </div>
+  </div>
+</div>
+
+<!-- PRIVACY -->
+<div class="screen" id="screen-privacy">
+  <div class="inner-bar"><button class="back-btn" onclick="showScreen('screen-profile')">←</button><div class="inner-title">Privacy and safety</div></div>
+  <div class="content-body">
+    <div class="sec-head">Visibility</div>
+    <div class="settings-card">
+      <div class="setting-row" style="cursor:default;">Public profile <label class="tog"><input type="checkbox" checked/><span class="tog-s"></span></label></div>
+      <div class="setting-row" style="cursor:default;border:none;">Show in community wall <label class="tog"><input type="checkbox" checked/><span class="tog-s"></span></label></div>
+    </div>
+    <div class="sec-head">Safety</div>
+    <div class="settings-card">
+      <div class="setting-row">Report a post <span style="color:#B0B0B0;">›</span></div>
+      <div class="setting-row" style="border:none;">Block a user <span style="color:#B0B0B0;">›</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- GENESIAH / SHOP -->
+<div class="screen" id="screen-genesiah">
+  <div class="topbar">
+    <div><div class="t-title">Genesiah</div><div class="t-sub">by GOW</div></div>
+  </div>
+  <div class="gen-hero">
+    <div class="gen-wordmark">GENESIAH</div>
+    <div class="gen-rule"></div>
+    <div class="gen-tagline">Wear who God says you are</div>
+  </div>
+  <div class="content-body">
+    <div class="info-card">
+      <div class="info-title">The brand</div>
+      <div class="info-text">Genesiah is more than clothing. Every piece is a statement about identity — who you are in Christ, not who the world labels you.</div>
+      <div class="link-row">
+        <a href="https://www.genesiah.com" target="_blank" class="link-btn lb-dark">Shop now →</a>
+        <a href="https://www.instagram.com/genesiahapparel" target="_blank" class="link-btn lb-light">@genesiahapparel →</a>
+      </div>
+    </div>
+    <div class="info-card">
+      <div class="info-title">New arrivals</div>
+      <div class="info-text">See the latest drops and limited pieces at genesiah.com</div>
+      <div class="link-row">
+        <a href="https://www.genesiah.com" target="_blank" class="link-btn lb-dark" style="flex:1;">Browse collection →</a>
+      </div>
+    </div>
+    <div style="text-align:center;padding:20px 0 8px;">
+      <span onclick="showScreen('screen-about-gow')" style="font-size:12px;font-weight:600;color:var(--muted);letter-spacing:0.04em;cursor:pointer;border-bottom:1px solid var(--border-mid);padding-bottom:2px;">About GOW →</span>
+    </div>
+  </div>
+  <div class="spacer"></div>
+  <div class="bnav">
+    <button class="ni" onclick="showScreen('screen-home')"><span class="ni-icon">🏠</span><span class="ni-label">Home</span></button>
+    <button class="ni" onclick="showScreen('screen-notifs')"><span class="ni-icon">🔔</span><span class="ni-label">Alerts</span></button>
+    <button class="ni active"><span class="ni-icon">👕</span><span class="ni-label">Shop</span></button>
+    <button class="ni" onclick="showScreen('screen-profile')"><span class="ni-icon">👤</span><span class="ni-label">Profile</span></button>
+  </div>
+</div>
+
+<!-- ABOUT GOW -->
+<div class="screen" id="screen-about-gow">
+  <div class="inner-bar"><button class="back-btn" onclick="history.back()">←</button><div class="inner-title">About GOW</div></div>
+  <div class="content-body">
+    <div style="background:#0A0A0A;border-radius:var(--r);padding:24px;margin-bottom:12px;text-align:center;">
+      <div style="font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;">GOW</div>
+      <div style="font-size:20px;font-weight:700;color:#FFFFFF;line-height:1.3;margin-bottom:8px;">Generation Of The Word</div>
+      <div style="width:24px;height:1px;background:var(--gold);margin:0 auto 12px;"></div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.4);line-height:1.6;">A generation living by the Word of God</div>
+    </div>
+    <div class="info-card"><div class="info-title">Our mission</div><div class="info-text">GOW exists to raise up a generation that does not just know the Word of God — but lives by it. Every challenge, every garment, every piece of content points back to identity in Christ.</div></div>
+    <div class="info-card"><div class="info-title">The Gratitude Challenge</div><div class="info-text">Every April, GOW hosts a 30-day online challenge. One post a day. One thing you are grateful for. Thirty days of building a habit rooted in faith and identity.</div></div>
+    <div class="info-card">
+      <div class="info-title">Founded by Gershom Adeniyi</div>
+      <div class="info-text">Founder of GOW and Genesiah. Voice for a generation finding identity in Christ. Based in Edmonton, Alberta.</div>
+      <div class="link-row">
+        <a href="https://www.youtube.com/@gershomadeniyi" target="_blank" class="link-btn lb-dark">YouTube →</a>
+        <a href="https://www.instagram.com/gershomniyi" target="_blank" class="link-btn lb-light">Instagram →</a>
+      </div>
+      <div class="link-row" style="margin-top:0;">
+        <a href="https://www.tiktok.com/@gershomniyi" target="_blank" class="link-btn lb-light" style="flex:1;">TikTok @gershomniyi →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="screen" id="screen-admin">
+  <div class="admin-bar">
+    <button class="back-btn" onclick="showScreen('screen-profile')" style="color:#FFFFFF;">←</button>
+    <div><div class="admin-title">Moderation</div><div class="admin-sub">Admin only</div></div>
+    <div class="admin-badge" id="admin-badge">0 pending</div>
+  </div>
+
+  <div style="display:flex;background:#0A0A0A;border-bottom:1px solid rgba(255,255,255,0.08);">
+    <button class="admin-tab active" id="atab-posts" onclick="switchAdminTab('posts')" style="flex:1;padding:12px;font-size:12px;font-weight:700;font-family:'DM Sans',sans-serif;color:var(--gold);background:none;border:none;border-bottom:2px solid var(--gold);cursor:pointer;letter-spacing:0.04em;text-transform:uppercase;">Posts</button>
+    <button class="admin-tab" id="atab-team" onclick="switchAdminTab('team')" style="flex:1;padding:12px;font-size:12px;font-weight:700;font-family:'DM Sans',sans-serif;color:rgba(255,255,255,0.35);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;letter-spacing:0.04em;text-transform:uppercase;">Team</button>
+  </div>
+
+  <div id="admin-posts-tab">
+    <div class="stat-row">
+      <div class="stat-box"><div class="stat-n" id="s-total">0</div><div class="stat-l">Total</div></div>
+      <div class="stat-box"><div class="stat-n" id="s-pending" style="color:var(--gold);">0</div><div class="stat-l">Pending</div></div>
+      <div class="stat-box"><div class="stat-n" id="s-live">0</div><div class="stat-l">Live</div></div>
+    </div>
+    <div class="mod-head">Pending review</div>
+    <div id="mod-queue"></div>
+  </div>
+
+  <div id="admin-team-tab" style="display:none;padding:16px 20px;background:#F8F8F6;flex:1;">
+    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:10px;">Add moderator</div>
+    <div style="background:#FFFFFF;border:1px solid var(--border-mid);border-radius:var(--r);padding:14px;margin-bottom:16px;">
+      <div style="font-size:13px;color:var(--muted);margin-bottom:10px;line-height:1.5;">Enter their email address. They need to sign up first before you can assign them.</div>
+      <input class="form-input" type="email" id="mod-email-input" placeholder="email@example.com" style="margin-bottom:10px;"/>
+      <button onclick="addModerator()" style="width:100%;padding:12px;background:#0A0A0A;color:#FFFFFF;border:none;border-radius:8px;font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;">Assign as moderator</button>
+      <div id="mod-assign-msg" style="font-size:13px;margin-top:8px;text-align:center;"></div>
+    </div>
+    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:10px;">Current moderators</div>
+    <div id="mod-team-list"><div class="mod-empty">No moderators assigned yet</div></div>
+  </div>
+
+  <div class="spacer"></div>
+</div>
+
+<!-- FORGOT PASSWORD -->
+<div class="screen" id="screen-forgot">
+  <div class="auth-top" style="padding:50px 28px 36px;">
+    <div class="auth-eyebrow">Password reset</div>
+    <div class="auth-headline" style="font-size:32px;">Forgot your password?</div>
+    <div class="auth-sub">Enter your email and we will send you a reset link.</div>
+  </div>
+  <div class="auth-body">
+    <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" placeholder="you@email.com" id="forgot-email"/></div>
+    <button class="btn-primary" onclick="doForgotPassword()">Send reset link</button>
+    <div class="auth-error" id="forgot-msg" style="margin-top:12px;"></div>
+    <div style="text-align:center;margin-top:20px;">
+      <span onclick="showScreen('screen-auth')" style="font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;">← Back to sign in</span>
+    </div>
+  </div>
+</div>
+
+</div><!-- shell -->
+
+<script>
+const SUPABASE_URL='https://iifahicnurctwvdzocgb.supabase.co';
+const SUPABASE_KEY='sb_publishable_rmuIyxP0brJkY3_J1FJPew_YJwbxMTJ';
+const ADMIN_EMAIL='gershomadeniyi@gmail.com';
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+let currentUser=null, currentProfile=null, obStep=0, isFirstTime=false;
+
+function getDay(){
+  const start=new Date('2026-04-01');
+  const now=new Date();
+  const diff=Math.floor((now-start)/(1000*60*60*24))+1;
+  return Math.min(Math.max(diff,1),30);
+}
+
+function setLoading(show,text='Loading...'){
+  const el=document.getElementById('loading');
+  el.classList.toggle('hidden',!show);
+  document.getElementById('loading-text').textContent=text;
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+function showScreen(id){
+  document.querySelectorAll('.screen,.ob-screen').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById(id);if(el)el.classList.add('active');
+  if(id==='screen-admin')loadModQueue();
+  if(id==='screen-home')loadFeed();
+  if(id==='screen-notifs'){const d=document.getElementById('ndot');if(d)d.style.display='none';}
+  window.scrollTo(0,0);
+}
+
+function switchTab(t){
+  document.getElementById('login-form').style.display=t==='login'?'block':'none';
+  document.getElementById('signup-form').style.display=t==='signup'?'block':'none';
+  document.getElementById('tab-login').classList.toggle('active',t==='login');
+  document.getElementById('tab-signup').classList.toggle('active',t==='signup');
+  document.getElementById('login-error').textContent='';
+  document.getElementById('signup-error').textContent='';
+}
+
+async function doLogin(){
+  const e=document.getElementById('login-email').value.trim();
+  const p=document.getElementById('login-pass').value.trim();
+  if(!e||!p){document.getElementById('login-error').textContent='Please fill in all fields';return;}
+  setLoading(true,'Signing in...');
+  const{data,error}=await sb.auth.signInWithPassword({email:e,password:p});
+  setLoading(false);
+  if(error){document.getElementById('login-error').textContent=error.message;return;}
+  isFirstTime=false;
+  await enterApp(data.user);
+}
+
+async function doSignup(){
+  const n=document.getElementById('signup-name').value.trim();
+  const e=document.getElementById('signup-email').value.trim();
+  const p=document.getElementById('signup-pass').value.trim();
+  if(!n||!e||!p){document.getElementById('signup-error').textContent='Please fill in all fields';return;}
+  if(p.length<6){document.getElementById('signup-error').textContent='Password must be at least 6 characters';return;}
+  setLoading(true,'Creating account...');
+  const{data,error}=await sb.auth.signUp({email:e,password:p,options:{data:{name:n}}});
+  setLoading(false);
+  if(error){document.getElementById('signup-error').textContent=error.message;return;}
+  if(data.user){
+    await sb.from('profiles').upsert({id:data.user.id,name:n,email:e,role:'member',streak:0,days_in:0});
+    isFirstTime=true;
+    await enterApp(data.user);
+  }
+}
+
+async function doGoogleLogin(){
+  await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.href}});
+}
+
+async function doLogout(){
+  await sb.auth.signOut();
+  currentUser=null;currentProfile=null;
+  showScreen('screen-auth');
+}
+
+async function enterApp(user){
+  currentUser=user;
+  setLoading(true,'Loading your profile...');
+  let{data:profile}=await sb.from('profiles').select('*').eq('id',user.id).single();
+  if(!profile){
+    const name=user.user_metadata?.name||user.email.split('@')[0];
+    await sb.from('profiles').insert({id:user.id,name,email:user.email,role:'member',streak:0,days_in:0});
+    profile={id:user.id,name,email:user.email,role:'member',streak:0,days_in:0};
+  }
+  currentProfile=profile;
+  updateProfileUI();
+  setLoading(false);
+  if(isFirstTime){
+    obStep=0;
+    document.querySelectorAll('.ob-slide').forEach((s,i)=>{s.classList.remove('active','exit');if(i===0)s.classList.add('active');});
+    document.querySelectorAll('.ob-dot').forEach((d,i)=>{d.classList.remove('active');if(i===0)d.classList.add('active');});
+    document.getElementById('ob-btn').textContent='Next';
+    document.querySelectorAll('.screen,.ob-screen').forEach(s=>s.classList.remove('active'));
+    document.getElementById('screen-onboarding').classList.add('active');
+  } else {
+    showScreen('screen-home');
+  }
+}
+
+function updateProfileUI(){
+  if(!currentProfile)return;
+  const day=getDay();
+  const initials=currentProfile.name.trim().split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  document.getElementById('prof-av').textContent=initials;
+  document.getElementById('prof-name').textContent=currentProfile.name;
+  document.getElementById('prof-handle').textContent='@'+currentProfile.name.toLowerCase().replace(/\s/g,'')+'· GOW';
+  document.getElementById('p-streak').textContent=currentProfile.streak||0;
+  document.getElementById('p-days').textContent=currentProfile.days_in||0;
+  document.getElementById('day-tag').textContent='Day '+day;
+  document.getElementById('prog-label').textContent='Day '+day+' of 30';
+  document.getElementById('prog-fill').style.width=Math.round((day/30)*100)+'%';
+  document.getElementById('streak-count').textContent=(currentProfile.streak||0)+' days';
+  document.getElementById('streak-sub').textContent=currentProfile.streak>0?'You are building consistency. Keep going.':'Post today to start your streak';
+  document.getElementById('compose-hint').textContent='Day '+day+' of becoming more grateful.';
+  const isAdmin=currentProfile.email===ADMIN_EMAIL;
+  const isMod=currentProfile.role==='moderator'||isAdmin;
+  document.getElementById('admin-section').style.display=isMod?'block':'none';
+  if(isAdmin){
+    document.getElementById('admin-section').querySelector('.setting-row').textContent='';
+    document.getElementById('admin-section').querySelector('.setting-row').innerHTML='🛠️ Moderation dashboard <span style="color:#B0B0B0;">›</span>';
+  }
+}
+
+async function loadFeed(){
+  const c=document.getElementById('feed-container');
+  c.innerHTML='<div class="empty-feed">Loading posts...</div>';
+  const{data:posts,error}=await sb.from('posts').select('*').eq('status','approved').order('created_at',{ascending:false}).limit(50);
+  if(error||!posts||posts.length===0){
+    c.innerHTML='<div class="empty-feed">No posts yet.<br>Be the first to share your gratitude today.</div>';
+    document.getElementById('feed-count').textContent='';
+    return;
+  }
+  c.innerHTML='';
+  document.getElementById('feed-count').textContent=posts.length+' post'+(posts.length!==1?'s':'')+' today';
+  const{data:myLikes}=currentUser?await sb.from('likes').select('post_id,type').eq('user_id',currentUser.id):[];
+  const likedSet=new Set((myLikes||[]).filter(l=>l.type==='like').map(l=>l.post_id));
+  const amenSet=new Set((myLikes||[]).filter(l=>l.type==='amen').map(l=>l.post_id));
+  posts.forEach(p=>{
+    const d=document.createElement('div');d.className='post-card';
+    const t=new Date(p.created_at);
+    const ago=timeAgo(t);
+    const liked=likedSet.has(p.id),amened=amenSet.has(p.id);
+    d.innerHTML=`<div class="post-top"><div style="display:flex;align-items:baseline;gap:7px;"><span class="post-name">${esc(p.name)}</span><span class="post-meta">${ago}</span></div><span class="post-day">Day ${p.day}</span></div><div class="post-text">${esc(p.text)}</div><div class="post-actions"><button class="act-btn${liked?' liked':''}" onclick="toggleReact('${p.id}','like',this)">❤️ ${p.likes||0}</button><button class="act-btn${amened?' amened':''}" onclick="toggleReact('${p.id}','amen',this)">🙌 Amen ${p.amens||0}</button></div>`;
+    c.appendChild(d);
+  });
+  document.getElementById('p-posts').textContent=posts.filter(p=>p.user_id===currentUser?.id).length;
+}
+
+async function toggleReact(postId,type,btn){
+  if(!currentUser){showToast('Sign in to react');return;}
+  const isLike=type==='like';
+  const isActive=btn.classList.contains(isLike?'liked':'amened');
+  if(isActive){
+    await sb.from('likes').delete().eq('post_id',postId).eq('user_id',currentUser.id).eq('type',type);
+    const col=isLike?'likes':'amens';
+    const cur=parseInt(btn.textContent.replace(/\D/g,''))||0;
+    await sb.from('posts').update({[col]:Math.max(0,cur-1)}).eq('id',postId);
+    btn.className='act-btn';
+    btn.innerHTML=(isLike?'❤️ ':'🙌 Amen ')+(Math.max(0,cur-1));
+  } else {
+    await sb.from('likes').upsert({post_id:postId,user_id:currentUser.id,type});
+    const col=isLike?'likes':'amens';
+    const cur=parseInt(btn.textContent.replace(/\D/g,''))||0;
+    await sb.from('posts').update({[col]:cur+1}).eq('id',postId);
+    btn.className='act-btn '+(isLike?'liked':'amened');
+    btn.innerHTML=(isLike?'❤️ ':'🙌 Amen ')+(cur+1);
+  }
+}
+
+function updateChar(el){document.getElementById('char-left').textContent=300-el.value.length;}
+
+async function submitPost(){
+  const text=document.getElementById('compose-text').value.trim();
+  if(!text)return;
+  if(!currentUser){showToast('Please sign in first');return;}
+  const btn=document.getElementById('share-btn');
+  btn.disabled=true;btn.textContent='Posting...';
+  const day=getDay();
+  const{error}=await sb.from('posts').insert({user_id:currentUser.id,name:currentProfile.name,text,day,status:'pending',likes:0,amens:0});
+  btn.disabled=false;btn.textContent='Share';
+  if(error){showToast('Could not post. Try again.');return;}
+  document.getElementById('compose-text').value='';
+  document.getElementById('char-left').textContent='300';
+  const note=document.getElementById('pending-note');
+  note.style.display='flex';setTimeout(()=>note.style.display='none',5000);
+  showToast('Post submitted — awaiting review');
+  await sb.from('profiles').update({days_in:(currentProfile.days_in||0)+1,streak:(currentProfile.streak||0)+1}).eq('id',currentUser.id);
+  currentProfile.days_in=(currentProfile.days_in||0)+1;
+  currentProfile.streak=(currentProfile.streak||0)+1;
+  updateProfileUI();
+}
+
+async function loadModQueue(){
+  const isAdmin=currentProfile?.email===ADMIN_EMAIL;
+  const teamTab=document.getElementById('atab-team');
+  if(teamTab)teamTab.style.display=isAdmin?'block':'none';
+  const{data:pending}=await sb.from('posts').select('*').eq('status','pending').order('created_at',{ascending:false});
+  const{data:approved}=await sb.from('posts').select('id').eq('status','approved');
+  const ps=pending?.length||0,ls=approved?.length||0;
+  document.getElementById('s-pending').textContent=ps;
+  document.getElementById('s-live').textContent=ls;
+  document.getElementById('s-total').textContent=ps+ls;
+  document.getElementById('admin-badge').textContent=ps+' pending';
+  const q=document.getElementById('mod-queue');q.innerHTML='';
+  if(!pending||ps===0){q.innerHTML='<div class="mod-empty">All clear — nothing waiting for review</div>';return;}
+  pending.forEach(p=>{
+    const d=document.createElement('div');d.className='mod-card';d.id='mc-'+p.id;
+    const ago=timeAgo(new Date(p.created_at));
+    d.innerHTML=`<div class="mod-top"><span class="mod-name">${esc(p.name)}</span><span class="mod-time">${ago}</span></div><div class="mod-text">${esc(p.text)}</div><div class="mod-actions"><button class="mod-ok" onclick="approvePost('${p.id}')">Approve</button><button class="mod-no" onclick="rejectPost('${p.id}')">Reject</button></div>`;
+    q.appendChild(d);
+  });
+}
+
+async function approvePost(id){
+  await sb.from('posts').update({status:'approved'}).eq('id',id);
+  removeCard(id);showToast('Post approved');
+  loadModQueue();
+}
+
+async function rejectPost(id){
+  await sb.from('posts').delete().eq('id',id);
+  removeCard(id);showToast('Post rejected');
+  loadModQueue();
+}
+
+function removeCard(id){
+  const el=document.getElementById('mc-'+id);
+  if(el){el.style.transition='opacity 0.25s';el.style.opacity='0';setTimeout(()=>el.remove(),260);}
+}
+
+function obNext(){
+  if(obStep<2){
+    document.getElementById('ob-slide-'+obStep).classList.remove('active');
+    document.getElementById('ob-slide-'+obStep).classList.add('exit');
+    document.getElementById('od-'+obStep).classList.remove('active');
+    obStep++;
+    document.getElementById('ob-slide-'+obStep).classList.add('active');
+    document.getElementById('od-'+obStep).classList.add('active');
+    setTimeout(()=>document.querySelectorAll('.ob-slide.exit').forEach(s=>s.classList.remove('exit')),400);
+    if(obStep===2)document.getElementById('ob-btn').textContent="Let's go";
+  } else {finishOnboarding();}
+}
+
+function finishOnboarding(){
+  document.getElementById('screen-onboarding').classList.remove('active');
+  showScreen('screen-home');
+}
+
+function switchAdminTab(tab){
+  const isPosts=tab==='posts';
+  document.getElementById('admin-posts-tab').style.display=isPosts?'block':'none';
+  document.getElementById('admin-team-tab').style.display=isPosts?'none':'flex';
+  document.getElementById('admin-team-tab').style.flexDirection='column';
+  document.getElementById('atab-posts').style.color=isPosts?'var(--gold)':'rgba(255,255,255,0.35)';
+  document.getElementById('atab-posts').style.borderBottomColor=isPosts?'var(--gold)':'transparent';
+  document.getElementById('atab-team').style.color=!isPosts?'var(--gold)':'rgba(255,255,255,0.35)';
+  document.getElementById('atab-team').style.borderBottomColor=!isPosts?'var(--gold)':'transparent';
+  if(!isPosts)loadTeam();
+}
+
+async function addModerator(){
+  const email=document.getElementById('mod-email-input').value.trim().toLowerCase();
+  const msg=document.getElementById('mod-assign-msg');
+  if(!email){msg.style.color='#CC3333';msg.textContent='Please enter an email';return;}
+  msg.style.color='rgba(10,10,10,0.42)';msg.textContent='Checking...';
+  const{data,error}=await sb.from('profiles').update({role:'moderator'}).eq('email',email).select();
+  if(error||!data||data.length===0){
+    msg.style.color='#CC3333';
+    msg.textContent='No account found with that email. They need to sign up first.';
+    return;
+  }
+  msg.style.color='var(--gold-dark)';
+  msg.textContent='Moderator assigned successfully';
+  document.getElementById('mod-email-input').value='';
+  setTimeout(()=>msg.textContent='',3000);
+  loadTeam();
+}
+
+async function loadTeam(){
+  const list=document.getElementById('mod-team-list');
+  list.innerHTML='<div style="font-size:13px;color:var(--muted);padding:10px 0;">Loading...</div>';
+  const{data:mods}=await sb.from('profiles').select('name,email,role').in('role',['moderator','admin']).order('role');
+  if(!mods||mods.length===0){list.innerHTML='<div class="mod-empty">No moderators assigned yet</div>';return;}
+  list.innerHTML='';
+  mods.forEach(m=>{
+    const d=document.createElement('div');
+    d.style.cssText='background:#FFFFFF;border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;';
+    const initials=m.name.trim().split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    d.innerHTML=`
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:36px;height:36px;border-radius:50%;background:#0A0A0A;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#FFFFFF;">${esc(initials)}</div>
+        <div>
+          <div style="font-size:14px;font-weight:600;color:#0A0A0A;">${esc(m.name)}</div>
+          <div style="font-size:11px;color:var(--muted);">${esc(m.email)}</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;padding:3px 10px;border-radius:20px;background:${m.role==='admin'?'#0A0A0A':' var(--gold-light)'};color:${m.role==='admin'?'#FFFFFF':'var(--gold-dark)'};">${m.role}</span>
+        ${m.role==='moderator'?`<button onclick="removeModerator('${esc(m.email)}')" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--muted);font-family:'DM Sans',sans-serif;">×</button>`:''}
+      </div>`;
+    list.appendChild(d);
+  });
+}
+
+async function removeModerator(email){
+  if(!confirm('Remove moderator access for '+email+'?'))return;
+  await sb.from('profiles').update({role:'member'}).eq('email',email);
+  showToast('Moderator removed');
+  loadTeam();
+}
+
+async function doForgotPassword(){
+  const email=document.getElementById('forgot-email').value.trim();
+  const msg=document.getElementById('forgot-msg');
+  if(!email){msg.style.color='#CC3333';msg.textContent='Please enter your email';return;}
+  msg.style.color='var(--muted)';msg.textContent='Sending...';
+  const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.href});
+  if(error){msg.style.color='#CC3333';msg.textContent=error.message;return;}
+  msg.style.color='var(--gold-dark)';
+  msg.textContent='Reset link sent — check your inbox';
+}
+
+function timeAgo(date){
+  const s=Math.floor((new Date()-date)/1000);
+  if(s<60)return 'Just now';
+  if(s<3600)return Math.floor(s/60)+' min ago';
+  if(s<86400)return Math.floor(s/3600)+' hr ago';
+  return Math.floor(s/86400)+' days ago';
+}
+
+function esc(str){
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Check existing session on load
+(async()=>{
+  setLoading(true,'Loading...');
+  const{data:{session}}=await sb.auth.getSession();
+  setLoading(false);
+  if(session?.user){
+    isFirstTime=false;
+    await enterApp(session.user);
+  }
+  sb.auth.onAuthStateChange(async(event,session)=>{
+    if(event==='SIGNED_IN'&&session?.user&&!currentUser){
+      isFirstTime=false;
+      await enterApp(session.user);
+    }
+  });
+})();
+</script>
+</body>
+</html>
