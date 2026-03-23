@@ -881,7 +881,7 @@ async function doSignup(){
 }
 
 async function doGoogleLogin(){
-  await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.href}});
+  await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:'https://gowchallenge.com'}});
 }
 
 async function doLogout(){
