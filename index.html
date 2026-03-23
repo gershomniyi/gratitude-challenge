@@ -282,6 +282,10 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
 .daily-prompt{margin:0 0 8px;padding:10px 14px;background:var(--gold-light);border-radius:var(--rsm);border-left:2px solid var(--gold);}
 .daily-prompt-text{font-size:13px;color:var(--gold-dark);font-weight:500;font-style:italic;line-height:1.5;}
 
+/* PROMPT CHIPS */
+.prompt-chip{display:inline-block;padding:8px 14px;background:#FFFFFF;border:1px solid var(--border-mid);border-radius:20px;font-size:13px;font-weight:500;color:#0A0A0A;cursor:pointer;transition:all 0.15s;line-height:1.4;}
+.prompt-chip:hover,.prompt-chip.selected{background:#0A0A0A;color:#FFFFFF;border-color:#0A0A0A;}
+
 /* PEOPLE COUNT */
 .people-count{display:flex;align-items:center;gap:6px;padding:0 20px 8px;font-size:12px;color:var(--muted);font-weight:500;}
 </style>
@@ -383,7 +387,10 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
   <div class="pending-note" id="pending-note">Your post is in review — it appears once approved</div>
   <div class="compose-section">
     <div class="compose-label">Today's gratitude</div>
-    <div class="daily-prompt" id="daily-prompt"><div class="daily-prompt-text" id="daily-prompt-text">What is one thing God did for you today?</div></div>
+    <div id="prompt-chips-wrap" style="margin-bottom:10px;">
+      <div style="font-size:11px;font-weight:600;color:var(--muted);letter-spacing:0.04em;margin-bottom:8px;">Tap a prompt to get started</div>
+      <div id="prompt-chips" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+    </div>
     <div class="compose">
       <div class="compose-hint" id="compose-hint">Day 1 of becoming more grateful.</div>
       <textarea class="compose-field" id="compose-text" placeholder="What are you grateful for today?" rows="2" maxlength="300" oninput="updateChar(this)"></textarea>
@@ -675,6 +682,45 @@ const DAILY_PROMPTS=[
   'What door opened that you did not expect?',
 ];
 
+const PROMPT_CHIPS=[
+  ['I am grateful for my family because...','God showed up today when...','One thing I almost missed today was...'],
+  ['I am thankful for my health because...','Someone blessed me today by...','A prayer God answered recently was...'],
+  ['I am grateful for where I am in life because...','God protected me today when...','One thing I took for granted but am thankful for is...'],
+  ['I am thankful for a friend who...','God reminded me of His love when...','A moment that made me smile today was...'],
+  ['I am grateful for the opportunity to...','God gave me strength today to...','Something that changed my perspective recently was...'],
+  ['I am thankful that God never...','One thing I am learning to appreciate is...','God provided for me today by...'],
+  ['I am grateful for my community because...','Today I witnessed God\'s goodness in...','Something small that meant a lot to me was...'],
+  ['I am thankful for a new day because...','God has been faithful to me in...','I am becoming more grateful for...'],
+  ['I am grateful for the Word of God because...','One thing God has taught me recently is...','A blessing I want to declare today is...'],
+  ['I am thankful for second chances because...','God moved in my situation when...','Today I choose to be grateful for...'],
+];
+
+function renderPromptChips(){
+  const container=document.getElementById('prompt-chips');
+  if(!container)return;
+  const day=getDay();
+  const chips=PROMPT_CHIPS[(day-1)%PROMPT_CHIPS.length];
+  container.innerHTML='';
+  chips.forEach(chip=>{
+    const btn=document.createElement('button');
+    btn.className='prompt-chip';
+    btn.textContent=chip;
+    btn.onclick=()=>{
+      const field=document.getElementById('compose-text');
+      if(field){
+        field.value=chip;
+        field.focus();
+        const end=field.value.length;
+        field.setSelectionRange(end,end);
+        updateChar(field);
+      }
+      document.querySelectorAll('.prompt-chip').forEach(c=>c.classList.remove('selected'));
+      btn.classList.add('selected');
+    };
+    container.appendChild(btn);
+  });
+}
+
 const MILESTONES=[
   {day:3,title:'Consistent',stars:1,msg:'You showed up 3 days in a row. That is how transformation begins.'},
   {day:7,title:'Disciplined',stars:2,msg:'One week strong. You are building something that will outlast this challenge.'},
@@ -926,6 +972,7 @@ function updateProfileUI(){
   document.getElementById('compose-hint').textContent='Day '+day+' of becoming more grateful.';
   const promptEl=document.getElementById('daily-prompt-text');
   if(promptEl)promptEl.textContent=getDailyPrompt();
+  renderPromptChips();
   renderProfileBadges(currentProfile.streak||0);
   const isAdmin=currentProfile.email===ADMIN_EMAIL;
   const isMod=currentProfile.role==='moderator'||isAdmin;
