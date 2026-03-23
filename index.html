@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Gratitude Challenge — GOW</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.344.0/dist/umd/lucide.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{
@@ -216,6 +217,49 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
 .mod-no:hover{border-color:#0A0A0A;}
 .mod-empty{text-align:center;padding:36px 20px;color:var(--muted);font-size:14px;font-weight:500;}
 .spacer{height:20px;}
+.ico{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ico svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;}
+.ico-sm svg{width:15px;height:15px;}
+.ico-lg svg{width:22px;height:22px;}
+.ni-icon .ico svg{width:22px;height:22px;stroke-width:1.6;}
+
+/* SHARE POPUP */
+.share-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:990;display:none;align-items:flex-end;justify-content:center;max-width:420px;margin:0 auto;}
+.share-overlay.show{display:flex;}
+.share-sheet{background:#FFFFFF;border-radius:20px 20px 0 0;padding:28px 24px 40px;width:100%;}
+.share-day-complete{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold-dark);margin-bottom:6px;}
+.share-title{font-size:20px;font-weight:700;color:#0A0A0A;margin-bottom:4px;hyphens:none;}
+.share-sub{font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.5;}
+.share-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.share-platform{display:flex;align-items:center;gap:10px;padding:13px 16px;background:#F8F8F6;border:1px solid var(--border-mid);border-radius:12px;font-size:14px;font-weight:600;color:#0A0A0A;cursor:pointer;transition:all 0.15s;}
+.share-platform:hover{border-color:#0A0A0A;}
+.share-platform .ico svg{width:20px;height:20px;}
+.share-copy{width:100%;padding:13px;background:#0A0A0A;color:#FFFFFF;border:none;border-radius:10px;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:opacity 0.2s;}
+.share-copy:hover{opacity:0.82;}
+.share-dismiss{display:block;text-align:center;margin-top:14px;font-size:13px;color:var(--muted);cursor:pointer;font-weight:500;}
+
+/* MILESTONE POPUP */
+.milestone-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:995;display:none;align-items:center;justify-content:center;max-width:420px;margin:0 auto;}
+.milestone-overlay.show{display:flex;}
+.milestone-card{background:#0A0A0A;border-radius:20px;padding:36px 28px;text-align:center;width:calc(100% - 48px);animation:popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);}
+@keyframes popIn{from{transform:scale(0.7);opacity:0;}to{transform:scale(1);opacity:1;}}
+.milestone-badge-svg{margin:0 auto 20px;display:block;}
+.milestone-title{font-size:24px;font-weight:700;color:#FFFFFF;margin-bottom:8px;}
+.milestone-msg{font-size:14px;color:rgba(255,255,255,0.55);line-height:1.6;margin-bottom:24px;}
+.milestone-close{width:100%;padding:13px;background:var(--gold);color:#0A0A0A;border:none;border-radius:10px;font-size:14px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;}
+
+/* BADGES ON PROFILE */
+.badges-section{margin-bottom:18px;}
+.badges-row{display:flex;gap:10px;flex-wrap:wrap;}
+.badge-item{display:flex;flex-direction:column;align-items:center;gap:5px;}
+.badge-label{font-size:9px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--muted);}
+
+/* DAILY PROMPT */
+.daily-prompt{margin:0 0 8px;padding:10px 14px;background:var(--gold-light);border-radius:var(--rsm);border-left:2px solid var(--gold);}
+.daily-prompt-text{font-size:13px;color:var(--gold-dark);font-weight:500;font-style:italic;line-height:1.5;}
+
+/* PEOPLE COUNT */
+.people-count{display:flex;align-items:center;gap:6px;padding:0 20px 8px;font-size:12px;color:var(--muted);font-weight:500;}
 </style>
 </head>
 <body>
@@ -302,7 +346,7 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
     <div><div class="t-title">Gratitude Challenge</div><div class="t-sub">by GOW</div></div>
     <div class="topbar-right">
       <div class="day-tag" id="day-tag">Day 1</div>
-      <button class="notif-btn" onclick="showScreen('screen-notifs')">🔔<div class="ndot" id="ndot" style="display:none;"></div></button>
+      <button class="notif-btn" onclick="showScreen('screen-notifs')"><span class="ico"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span><div class="ndot" id="ndot" style="display:none;"></div></button>
     </div>
   </div>
   <div class="prog-wrap">
@@ -315,11 +359,12 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
       <div class="streak-count" id="streak-count">0 days</div>
       <div class="streak-sub" id="streak-sub">Post today to start your streak</div>
     </div>
-    <div class="streak-icon">🔥</div>
+    <div class="streak-icon"><span class="ico" style="color:var(--gold);"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 17c0 1.38-1.12 2.5-2.5 2.5a2.5 2.5 0 0 1-2.5-2.5C6 14 7 11 9 9c0 0-.5 3 2 4.5C11 9 13.5 6 16 4c0 3 1 5.5 1 7.5a5 5 0 0 1-5 5c-.83 0-1.63-.2-2.33-.55"/></svg></span></div>
   </div>
-  <div class="pending-note" id="pending-note">⏳ Your post is in review — it appears once approved</div>
+  <div class="pending-note" id="pending-note">Your post is in review — it appears once approved</div>
   <div class="compose-section">
     <div class="compose-label">Today's gratitude</div>
+    <div class="daily-prompt" id="daily-prompt"><div class="daily-prompt-text" id="daily-prompt-text">What is one thing God did for you today?</div></div>
     <div class="compose">
       <div class="compose-hint" id="compose-hint">Day 1 of becoming more grateful.</div>
       <textarea class="compose-field" id="compose-text" placeholder="What are you grateful for today?" rows="2" maxlength="300" oninput="updateChar(this)"></textarea>
@@ -333,13 +378,14 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
     <div class="feed-title">Community</div>
     <div class="feed-count" id="feed-count"></div>
   </div>
+  <div class="people-count" id="people-count"></div>
   <div id="feed-container"></div>
   <div class="spacer"></div>
   <div class="bnav">
-    <button class="ni active" onclick="showScreen('screen-home')"><span class="ni-icon">🏠</span><span class="ni-label">Home</span></button>
-    <button class="ni" onclick="showScreen('screen-notifs')"><span class="ni-icon">🔔</span><span class="ni-label">Alerts</span></button>
-    <button class="ni" onclick="showScreen('screen-genesiah')"><span class="ni-icon">👕</span><span class="ni-label">Shop</span></button>
-    <button class="ni" onclick="showScreen('screen-profile')"><span class="ni-icon">👤</span><span class="ni-label">Profile</span></button>
+    <button class="ni active" onclick="showScreen('screen-home')"><span class="ni-icon"><span class="ico"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span></span><span class="ni-label">Home</span></button>
+    <button class="ni" onclick="showScreen('screen-notifs')"><span class="ni-icon"><span class="ico"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span></span><span class="ni-label">Alerts</span></button>
+    <button class="ni" onclick="showScreen('screen-genesiah')"><span class="ni-icon"><span class="ico"><svg viewBox="0 0 24 24"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z"/></svg></span></span><span class="ni-label">Shop</span></button>
+    <button class="ni" onclick="showScreen('screen-profile')"><span class="ni-icon"><span class="ico"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span></span><span class="ni-label">Profile</span></button>
   </div>
 </div>
 
@@ -347,13 +393,13 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
 <div class="screen" id="screen-notifs">
   <div class="inner-bar"><button class="back-btn" onclick="showScreen('screen-home')">←</button><div class="inner-title">Notifications</div></div>
   <div class="notif-body" id="notif-list">
-    <div class="notif-item"><div class="notif-icon">🔥</div><div><div class="notif-txt"><strong>Welcome to the Gratitude Challenge!</strong> Post your first gratitude today.</div><div class="notif-time">Just now</div></div></div>
+    <div class="notif-item"><div class="notif-icon" style="background:var(--gold-light);"><span class="ico" style="color:var(--gold-dark);"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span></div><div><div class="notif-txt"><strong>Welcome to the Gratitude Challenge!</strong> Post your first gratitude today.</div><div class="notif-time">Just now</div></div></div>
   </div>
   <div class="bnav">
-    <button class="ni" onclick="showScreen('screen-home')"><span class="ni-icon">🏠</span><span class="ni-label">Home</span></button>
-    <button class="ni active"><span class="ni-icon">🔔</span><span class="ni-label">Alerts</span></button>
-    <button class="ni" onclick="showScreen('screen-genesiah')"><span class="ni-icon">👕</span><span class="ni-label">Shop</span></button>
-    <button class="ni" onclick="showScreen('screen-profile')"><span class="ni-icon">👤</span><span class="ni-label">Profile</span></button>
+    <button class="ni" onclick="showScreen('screen-home')"><span class="ni-icon"><span class="ico"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span></span><span class="ni-label">Home</span></button>
+    <button class="ni active"><span class="ni-icon"><span class="ico"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span></span><span class="ni-label">Alerts</span></button>
+    <button class="ni" onclick="showScreen('screen-genesiah')"><span class="ni-icon"><span class="ico"><svg viewBox="0 0 24 24"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z"/></svg></span></span><span class="ni-label">Shop</span></button>
+    <button class="ni" onclick="showScreen('screen-profile')"><span class="ni-icon"><span class="ico"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span></span><span class="ni-label">Profile</span></button>
   </div>
 </div>
 
@@ -370,28 +416,32 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
     </div>
   </div>
   <div class="prof-body">
+    <div class="badges-section" id="badges-section" style="display:none;">
+      <div class="sec-head">Badges earned</div>
+      <div class="badges-row" id="badges-row"></div>
+    </div>
     <div class="sec-head">Account</div>
     <div class="settings-card">
-      <div class="setting-row" onclick="showScreen('screen-notif-prefs')">🔔 Notification preferences <span style="color:#B0B0B0;">›</span></div>
-      <div class="setting-row" onclick="showScreen('screen-privacy')">🛡️ Privacy and safety <span style="color:#B0B0B0;">›</span></div>
+      <div class="setting-row" onclick="showScreen('screen-notif-prefs')">Notification preferences <span style="color:#B0B0B0;">›</span></div>
+      <div class="setting-row" onclick="showScreen('screen-privacy')">Privacy and safety <span style="color:#B0B0B0;">›</span></div>
     </div>
     <div class="sec-head">Explore</div>
     <div class="settings-card">
-      <div class="setting-row" onclick="showScreen('screen-about-gow')">📖 About GOW <span style="color:#B0B0B0;">›</span></div>
+      <div class="setting-row" onclick="showScreen('screen-about-gow')">About GOW <span style="color:#B0B0B0;">›</span></div>
     </div>
     <div id="admin-section" style="display:none;">
       <div class="sec-head">Admin</div>
       <div class="settings-card">
-        <div class="setting-row" onclick="showScreen('screen-admin')" style="color:var(--gold-dark);font-weight:600;">🛠️ Moderation dashboard <span style="color:#B0B0B0;">›</span></div>
+        <div class="setting-row" onclick="showScreen('screen-admin')" style="color:var(--gold-dark);font-weight:600;">Moderation dashboard <span style="color:#B0B0B0;">›</span></div>
       </div>
     </div>
     <button class="logout-btn" onclick="doLogout()">Sign out</button>
   </div>
   <div class="bnav">
-    <button class="ni" onclick="showScreen('screen-home')"><span class="ni-icon">🏠</span><span class="ni-label">Home</span></button>
-    <button class="ni" onclick="showScreen('screen-notifs')"><span class="ni-icon">🔔</span><span class="ni-label">Alerts</span></button>
-    <button class="ni" onclick="showScreen('screen-genesiah')"><span class="ni-icon">👕</span><span class="ni-label">Shop</span></button>
-    <button class="ni active"><span class="ni-icon">👤</span><span class="ni-label">Profile</span></button>
+    <button class="ni" onclick="showScreen('screen-home')"><span class="ni-icon"><span class="ico"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span></span><span class="ni-label">Home</span></button>
+    <button class="ni" onclick="showScreen('screen-notifs')"><span class="ni-icon"><span class="ico"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span></span><span class="ni-label">Alerts</span></button>
+    <button class="ni" onclick="showScreen('screen-genesiah')"><span class="ni-icon"><span class="ico"><svg viewBox="0 0 24 24"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z"/></svg></span></span><span class="ni-label">Shop</span></button>
+    <button class="ni active"><span class="ni-icon"><span class="ico"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span></span><span class="ni-label">Profile</span></button>
   </div>
 </div>
 
@@ -463,10 +513,10 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
   </div>
   <div class="spacer"></div>
   <div class="bnav">
-    <button class="ni" onclick="showScreen('screen-home')"><span class="ni-icon">🏠</span><span class="ni-label">Home</span></button>
-    <button class="ni" onclick="showScreen('screen-notifs')"><span class="ni-icon">🔔</span><span class="ni-label">Alerts</span></button>
-    <button class="ni active"><span class="ni-icon">👕</span><span class="ni-label">Shop</span></button>
-    <button class="ni" onclick="showScreen('screen-profile')"><span class="ni-icon">👤</span><span class="ni-label">Profile</span></button>
+    <button class="ni" onclick="showScreen('screen-home')"><span class="ni-icon"><span class="ico"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span></span><span class="ni-label">Home</span></button>
+    <button class="ni" onclick="showScreen('screen-notifs')"><span class="ni-icon"><span class="ico"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span></span><span class="ni-label">Alerts</span></button>
+    <button class="ni active"><span class="ni-icon"><span class="ico"><svg viewBox="0 0 24 24"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z"/></svg></span></span><span class="ni-label">Shop</span></button>
+    <button class="ni" onclick="showScreen('screen-profile')"><span class="ni-icon"><span class="ico"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span></span><span class="ni-label">Profile</span></button>
   </div>
 </div>
 
@@ -551,9 +601,188 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
   </div>
 </div>
 
+<!-- SHARE OVERLAY -->
+<div class="share-overlay" id="share-overlay">
+  <div class="share-sheet">
+    <div class="share-day-complete" id="share-day-label">Day 1 complete</div>
+    <div class="share-title">Share your journey</div>
+    <div class="share-sub" id="share-preview-text">Inspiring others starts with showing up yourself.</div>
+    <div class="share-btns">
+      <button class="share-platform" onclick="shareTo('whatsapp')">
+        <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></span>
+        WhatsApp
+      </button>
+      <button class="share-platform" onclick="shareTo('facebook')">
+        <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></span>
+        Facebook
+      </button>
+      <button class="share-platform" onclick="shareTo('instagram')">
+        <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></span>
+        Instagram
+      </button>
+      <button class="share-platform" onclick="shareTo('twitter')">
+        <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M4 4l16 16M4 20L20 4"/></svg></span>
+        X / Twitter
+      </button>
+    </div>
+    <button class="share-copy" onclick="copyShareLink()">Copy link</button>
+    <span class="share-dismiss" onclick="closeShare()">Maybe later</span>
+  </div>
+</div>
+
+<!-- MILESTONE OVERLAY -->
+<div class="milestone-overlay" id="milestone-overlay">
+  <div class="milestone-card">
+    <svg id="milestone-badge-svg" class="milestone-badge-svg" width="110" height="110" viewBox="0 0 110 110"></svg>
+    <div class="milestone-title" id="milestone-title">Consistent</div>
+    <div class="milestone-msg" id="milestone-msg">You showed up 3 days in a row. That is how transformation begins.</div>
+    <button class="milestone-close" onclick="closeMilestone()">Keep going</button>
+  </div>
+</div>
+
 </div><!-- shell -->
 
 <script>
+const DAILY_PROMPTS=[
+  'What is one thing God did for you today?',
+  'Who are you grateful for and why?',
+  'What almost went wrong but did not?',
+  'What moment today reminded you of God\'s faithfulness?',
+  'What do you have today that you once prayed for?',
+  'What is one small blessing you almost overlooked?',
+  'Who showed up for you today?',
+  'What strength did God give you this week?',
+  'What are you learning that you are grateful for?',
+  'What door opened that you did not expect?',
+];
+
+const MILESTONES=[
+  {day:3,title:'Consistent',stars:1,msg:'You showed up 3 days in a row. That is how transformation begins.'},
+  {day:7,title:'Disciplined',stars:2,msg:'One week strong. You are building something that will outlast this challenge.'},
+  {day:14,title:'Rooted',stars:3,msg:'Two weeks in. You are not the same person who started. Keep going.'},
+  {day:21,title:'Steadfast',stars:4,msg:'21 days. You have rewired how you see your life. This is real.'},
+  {day:30,title:'Transformed',stars:5,msg:'30 days completed. You did it. You are part of a generation that chose gratitude.'},
+];
+
+let currentPostText='', currentDay=1, sharePopupShown=false;
+
+function getDailyPrompt(){
+  const day=getDay();
+  return DAILY_PROMPTS[(day-1)%DAILY_PROMPTS.length];
+}
+
+function renderBadge(svg, stars, filled, size=110){
+  const cx=size/2, cy=size/2, r=size*0.42;
+  const totalStars=5;
+  const angleStep=(2*Math.PI)/totalStars;
+  const startAngle=-Math.PI/2;
+  let paths='';
+  for(let i=0;i<totalStars;i++){
+    const angle=startAngle+i*angleStep;
+    const sx=cx+r*Math.cos(angle);
+    const sy=cy+r*Math.sin(angle);
+    const isFilled=i<stars;
+    const color=isFilled?(filled?'#1A1825':'#C6A85B'):'rgba(198,168,91,0.2)';
+    paths+=`<text x="${sx}" y="${sy}" text-anchor="middle" dominant-baseline="central" font-family="DM Sans,sans-serif" font-size="${size*0.13}" fill="${color}">★</text>`;
+  }
+  return paths;
+}
+
+function buildBadgeSVG(milestone, size=90){
+  const m=MILESTONES.find(x=>x.day===milestone)||MILESTONES[0];
+  const cx=size/2, cy=size/2, r=size*0.42;
+  const isTransformed=m.day===30;
+  const fill=isTransformed?'#C6A85B':'#1A1825';
+  const textColor=isTransformed?'#1A1825':'#FFFFFF';
+  const goldColor=isTransformed?'#1A1825':'#C6A85B';
+  const stars=renderBadge(null,m.stars,isTransformed,size);
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}" stroke="#C6A85B" stroke-width="1.2"/>
+    <circle cx="${cx}" cy="${cy}" r="${r*0.72}" fill="none" stroke="${goldColor}" stroke-width="0.4" stroke-dasharray="2 2"/>
+    ${stars}
+    <text x="${cx}" y="${cy-6}" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="${size*0.075}" font-weight="700" fill="${goldColor}" letter-spacing="0.08em">DAY ${m.day}</text>
+    <text x="${cx}" y="${cy+8}" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="${size*0.088}" font-weight="700" fill="${textColor}">${m.title}</text>
+  </svg>`;
+}
+
+function renderProfileBadges(streak){
+  const row=document.getElementById('badges-row');
+  const section=document.getElementById('badges-section');
+  if(!row||!section)return;
+  const earned=MILESTONES.filter(m=>streak>=m.day);
+  if(earned.length===0){section.style.display='none';return;}
+  section.style.display='block';
+  row.innerHTML='';
+  earned.forEach(m=>{
+    const wrap=document.createElement('div');
+    wrap.className='badge-item';
+    wrap.innerHTML=buildBadgeSVG(m.day,72)+'<div class="badge-label">'+m.title+'</div>';
+    row.appendChild(wrap);
+  });
+}
+
+function checkMilestone(streak){
+  const milestone=MILESTONES.find(m=>m.day===streak);
+  if(!milestone)return;
+  const svg=document.getElementById('milestone-badge-svg');
+  if(svg)svg.outerHTML=buildBadgeSVG(milestone.day,110).replace('<svg','<svg id="milestone-badge-svg" class="milestone-badge-svg"');
+  const title=document.getElementById('milestone-title');
+  const msg=document.getElementById('milestone-msg');
+  if(title)title.textContent=milestone.title;
+  if(msg)msg.textContent=milestone.msg;
+  setTimeout(()=>{
+    const overlay=document.getElementById('milestone-overlay');
+    if(overlay)overlay.classList.add('show');
+  },1200);
+}
+
+function closeMilestone(){
+  const overlay=document.getElementById('milestone-overlay');
+  if(overlay)overlay.classList.remove('show');
+}
+
+function showSharePopup(day, postText){
+  currentPostText=postText;
+  currentDay=day;
+  const label=document.getElementById('share-day-label');
+  const preview=document.getElementById('share-preview-text');
+  if(label)label.textContent='Day '+day+' complete';
+  if(preview)preview.textContent='"'+postText.slice(0,80)+(postText.length>80?'...':'')+'"';
+  const overlay=document.getElementById('share-overlay');
+  if(overlay)overlay.classList.add('show');
+}
+
+function closeShare(){
+  const overlay=document.getElementById('share-overlay');
+  if(overlay)overlay.classList.remove('show');
+}
+
+function getShareMessage(){
+  const day=currentDay;
+  const text=currentPostText;
+  return 'Day '+day+' of the GOW Gratitude Challenge — "'+text.slice(0,120)+'" — Join me at gowchallenge.com';
+}
+
+function shareTo(platform){
+  const msg=encodeURIComponent(getShareMessage());
+  const url=encodeURIComponent('https://gowchallenge.com');
+  let link='';
+  if(platform==='whatsapp') link='https://wa.me/?text='+msg;
+  if(platform==='facebook') link='https://www.facebook.com/sharer/sharer.php?u='+url+'&quote='+msg;
+  if(platform==='instagram'){copyShareLink();showToast('Copied — paste in your Instagram story caption');return;}
+  if(platform==='twitter') link='https://twitter.com/intent/tweet?text='+msg;
+  if(link)window.open(link,'_blank');
+  closeShare();
+}
+
+function copyShareLink(){
+  const text=getShareMessage();
+  if(navigator.clipboard){navigator.clipboard.writeText(text);}
+  else{const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);}
+  showToast('Copied to clipboard');
+  closeShare();
+}
+
 const SUPABASE_URL='https://iifahicnurctwvdzocgb.supabase.co';
 const SUPABASE_KEY='sb_publishable_rmuIyxP0brJkY3_J1FJPew_YJwbxMTJ';
 const ADMIN_EMAIL='gershomadeniyi@gmail.com';
@@ -676,12 +905,15 @@ function updateProfileUI(){
   document.getElementById('streak-count').textContent=(currentProfile.streak||0)+' days';
   document.getElementById('streak-sub').textContent=currentProfile.streak>0?'You are building consistency. Keep going.':'Post today to start your streak';
   document.getElementById('compose-hint').textContent='Day '+day+' of becoming more grateful.';
+  const promptEl=document.getElementById('daily-prompt-text');
+  if(promptEl)promptEl.textContent=getDailyPrompt();
+  renderProfileBadges(currentProfile.streak||0);
   const isAdmin=currentProfile.email===ADMIN_EMAIL;
   const isMod=currentProfile.role==='moderator'||isAdmin;
   document.getElementById('admin-section').style.display=isMod?'block':'none';
   if(isAdmin){
     document.getElementById('admin-section').querySelector('.setting-row').textContent='';
-    document.getElementById('admin-section').querySelector('.setting-row').innerHTML='🛠️ Moderation dashboard <span style="color:#B0B0B0;">›</span>';
+    document.getElementById('admin-section').querySelector('.setting-row').innerHTML='Moderation dashboard <span style="color:#B0B0B0;">›</span>';
   }
 }
 
@@ -696,6 +928,8 @@ async function loadFeed(){
   }
   c.innerHTML='';
   document.getElementById('feed-count').textContent=posts.length+' post'+(posts.length!==1?'s':'')+' today';
+  const pc=document.getElementById('people-count');
+  if(pc&&posts.length>0)pc.textContent=posts.length+' people showed up today';
   const{data:myLikes}=currentUser?await sb.from('likes').select('post_id,type').eq('user_id',currentUser.id):[];
   const likedSet=new Set((myLikes||[]).filter(l=>l.type==='like').map(l=>l.post_id));
   const amenSet=new Set((myLikes||[]).filter(l=>l.type==='amen').map(l=>l.post_id));
@@ -704,7 +938,9 @@ async function loadFeed(){
     const t=new Date(p.created_at);
     const ago=timeAgo(t);
     const liked=likedSet.has(p.id),amened=amenSet.has(p.id);
-    d.innerHTML=`<div class="post-top"><div style="display:flex;align-items:baseline;gap:7px;"><span class="post-name">${esc(p.name)}</span><span class="post-meta">${ago}</span></div><span class="post-day">Day ${p.day}</span></div><div class="post-text">${esc(p.text)}</div><div class="post-actions"><button class="act-btn${liked?' liked':''}" onclick="toggleReact('${p.id}','like',this)">❤️ ${p.likes||0}</button><button class="act-btn${amened?' amened':''}" onclick="toggleReact('${p.id}','amen',this)">🙌 Amen ${p.amens||0}</button></div>`;
+    const isAdmin=currentProfile?.email===ADMIN_EMAIL;
+    const deleteBtn=isAdmin?`<button onclick="deletePost('${p.id}')" style="margin-left:auto;background:none;border:none;cursor:pointer;padding:6px 8px;border-radius:6px;display:inline-flex;align-items:center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(10,10,10,0.3)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>`:'';
+    d.innerHTML=`<div class="post-top"><div style="display:flex;align-items:baseline;gap:7px;"><span class="post-name">${esc(p.name)}</span><span class="post-meta">${ago}</span></div><span class="post-day">Day ${p.day}</span></div><div class="post-text">${esc(p.text)}</div><div class="post-actions"><button class="act-btn${liked?' liked':''}" onclick="toggleReact('${p.id}','like',this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="${liked?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> ${p.likes||0}</button><button class="act-btn${amened?' amened':''}" onclick="toggleReact('${p.id}','amen',this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg> Amen ${p.amens||0}</button>${deleteBtn}</div>`;
     c.appendChild(d);
   });
   document.getElementById('p-posts').textContent=posts.filter(p=>p.user_id===currentUser?.id).length;
@@ -720,18 +956,25 @@ async function toggleReact(postId,type,btn){
     const cur=parseInt(btn.textContent.replace(/\D/g,''))||0;
     await sb.from('posts').update({[col]:Math.max(0,cur-1)}).eq('id',postId);
     btn.className='act-btn';
-    btn.innerHTML=(isLike?'❤️ ':'🙌 Amen ')+(Math.max(0,cur-1));
+    btn.innerHTML=`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> `+(Math.max(0,cur-1));
   } else {
     await sb.from('likes').upsert({post_id:postId,user_id:currentUser.id,type});
     const col=isLike?'likes':'amens';
     const cur=parseInt(btn.textContent.replace(/\D/g,''))||0;
     await sb.from('posts').update({[col]:cur+1}).eq('id',postId);
     btn.className='act-btn '+(isLike?'liked':'amened');
-    btn.innerHTML=(isLike?'❤️ ':'🙌 Amen ')+(cur+1);
+    btn.innerHTML=(isLike?`<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> `:`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg> Amen `)+(cur+1);
   }
 }
 
 function updateChar(el){document.getElementById('char-left').textContent=300-el.value.length;}
+
+const FLAGGED_WORDS=['spam','hate','porn','sex','fuck','shit','damn','ass','idiot','stupid','kill','die','racist','nsfw'];
+
+function isFlagged(text){
+  const lower=text.toLowerCase();
+  return FLAGGED_WORDS.some(w=>lower.includes(w));
+}
 
 async function submitPost(){
   const text=document.getElementById('compose-text').value.trim();
@@ -740,18 +983,40 @@ async function submitPost(){
   const btn=document.getElementById('share-btn');
   btn.disabled=true;btn.textContent='Posting...';
   const day=getDay();
-  const{error}=await sb.from('posts').insert({user_id:currentUser.id,name:currentProfile.name,text,day,status:'pending',likes:0,amens:0});
+  const flagged=isFlagged(text);
+  const status=flagged?'pending':'approved';
+  const{error}=await sb.from('posts').insert({user_id:currentUser.id,name:currentProfile.name,text,day,status,likes:0,amens:0});
   btn.disabled=false;btn.textContent='Share';
   if(error){showToast('Could not post. Try again.');return;}
+  const postTextCopy=text;
   document.getElementById('compose-text').value='';
   document.getElementById('char-left').textContent='300';
-  const note=document.getElementById('pending-note');
-  note.style.display='flex';setTimeout(()=>note.style.display='none',5000);
-  showToast('Post submitted — awaiting review');
+  if(flagged){
+    const note=document.getElementById('pending-note');
+    note.style.display='flex';setTimeout(()=>note.style.display='none',5000);
+    showToast('Post submitted — awaiting review');
+  } else {
+    showToast('Posted — you showed up today');
+    loadFeed();
+  }
   await sb.from('profiles').update({days_in:(currentProfile.days_in||0)+1,streak:(currentProfile.streak||0)+1}).eq('id',currentUser.id);
   currentProfile.days_in=(currentProfile.days_in||0)+1;
   currentProfile.streak=(currentProfile.streak||0)+1;
   updateProfileUI();
+  checkMilestone(currentProfile.streak);
+  setTimeout(()=>showSharePopup(day,postTextCopy),700);
+  notifyAdmin(currentProfile.name,text,day);
+}
+
+async function notifyAdmin(name,text,day){
+  await sb.from('notifications').insert({user_id:null,type:'new_post',message:name+' posted on Day '+day+': "'+text.slice(0,80)+'"',read:false}).catch(()=>{});
+}
+
+async function deletePost(id){
+  if(!confirm('Delete this post?'))return;
+  await sb.from('posts').delete().eq('id',id);
+  showToast('Post deleted');
+  loadFeed();
 }
 
 async function loadModQueue(){
@@ -860,7 +1125,7 @@ async function loadTeam(){
       </div>
       <div style="display:flex;align-items:center;gap:8px;">
         <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;padding:3px 10px;border-radius:20px;background:${m.role==='admin'?'#0A0A0A':' var(--gold-light)'};color:${m.role==='admin'?'#FFFFFF':'var(--gold-dark)'};">${m.role}</span>
-        ${m.role==='moderator'?`<button onclick="removeModerator('${esc(m.email)}')" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--muted);font-family:'DM Sans',sans-serif;">×</button>`:''}
+        ${m.role==='moderator'?`<button onclick="removeModerator('${esc(m.email)}')" style="background:none;border:1px solid var(--border-mid);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;color:var(--muted);font-family:'DM Sans',sans-serif;">Remove</button>`:''}
       </div>`;
     list.appendChild(d);
   });
@@ -898,6 +1163,7 @@ function esc(str){
 
 // Check existing session on load
 (async()=>{
+  if(typeof lucide!=='undefined')lucide.createIcons();
   setLoading(true,'Loading...');
   const{data:{session}}=await sb.auth.getSession();
   setLoading(false);
