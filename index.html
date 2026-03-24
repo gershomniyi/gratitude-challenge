@@ -1221,12 +1221,16 @@ let currentUser=null, currentProfile=null, obStep=0, isFirstTime=false;
 let activeDayFilter=0, editingPostId=null, notifSubscription=null;
 
 function hasPostedToday(){
-  const key='gow_posted_'+currentUser?.id+'_'+new Date().toDateString();
-  return localStorage.getItem(key)==='1';
+  try{
+    const key='gow_posted_'+(currentUser?.id||'x')+'_'+new Date().toDateString();
+    return localStorage.getItem(key)==='1';
+  }catch(e){return false;}
 }
 function markPostedToday(){
-  const key='gow_posted_'+currentUser?.id+'_'+new Date().toDateString();
-  localStorage.setItem(key,'1');
+  try{
+    const key='gow_posted_'+(currentUser?.id||'x')+'_'+new Date().toDateString();
+    localStorage.setItem(key,'1');
+  }catch(e){}
 }
 
 function updatePostedTodayState(){
@@ -1453,11 +1457,17 @@ async function doLogin(){
   const p=document.getElementById('login-pass').value.trim();
   if(!e||!p){document.getElementById('login-error').textContent='Please fill in all fields';return;}
   setLoading(true,'Signing in...');
-  const{data,error}=await sb.auth.signInWithPassword({email:e,password:p});
-  setLoading(false);
-  if(error){document.getElementById('login-error').textContent=error.message;return;}
-  isFirstTime=false;
-  await enterApp(data.user);
+  try{
+    const{data,error}=await sb.auth.signInWithPassword({email:e,password:p});
+    setLoading(false);
+    if(error){document.getElementById('login-error').textContent=error.message;console.error('Login error:',error);return;}
+    isFirstTime=false;
+    await enterApp(data.user);
+  }catch(err){
+    setLoading(false);
+    document.getElementById('login-error').textContent='Something went wrong. Please try again.';
+    console.error('Login exception:',err);
+  }
 }
 
 async function doSignup(){
@@ -1490,23 +1500,29 @@ async function doLogout(){
 async function enterApp(user){
   currentUser=user;
   setLoading(true,'Loading your profile...');
-  let{data:profile}=await sb.from('profiles').select('*').eq('id',user.id).single();
-  if(!profile){
-    const name=user.user_metadata?.name||user.email.split('@')[0];
-    await sb.from('profiles').insert({id:user.id,name,email:user.email,role:'member',streak:0,days_in:0});
-    profile={id:user.id,name,email:user.email,role:'member',streak:0,days_in:0};
-  }
-  currentProfile=profile;
-  updateProfileUI();
-  setLoading(false);
-  if(isFirstTime){
-    obStep=0;
-    document.querySelectorAll('.ob-slide').forEach((s,i)=>{s.classList.remove('active','exit');if(i===0)s.classList.add('active');});
-    document.querySelectorAll('.ob-dot').forEach((d,i)=>{d.classList.remove('active');if(i===0)d.classList.add('active');});
-    document.getElementById('ob-btn').textContent='Next';
-    document.querySelectorAll('.screen,.ob-screen').forEach(s=>s.classList.remove('active'));
-    document.getElementById('screen-onboarding').classList.add('active');
-  } else {
+  try{
+    let{data:profile}=await sb.from('profiles').select('*').eq('id',user.id).single();
+    if(!profile){
+      const name=user.user_metadata?.name||user.email.split('@')[0];
+      await sb.from('profiles').insert({id:user.id,name,email:user.email,role:'member',streak:0,days_in:0});
+      profile={id:user.id,name,email:user.email,role:'member',streak:0,days_in:0};
+    }
+    currentProfile=profile;
+    updateProfileUI();
+    setLoading(false);
+    if(isFirstTime){
+      obStep=0;
+      document.querySelectorAll('.ob-slide').forEach((s,i)=>{s.classList.remove('active','exit');if(i===0)s.classList.add('active');});
+      document.querySelectorAll('.ob-dot').forEach((d,i)=>{d.classList.remove('active');if(i===0)d.classList.add('active');});
+      document.getElementById('ob-btn').textContent='Next';
+      document.querySelectorAll('.screen,.ob-screen').forEach(s=>s.classList.remove('active'));
+      document.getElementById('screen-onboarding').classList.add('active');
+    } else {
+      showScreen('screen-home');
+    }
+  }catch(err){
+    setLoading(false);
+    console.error('enterApp error:',err);
     showScreen('screen-home');
   }
 }
