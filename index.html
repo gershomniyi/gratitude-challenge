@@ -289,6 +289,58 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
 /* PEOPLE COUNT */
 .people-count{display:flex;align-items:center;gap:6px;padding:0 20px 8px;font-size:12px;color:var(--muted);font-weight:500;}
 
+/* POSTED TODAY STATE */
+.posted-today{margin:16px 20px 0;background:#FFFFFF;border:1px solid var(--border);border-radius:var(--r);padding:18px;display:none;align-items:center;gap:14px;}
+.posted-today.show{display:flex;}
+.posted-check{width:40px;height:40px;border-radius:50%;background:#0A0A0A;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.posted-title{font-size:14px;font-weight:700;color:#0A0A0A;margin-bottom:3px;}
+.posted-sub{font-size:12px;color:var(--muted);line-height:1.5;}
+
+/* VIDEO CARD */
+.video-card{margin:12px 20px 0;background:#0A0A0A;border-radius:var(--r);padding:15px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;border:1px solid rgba(198,168,91,0.2);text-decoration:none;}
+.video-card:active{opacity:0.85;}
+.video-icon{width:38px;height:38px;border-radius:10px;background:var(--gold);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.video-label{font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:3px;}
+.video-title{font-size:14px;font-weight:700;color:#FFFFFF;}
+.video-handle{font-size:11px;color:rgba(255,255,255,0.38);margin-top:2px;}
+
+/* DAY FILTER */
+.day-filter-wrap{padding:12px 20px 4px;overflow-x:auto;white-space:nowrap;scrollbar-width:none;}
+.day-filter-wrap::-webkit-scrollbar{display:none;}
+.day-pill{display:inline-block;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;border:1px solid var(--border-mid);background:#FFFFFF;color:var(--muted);margin-right:6px;transition:all 0.15s;}
+.day-pill.active{background:#0A0A0A;color:#FFFFFF;border-color:#0A0A0A;}
+
+/* LEADERBOARD SCREEN */
+.lb-row{display:flex;align-items:center;gap:12px;padding:13px 16px;background:#FFFFFF;border:1px solid var(--border);border-radius:var(--r);margin:0 20px 8px;animation:fu 0.25s ease;}
+.lb-rank{font-size:13px;font-weight:700;color:var(--muted);min-width:22px;text-align:center;}
+.lb-rank.top{color:var(--gold-dark);}
+.lb-name{font-size:14px;font-weight:600;color:#0A0A0A;flex:1;}
+.lb-streak{font-size:13px;font-weight:700;color:#0A0A0A;}
+.lb-streak span{font-size:10px;font-weight:500;color:var(--muted);margin-left:2px;}
+.lb-you{background:var(--gold-light);border-color:rgba(198,168,91,0.3);}
+
+/* USER PROFILE SCREEN */
+.user-prof-hero{background:#0A0A0A;padding:36px 24px 24px;text-align:center;}
+.user-prof-posts{padding:16px 20px;flex:1;background:#F8F8F6;}
+
+/* EDIT POST SHEET */
+.edit-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:991;display:none;align-items:flex-end;justify-content:center;max-width:420px;margin:0 auto;}
+.edit-overlay.show{display:flex;}
+.edit-sheet{background:#FFFFFF;border-radius:20px 20px 0 0;padding:20px 20px 36px;width:100%;}
+.edit-sheet-title{font-size:15px;font-weight:700;color:#0A0A0A;margin-bottom:14px;}
+.edit-field{width:100%;border:1px solid var(--border-mid);border-radius:var(--rsm);padding:13px 16px;font-size:15px;font-family:'DM Sans',sans-serif;color:#0A0A0A;outline:none;resize:none;min-height:100px;background:#F8F8F6;}
+.edit-field:focus{border-color:#0A0A0A;background:#FFFFFF;}
+.edit-actions{display:flex;gap:10px;margin-top:12px;}
+.edit-save{flex:1;padding:13px;background:#0A0A0A;color:#FFFFFF;border:none;border-radius:10px;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;}
+.edit-cancel{flex:1;padding:13px;background:#F8F8F6;color:#0A0A0A;border:1px solid var(--border-mid);border-radius:10px;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;}
+
+/* POST OPTIONS MENU */
+.post-menu{position:absolute;right:0;top:28px;background:#FFFFFF;border:1px solid var(--border-mid);border-radius:10px;padding:4px;z-index:10;min-width:130px;box-shadow:0 4px 16px rgba(0,0,0,0.08);}
+.post-menu-item{display:block;width:100%;padding:9px 14px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;color:#0A0A0A;background:none;border:none;cursor:pointer;text-align:left;border-radius:6px;}
+.post-menu-item:hover{background:#F8F8F6;}
+.post-menu-item.danger{color:#CC3333;}
+.post-card-wrap{position:relative;}
+
 /* POST AVATAR */
 .post-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;}
 
@@ -422,11 +474,26 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
       <div class="streak-label">Your streak</div>
       <div class="streak-count" id="streak-count">0 days</div>
       <div class="streak-sub" id="streak-sub">Post today to start your streak</div>
+      <div style="margin-top:10px;"><span onclick="showScreen('screen-leaderboard')" style="font-size:11px;font-weight:600;color:var(--gold);cursor:pointer;letter-spacing:0.04em;">View leaderboard →</span></div>
     </div>
     <div class="streak-icon"><span class="ico" style="color:var(--gold);"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 17c0 1.38-1.12 2.5-2.5 2.5a2.5 2.5 0 0 1-2.5-2.5C6 14 7 11 9 9c0 0-.5 3 2 4.5C11 9 13.5 6 16 4c0 3 1 5.5 1 7.5a5 5 0 0 1-5 5c-.83 0-1.63-.2-2.33-.55"/></svg></span></div>
   </div>
+
+  <a class="video-card" id="video-card" href="https://www.youtube.com/@gershomadeniyi" target="_blank">
+    <div style="display:flex;align-items:center;gap:13px;">
+      <div class="video-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="#0A0A0A"><path d="M23 7s-.3-2-1.2-2.8c-1.1-1.2-2.4-1.2-3-1.3C16.2 2.8 12 2.8 12 2.8s-4.2 0-6.8.1c-.6.1-1.9.1-3 1.3C1.3 5 1 7 1 7S.7 9.1.7 11.2v2c0 2.1.3 4.2.3 4.2s.3 2 1.2 2.8c1.1 1.2 2.6 1.1 3.3 1.2C7.2 21.6 12 21.6 12 21.6s4.2 0 6.8-.2c.6-.1 1.9-.1 3-1.3.9-.8 1.2-2.8 1.2-2.8s.3-2.1.3-4.2v-2C23.3 9.1 23 7 23 7zM9.7 15.5V8.4l8.1 3.6-8.1 3.5z"/></svg></div>
+      <div><div class="video-label" id="video-day-label">Today's video</div><div class="video-title" id="video-day-title">Day 1 — Watch now</div><div class="video-handle">@gershomadeniyi</div></div>
+    </div>
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+  </a>
+
+  <div class="posted-today" id="posted-today">
+    <div class="posted-check"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--gold)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <div><div class="posted-title">You showed up today</div><div class="posted-sub" id="posted-sub-text">Come back tomorrow for Day 2</div></div>
+  </div>
+
   <div class="pending-note" id="pending-note">Your post is in review — it appears once approved</div>
-  <div class="compose-section">
+  <div class="compose-section" id="compose-section-wrap">
     <div class="compose-label">Today's gratitude</div>
     <div id="prompt-chips-wrap" style="margin-bottom:10px;">
       <div style="font-size:11px;font-weight:600;color:var(--muted);letter-spacing:0.04em;margin-bottom:8px;">Tap a prompt to get started</div>
@@ -441,6 +508,7 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
       </div>
     </div>
   </div>
+  <div class="day-filter-wrap" id="day-filter-wrap"></div>
   <div class="feed-header">
     <div class="feed-title">Community</div>
     <div class="feed-count" id="feed-count"></div>
@@ -460,7 +528,7 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
 <div class="screen" id="screen-notifs">
   <div class="inner-bar"><button class="back-btn" onclick="showScreen('screen-home')">←</button><div class="inner-title">Notifications</div></div>
   <div class="notif-body" id="notif-list">
-    <div class="notif-item"><div class="notif-icon" style="background:var(--gold-light);"><span class="ico" style="color:var(--gold-dark);"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span></div><div><div class="notif-txt"><strong>Welcome to the Gratitude Challenge!</strong> Post your first gratitude today.</div><div class="notif-time">Just now</div></div></div>
+    <div style="text-align:center;padding:40px 20px;color:var(--muted);font-size:14px;">Loading...</div>
   </div>
   <div class="bnav">
     <button class="ni" onclick="showScreen('screen-home')"><span class="ni-icon"><span class="ico"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span></span><span class="ni-label">Home</span></button>
@@ -712,6 +780,44 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
   </div>
 </div>
 
+
+<!-- LEADERBOARD SCREEN -->
+<div class="screen" id="screen-leaderboard">
+  <div class="inner-bar"><button class="back-btn" onclick="showScreen('screen-home')">←</button><div class="inner-title">Leaderboard</div></div>
+  <div style="padding:14px 20px 8px;background:#F8F8F6;">
+    <div style="background:#0A0A0A;border-radius:var(--r);padding:16px 18px;margin-bottom:4px;">
+      <div style="font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:4px;">Top streaks</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.45);line-height:1.5;">The community showing up every single day.</div>
+    </div>
+  </div>
+  <div id="lb-list" style="padding-top:8px;flex:1;background:#F8F8F6;"></div>
+  <div class="spacer"></div>
+</div>
+
+<!-- USER PROFILE SCREEN -->
+<div class="screen" id="screen-user-profile">
+  <div class="inner-bar"><button class="back-btn" onclick="showScreen('screen-home')">←</button><div class="inner-title" id="user-prof-title">Profile</div></div>
+  <div class="user-prof-hero">
+    <div style="width:60px;height:60px;border-radius:50%;border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;" id="user-prof-av-ring"><div style="font-size:20px;font-weight:700;color:#FFFFFF;" id="user-prof-av">?</div></div>
+    <div style="font-size:18px;font-weight:700;color:#FFFFFF;" id="user-prof-name">...</div>
+    <div style="font-size:11px;color:rgba(255,255,255,0.35);margin-top:4px;" id="user-prof-handle">GOW Community</div>
+    <div style="display:flex;justify-content:center;margin-top:18px;border-top:1px solid rgba(255,255,255,0.08);padding-top:16px;">
+      <div style="flex:1;text-align:center;"><div style="font-size:18px;font-weight:700;color:#FFFFFF;" id="user-prof-posts">0</div><div style="font-size:9px;color:rgba(255,255,255,0.35);margin-top:2px;text-transform:uppercase;letter-spacing:0.06em;">Posts</div></div>
+      <div style="flex:1;text-align:center;border-left:1px solid rgba(255,255,255,0.08);"><div style="font-size:18px;font-weight:700;color:#FFFFFF;" id="user-prof-streak">0</div><div style="font-size:9px;color:rgba(255,255,255,0.35);margin-top:2px;text-transform:uppercase;letter-spacing:0.06em;">Streak</div></div>
+    </div>
+  </div>
+  <div class="user-prof-posts"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:10px;">Posts</div><div id="user-prof-feed"></div></div>
+</div>
+
+<!-- EDIT POST SHEET -->
+<div class="edit-overlay" id="edit-overlay" onclick="handleEditOverlayClick(event)">
+  <div class="edit-sheet">
+    <div class="edit-sheet-title">Edit your post</div>
+    <textarea class="edit-field" id="edit-field" maxlength="300" oninput="document.getElementById('edit-char').textContent=300-this.value.length"></textarea>
+    <div style="font-size:11px;color:var(--muted);margin-top:6px;text-align:right;" id="edit-char">300</div>
+    <div class="edit-actions"><button class="edit-cancel" onclick="closeEdit()">Cancel</button><button class="edit-save" onclick="saveEdit()">Save</button></div>
+  </div>
+</div>
 <!-- COMMENTS SHEET -->
 <div class="comments-overlay" id="comments-overlay" onclick="handleCommentsOverlayClick(event)">
   <div class="comments-sheet" id="comments-sheet">
@@ -897,8 +1003,13 @@ async function submitComment(){
   if(error){showToast('Could not post comment');return;}
   input.value='';
   loadComments(activePostId);
-  // bump comment count on post
-  await sb.from('posts').update({comment_count:sb.rpc?undefined:undefined}).eq('id',activePostId).then(()=>{});
+  // notify post owner
+  if(activePostId){
+    const{data:post}=await sb.from('posts').select('user_id').eq('id',activePostId).single();
+    if(post&&post.user_id!==currentUser.id){
+      await sb.from('notifications').insert({user_id:post.user_id,type:'comment',message:currentProfile.name+' commented on your post',read:false}).catch(()=>{});
+    }
+  }
 }
 
 async function toggleCommentReact(commentId,type,btn){
@@ -1107,6 +1218,197 @@ const ADMIN_EMAIL='gershomadeniyi@gmail.com';
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
 let currentUser=null, currentProfile=null, obStep=0, isFirstTime=false;
+let activeDayFilter=0, editingPostId=null, notifSubscription=null;
+
+function hasPostedToday(){
+  const key='gow_posted_'+currentUser?.id+'_'+new Date().toDateString();
+  return localStorage.getItem(key)==='1';
+}
+function markPostedToday(){
+  const key='gow_posted_'+currentUser?.id+'_'+new Date().toDateString();
+  localStorage.setItem(key,'1');
+}
+
+function updatePostedTodayState(){
+  const day=getDay();
+  const posted=hasPostedToday();
+  const composeSection=document.getElementById('compose-section-wrap');
+  const postedEl=document.getElementById('posted-today');
+  const subEl=document.getElementById('posted-sub-text');
+  if(composeSection)composeSection.style.display=posted?'none':'block';
+  if(postedEl){postedEl.classList.toggle('show',posted);}
+  if(subEl&&posted)subEl.textContent='Come back tomorrow for Day '+(day+1<30?day+1:30);
+}
+
+// VIDEO CARD — auto day number
+function updateVideoCard(){
+  const day=getDay();
+  const title=document.getElementById('video-day-title');
+  if(title)title.textContent='Day '+day+' — Watch now';
+}
+
+// DAY FILTER
+function buildDayFilter(){
+  const wrap=document.getElementById('day-filter-wrap');
+  if(!wrap)return;
+  const day=getDay();
+  wrap.innerHTML='';
+  const allPill=document.createElement('button');
+  allPill.className='day-pill'+(activeDayFilter===0?' active':'');
+  allPill.textContent='All days';
+  allPill.onclick=()=>{activeDayFilter=0;buildDayFilter();loadFeed();};
+  wrap.appendChild(allPill);
+  for(let i=1;i<=day;i++){
+    const p=document.createElement('button');
+    p.className='day-pill'+(activeDayFilter===i?' active':'');
+    p.textContent='Day '+i;
+    p.onclick=(d=>()=>{activeDayFilter=d;buildDayFilter();loadFeed();})(i);
+    wrap.appendChild(p);
+  }
+}
+
+// REAL-TIME NOTIFICATIONS
+function subscribeToNotifications(){
+  if(!currentUser||notifSubscription)return;
+  notifSubscription=sb.channel('notifs-'+currentUser.id)
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'notifications',filter:'user_id=eq.'+currentUser.id},
+      payload=>{
+        const dot=document.getElementById('ndot');
+        if(dot)dot.style.display='block';
+        const list=document.getElementById('notif-list');
+        if(list&&document.getElementById('screen-notifs')?.classList.contains('active')){
+          prependNotifItem(payload.new,list);
+        }
+      })
+    .subscribe();
+}
+
+function prependNotifItem(n,list){
+  const loading=list.querySelector('[style*="Loading"]');
+  if(loading)loading.remove();
+  const empty=list.querySelector('.notif-empty');
+  if(empty)empty.remove();
+  const div=document.createElement('div');
+  div.className='notif-item unread';
+  const icon=n.type==='like'?'♥':n.type==='amen'?'🙏':n.type==='comment'?'💬':'🔔';
+  div.innerHTML=`<div class="notif-icon" style="background:var(--gold-light);font-size:16px;">${icon}</div><div><div class="notif-txt">${esc(n.message)}</div><div class="notif-time">${timeAgo(new Date(n.created_at))}</div></div>`;
+  list.insertBefore(div,list.firstChild);
+}
+
+async function loadNotifications(){
+  const list=document.getElementById('notif-list');
+  if(!list||!currentUser)return;
+  list.innerHTML='<div style="text-align:center;padding:30px 20px;color:var(--muted);font-size:14px;">Loading...</div>';
+  const{data:notifs}=await sb.from('notifications').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(40);
+  if(!notifs||notifs.length===0){
+    list.innerHTML='<div class="notif-empty" style="text-align:center;padding:40px 20px;color:var(--muted);font-size:14px;line-height:1.7;">Nothing yet.<br>When people react to your posts you will see it here.</div>';
+    return;
+  }
+  list.innerHTML='';
+  notifs.forEach(n=>{
+    const div=document.createElement('div');
+    div.className='notif-item'+(n.read?'':' unread');
+    const icon=n.type==='like'?'♥':n.type==='amen'?'🙏':n.type==='comment'?'💬':'🔔';
+    div.innerHTML=`<div class="notif-icon" style="background:var(--gold-light);font-size:16px;">${icon}</div><div><div class="notif-txt">${esc(n.message)}</div><div class="notif-time">${timeAgo(new Date(n.created_at))}</div></div>`;
+    list.appendChild(div);
+  });
+  await sb.from('notifications').update({read:true}).eq('user_id',currentUser.id).eq('read',false);
+}
+
+// LEADERBOARD
+async function loadLeaderboard(){
+  const list=document.getElementById('lb-list');
+  if(!list)return;
+  list.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:14px;">Loading...</div>';
+  const{data}=await sb.from('profiles').select('name,streak,avatar_id').order('streak',{ascending:false}).limit(10);
+  if(!data||data.length===0){list.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:14px;">No entries yet.</div>';return;}
+  list.innerHTML='';
+  data.forEach((p,i)=>{
+    const isYou=p.name===currentProfile?.name;
+    const div=document.createElement('div');
+    div.className='lb-row'+(isYou?' lb-you':'');
+    const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
+    const avHtml=renderAvatarCircle(p.name,p.avatar_id,36,13);
+    div.innerHTML=`
+      <div class="lb-rank${i<3?' top':''}">${medal||('#'+(i+1))}</div>
+      ${avHtml}
+      <div class="lb-name">${esc(p.name)}${isYou?' <span style="font-size:10px;color:var(--gold-dark);font-weight:700;">YOU</span>':''}</div>
+      <div class="lb-streak">${p.streak||0}<span>day streak</span></div>`;
+    list.appendChild(div);
+  });
+}
+
+// USER PROFILE VIEW
+async function openUserProfile(userId,name,avatarId,streak){
+  document.getElementById('user-prof-title').textContent=name;
+  document.getElementById('user-prof-name').textContent=name;
+  document.getElementById('user-prof-handle').textContent='GOW Community';
+  document.getElementById('user-prof-streak').textContent=streak||0;
+  const av=getAvatarById(avatarId||1);
+  const ring=document.getElementById('user-prof-av-ring');
+  const avEl=document.getElementById('user-prof-av');
+  if(ring)ring.style.background=av.bg;
+  if(avEl){avEl.textContent=name.trim().split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);avEl.style.color=av.color;}
+  showScreen('screen-user-profile');
+  const feed=document.getElementById('user-prof-feed');
+  feed.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);font-size:14px;">Loading...</div>';
+  const{data:posts}=await sb.from('posts').select('*').eq('user_id',userId).eq('status','approved').order('created_at',{ascending:false});
+  document.getElementById('user-prof-posts').textContent=posts?.length||0;
+  if(!posts||posts.length===0){feed.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);font-size:14px;">No posts yet.</div>';return;}
+  feed.innerHTML='';
+  posts.forEach(p=>{
+    const div=document.createElement('div');
+    div.className='post-card';
+    div.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;"><span style="font-size:10px;font-weight:600;color:var(--gold-dark);background:var(--gold-light);padding:3px 9px;border-radius:20px;">Day ${p.day}</span><span style="font-size:12px;color:var(--muted);">${timeAgo(new Date(p.created_at))}</span></div><div style="font-size:15px;color:#0A0A0A;line-height:1.7;">${esc(p.text)}</div>`;
+    feed.appendChild(div);
+  });
+}
+
+// EDIT / DELETE OWN POST
+let activeMenuPostId=null;
+function togglePostMenu(postId,btnEl){
+  const existing=document.getElementById('pmenu-'+postId);
+  if(existing){existing.remove();activeMenuPostId=null;return;}
+  document.querySelectorAll('.post-menu').forEach(m=>m.remove());
+  activeMenuPostId=postId;
+  const menu=document.createElement('div');
+  menu.className='post-menu';
+  menu.id='pmenu-'+postId;
+  menu.innerHTML=`<button class="post-menu-item" onclick="openEdit('${postId}')">Edit post</button><button class="post-menu-item danger" onclick="deleteOwnPost('${postId}')">Delete post</button>`;
+  btnEl.closest('.post-card-wrap').appendChild(menu);
+  setTimeout(()=>document.addEventListener('click',closeMenuOutside,{once:true}),10);
+}
+function closeMenuOutside(){document.querySelectorAll('.post-menu').forEach(m=>m.remove());activeMenuPostId=null;}
+
+async function openEdit(postId){
+  document.querySelectorAll('.post-menu').forEach(m=>m.remove());
+  const{data:post}=await sb.from('posts').select('text').eq('id',postId).single();
+  if(!post)return;
+  editingPostId=postId;
+  const field=document.getElementById('edit-field');
+  field.value=post.text;
+  document.getElementById('edit-char').textContent=300-post.text.length;
+  document.getElementById('edit-overlay').classList.add('show');
+}
+function closeEdit(){document.getElementById('edit-overlay').classList.remove('show');editingPostId=null;}
+function handleEditOverlayClick(e){if(e.target===document.getElementById('edit-overlay'))closeEdit();}
+
+async function saveEdit(){
+  const text=document.getElementById('edit-field').value.trim();
+  if(!text||!editingPostId)return;
+  await sb.from('posts').update({text}).eq('id',editingPostId);
+  closeEdit();
+  showToast('Post updated');
+  loadFeed();
+}
+
+async function deleteOwnPost(id){
+  document.querySelectorAll('.post-menu').forEach(m=>m.remove());
+  if(!confirm('Delete your post?'))return;
+  await sb.from('posts').delete().eq('id',id);
+  showToast('Post deleted');
+  loadFeed();
+}
 
 function getDay(){
   const start=new Date('2026-04-01');
@@ -1131,8 +1433,9 @@ function showScreen(id){
   document.querySelectorAll('.screen,.ob-screen').forEach(s=>s.classList.remove('active'));
   const el=document.getElementById(id);if(el)el.classList.add('active');
   if(id==='screen-admin')loadModQueue();
-  if(id==='screen-home')loadFeed();
-  if(id==='screen-notifs'){const d=document.getElementById('ndot');if(d)d.style.display='none';}
+  if(id==='screen-home'){loadFeed();buildDayFilter();updatePostedTodayState();}
+  if(id==='screen-notifs'){const d=document.getElementById('ndot');if(d)d.style.display='none';loadNotifications();}
+  if(id==='screen-leaderboard')loadLeaderboard();
   window.scrollTo(0,0);
 }
 
@@ -1231,6 +1534,9 @@ function updateProfileUI(){
   if(promptEl)promptEl.textContent=getDailyPrompt();
   renderPromptChips();
   renderProfileBadges(currentProfile.streak||0);
+  updateVideoCard();
+  updatePostedTodayState();
+  subscribeToNotifications();
   const isAdmin=currentProfile.email===ADMIN_EMAIL;
   const isMod=currentProfile.role==='moderator'||isAdmin;
   document.getElementById('admin-section').style.display=isMod?'block':'none';
@@ -1243,12 +1549,54 @@ function updateProfileUI(){
 async function loadFeed(){
   const c=document.getElementById('feed-container');
   c.innerHTML='<div class="empty-feed">Loading posts...</div>';
-  const{data:posts,error}=await sb.from('posts').select('*').eq('status','approved').order('created_at',{ascending:false}).limit(50);
+  let query=sb.from('posts').select('*').eq('status','approved').order('created_at',{ascending:false}).limit(50);
+  if(activeDayFilter>0)query=query.eq('day',activeDayFilter);
+  const{data:posts,error}=await query;
   if(error||!posts||posts.length===0){
     c.innerHTML='<div class="empty-feed">No posts yet.<br>Be the first to share your gratitude today.</div>';
     document.getElementById('feed-count').textContent='';
     return;
   }
+  c.innerHTML='';
+  document.getElementById('feed-count').textContent=posts.length+' post'+(posts.length!==1?'s':'')+' today';
+  const pc=document.getElementById('people-count');
+  if(pc&&posts.length>0)pc.textContent=posts.length+' people showed up today';
+  const{data:myLikes}=currentUser?await sb.from('likes').select('post_id,type').eq('user_id',currentUser.id):{data:[]};
+  const likedSet=new Set((myLikes||[]).filter(l=>l.type==='like').map(l=>l.post_id));
+  const amenSet=new Set((myLikes||[]).filter(l=>l.type==='amen').map(l=>l.post_id));
+  posts.forEach(p=>{
+    const wrap=document.createElement('div');wrap.className='post-card-wrap';
+    const d=document.createElement('div');d.className='post-card';
+    const t=new Date(p.created_at);
+    const ago=timeAgo(t);
+    const liked=likedSet.has(p.id),amened=amenSet.has(p.id);
+    const isAdmin=currentProfile?.email===ADMIN_EMAIL;
+    const isOwn=p.user_id===currentUser?.id;
+    const avHtml=renderAvatarCircle(p.name,p.avatar_id,34,13);
+    const commentCount=p.comment_count||0;
+    const safeId=p.id;
+    const safeName=p.name.replace(/\\/g,'\\\\  ').replace(/'/g,'\\x27');
+    const optionsBtn=isOwn?`<button onclick="togglePostMenu('${safeId}',this)" style="margin-left:auto;background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:6px;color:var(--muted);font-size:18px;line-height:1;font-weight:700;">···</button>`:'';
+    const deleteBtn=isAdmin&&!isOwn?`<button onclick="deletePost('${safeId}')" style="margin-left:auto;background:none;border:none;cursor:pointer;padding:6px 8px;border-radius:6px;display:inline-flex;align-items:center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(10,10,10,0.3)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>':'';
+    d.innerHTML=`
+      <div class="post-top">
+        <div style="display:flex;align-items:center;gap:9px;cursor:pointer;" onclick="openUserProfile('${p.user_id}','${safeName}',${p.avatar_id||1},0)">
+          ${avHtml}
+          <div><span class="post-name">${esc(p.name)}</span><span class="post-meta">${ago}</span></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:4px;"><span class="post-day">Day ${p.day}</span>${optionsBtn}${deleteBtn}</div>
+      </div>
+      <div class="post-text" style="margin-top:10px;">${esc(p.text)}</div>
+      <div class="post-actions">
+        <button class="act-btn${liked?' liked':''}" onclick="toggleReact('${safeId}','like',this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="${liked?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> ${p.likes||0}</button>
+        <button class="act-btn${amened?' amened':''}" onclick="toggleReact('${safeId}','amen',this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg> Amen ${p.amens||0}</button>
+        <button class="act-btn" onclick="openComments('${safeId}','${safeName}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>${commentCount>0?' '+commentCount:''}</button>
+      </div>`;
+    wrap.appendChild(d);
+    c.appendChild(wrap);
+  });
+  document.getElementById('p-posts').textContent=posts.filter(p=>p.user_id===currentUser?.id).length;
+}
   c.innerHTML='';
   document.getElementById('feed-count').textContent=posts.length+' post'+(posts.length!==1?'s':'')+' today';
   const pc=document.getElementById('people-count');
@@ -1298,6 +1646,7 @@ async function toggleReact(postId,type,btn){
     btn.innerHTML=`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> `+(Math.max(0,cur-1));
   } else {
     await sb.from('likes').upsert({post_id:postId,user_id:currentUser.id,type});
+    notifyPostOwner(postId,type);
     const col=isLike?'likes':'amens';
     const cur=parseInt(btn.textContent.replace(/\D/g,''))||0;
     await sb.from('posts').update({[col]:cur+1}).eq('id',postId);
@@ -1344,11 +1693,23 @@ async function submitPost(){
   updateProfileUI();
   checkMilestone(currentProfile.streak);
   setTimeout(()=>showSharePopup(day,postTextCopy),700);
+  markPostedToday();
+  updatePostedTodayState();
   notifyAdmin(currentProfile.name,text,day);
 }
 
 async function notifyAdmin(name,text,day){
   await sb.from('notifications').insert({user_id:null,type:'new_post',message:name+' posted on Day '+day+': "'+text.slice(0,80)+'"',read:false}).catch(()=>{});
+}
+
+async function notifyPostOwner(postId,type){
+  if(!currentUser)return;
+  const{data:post}=await sb.from('posts').select('user_id,name').eq('id',postId).single();
+  if(!post||post.user_id===currentUser.id)return;
+  const msg=type==='like'
+    ?currentProfile.name+' liked your post'
+    :currentProfile.name+' said Amen on your post';
+  await sb.from('notifications').insert({user_id:post.user_id,type,message:msg,read:false}).catch(()=>{});
 }
 
 async function deletePost(id){
