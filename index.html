@@ -1581,7 +1581,7 @@ async function loadFeed(){
   document.getElementById('feed-count').textContent=posts.length+' post'+(posts.length!==1?'s':'')+' today';
   const pc=document.getElementById('people-count');
   if(pc&&posts.length>0)pc.textContent=posts.length+' people showed up today';
-  const{data:myLikes}=currentUser?await sb.from('likes').select('post_id,type').eq('user_id',currentUser.id):{data:[]};
+  let myLikes=[];if(currentUser){const r=await sb.from('likes').select('post_id,type').eq('user_id',currentUser.id);myLikes=r.data||[];};
   const likedSet=new Set((myLikes||[]).filter(l=>l.type==='like').map(l=>l.post_id));
   const amenSet=new Set((myLikes||[]).filter(l=>l.type==='amen').map(l=>l.post_id));
   posts.forEach(p=>{
@@ -1613,41 +1613,6 @@ async function loadFeed(){
       </div>`;
     wrap.appendChild(d);
     c.appendChild(wrap);
-  });
-  document.getElementById('p-posts').textContent=posts.filter(p=>p.user_id===currentUser?.id).length;
-}
-  c.innerHTML='';
-  document.getElementById('feed-count').textContent=posts.length+' post'+(posts.length!==1?'s':'')+' today';
-  const pc=document.getElementById('people-count');
-  if(pc&&posts.length>0)pc.textContent=posts.length+' people showed up today';
-  const{data:myLikes}=currentUser?await sb.from('likes').select('post_id,type').eq('user_id',currentUser.id):[];
-  const likedSet=new Set((myLikes||[]).filter(l=>l.type==='like').map(l=>l.post_id));
-  const amenSet=new Set((myLikes||[]).filter(l=>l.type==='amen').map(l=>l.post_id));
-  posts.forEach(p=>{
-    const d=document.createElement('div');d.className='post-card';
-    const t=new Date(p.created_at);
-    const ago=timeAgo(t);
-    const liked=likedSet.has(p.id),amened=amenSet.has(p.id);
-    const isAdmin=currentProfile?.email===ADMIN_EMAIL;
-    const deleteBtn=isAdmin?`<button onclick="deletePost('${p.id}')" style="margin-left:auto;background:none;border:none;cursor:pointer;padding:6px 8px;border-radius:6px;display:inline-flex;align-items:center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(10,10,10,0.3)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>`:'';
-    const avHtml=renderAvatarCircle(p.name,p.avatar_id,34,13);
-    const commentCount=p.comment_count||0;
-    d.innerHTML=`
-      <div class="post-top">
-        <div style="display:flex;align-items:center;gap:9px;">
-          ${avHtml}
-          <div><span class="post-name">${esc(p.name)}</span><span class="post-meta">${ago}</span></div>
-        </div>
-        <span class="post-day">Day ${p.day}</span>
-      </div>
-      <div class="post-text" style="margin-top:10px;">${esc(p.text)}</div>
-      <div class="post-actions">
-        <button class="act-btn${liked?' liked':''}" onclick="toggleReact('${p.id}','like',this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="${liked?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> ${p.likes||0}</button>
-        <button class="act-btn${amened?' amened':''}" onclick="toggleReact('${p.id}','amen',this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg> Amen ${p.amens||0}</button>
-        <button class="act-btn" onclick="openComments('${p.id}','${esc(p.name).replace(/'/g,"\\'")}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>${commentCount>0?' '+commentCount:''}</button>
-        ${deleteBtn}
-      </div>`;
-    c.appendChild(d);
   });
   document.getElementById('p-posts').textContent=posts.filter(p=>p.user_id===currentUser?.id).length;
 }
