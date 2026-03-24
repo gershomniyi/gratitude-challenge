@@ -1343,19 +1343,23 @@ async function loadLeaderboard(){
 }
 
 // USER PROFILE VIEW
-async function openUserProfile(userId,name,avatarId,streak){
+async function openUserProfile(postId,avatarId){
+  showScreen('screen-user-profile');
+  const feed=document.getElementById('user-prof-feed');
+  feed.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);font-size:14px;">Loading...</div>';
+  const{data:post}=await sb.from('posts').select('user_id,name').eq('id',postId).single();
+  if(!post)return;
+  const userId=post.user_id;
+  const name=post.name;
   document.getElementById('user-prof-title').textContent=name;
   document.getElementById('user-prof-name').textContent=name;
-  document.getElementById('user-prof-handle').textContent='GOW Community';
-  document.getElementById('user-prof-streak').textContent=streak||0;
   const av=getAvatarById(avatarId||1);
   const ring=document.getElementById('user-prof-av-ring');
   const avEl=document.getElementById('user-prof-av');
   if(ring)ring.style.background=av.bg;
   if(avEl){avEl.textContent=name.trim().split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);avEl.style.color=av.color;}
-  showScreen('screen-user-profile');
-  const feed=document.getElementById('user-prof-feed');
-  feed.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);font-size:14px;">Loading...</div>';
+  const{data:profile}=await sb.from('profiles').select('streak').eq('id',userId).single();
+  document.getElementById('user-prof-streak').textContent=profile?.streak||0;
   const{data:posts}=await sb.from('posts').select('*').eq('user_id',userId).eq('status','approved').order('created_at',{ascending:false});
   document.getElementById('user-prof-posts').textContent=posts?.length||0;
   if(!posts||posts.length===0){feed.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);font-size:14px;">No posts yet.</div>';return;}
@@ -1591,12 +1595,11 @@ async function loadFeed(){
     const avHtml=renderAvatarCircle(p.name,p.avatar_id,34,13);
     const commentCount=p.comment_count||0;
     const safeId=p.id;
-    const safeName=p.name.replace(/\\/g,'\\\\  ').replace(/'/g,'\\x27');
     const optionsBtn=isOwn?`<button onclick="togglePostMenu('${safeId}',this)" style="margin-left:auto;background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:6px;color:var(--muted);font-size:18px;line-height:1;font-weight:700;">···</button>`:'';
-    const deleteBtn=isAdmin&&!isOwn?`<button onclick="deletePost('${safeId}')" style="margin-left:auto;background:none;border:none;cursor:pointer;padding:6px 8px;border-radius:6px;display:inline-flex;align-items:center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(10,10,10,0.3)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>':'';
+    const deleteBtn=isAdmin&&!isOwn?`<button onclick="deletePost('${safeId}')" style="margin-left:auto;background:none;border:none;cursor:pointer;padding:6px 8px;border-radius:6px;display:inline-flex;align-items:center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(10,10,10,0.3)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>`:'';
     d.innerHTML=`
       <div class="post-top">
-        <div style="display:flex;align-items:center;gap:9px;cursor:pointer;" onclick="openUserProfile('${p.user_id}','${safeName}',${p.avatar_id||1},0)">
+        <div style="display:flex;align-items:center;gap:9px;cursor:pointer;" onclick="openUserProfile('${safeId}',${p.avatar_id||1})">
           ${avHtml}
           <div><span class="post-name">${esc(p.name)}</span><span class="post-meta">${ago}</span></div>
         </div>
@@ -1606,7 +1609,7 @@ async function loadFeed(){
       <div class="post-actions">
         <button class="act-btn${liked?' liked':''}" onclick="toggleReact('${safeId}','like',this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="${liked?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> ${p.likes||0}</button>
         <button class="act-btn${amened?' amened':''}" onclick="toggleReact('${safeId}','amen',this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg> Amen ${p.amens||0}</button>
-        <button class="act-btn" onclick="openComments('${safeId}','${safeName}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>${commentCount>0?' '+commentCount:''}</button>
+        <button class="act-btn" onclick="openComments('${safeId}','')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>${commentCount>0?' '+commentCount:''}</button>
       </div>`;
     wrap.appendChild(d);
     c.appendChild(wrap);
