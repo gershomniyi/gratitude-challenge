@@ -286,25 +286,50 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
 .prompt-chip{display:inline-block;padding:8px 14px;background:#FFFFFF;border:1px solid var(--border-mid);border-radius:20px;font-size:13px;font-weight:500;color:#0A0A0A;cursor:pointer;transition:all 0.15s;line-height:1.4;}
 .prompt-chip:hover,.prompt-chip.selected{background:#0A0A0A;color:#FFFFFF;border-color:#0A0A0A;}
 
-/* COMMENTS */
-.comments-section{margin-top:10px;border-top:1px solid var(--border);padding-top:10px;}
-.comment-input-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
-.comment-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;}
-.comment-input{flex:1;border:1px solid var(--border-mid);border-radius:20px;padding:7px 14px;font-size:13px;font-family:'DM Sans',sans-serif;color:#0A0A0A;background:#F8F8F6;outline:none;}
-.comment-input:focus{border-color:#0A0A0A;background:#FFFFFF;}
-.comment-send{background:#0A0A0A;color:#FFFFFF;border:none;border-radius:20px;padding:7px 14px;font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;flex-shrink:0;}
-.comment-item{display:flex;gap:8px;margin-bottom:8px;align-items:flex-start;}
-.comment-body{flex:1;background:#F8F8F6;border-radius:12px;padding:8px 12px;}
-.comment-name{font-size:12px;font-weight:700;color:#0A0A0A;margin-bottom:2px;}
-.comment-text{font-size:13px;color:#0A0A0A;line-height:1.5;}
-.comment-actions{display:flex;align-items:center;gap:8px;margin-top:5px;}
-.mini-btn{background:none;border:none;font-size:11px;font-weight:600;font-family:'DM Sans',sans-serif;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:3px;padding:0;}
-.mini-btn.liked{color:#0A0A0A;}
-.mini-btn.amened{color:var(--gold-dark);}
-.show-comments-btn{font-size:12px;font-weight:600;color:var(--muted);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;padding:4px 0;display:block;}
-
 /* PEOPLE COUNT */
 .people-count{display:flex;align-items:center;gap:6px;padding:0 20px 8px;font-size:12px;color:var(--muted);font-weight:500;}
+
+/* POST AVATAR */
+.post-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;}
+
+/* COMMENTS SHEET */
+.comments-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:992;display:none;align-items:flex-end;justify-content:center;max-width:420px;margin:0 auto;}
+.comments-overlay.show{display:flex;}
+.comments-sheet{background:#FFFFFF;border-radius:20px 20px 0 0;width:100%;max-height:82vh;display:flex;flex-direction:column;}
+.comments-handle{width:36px;height:4px;background:var(--border-mid);border-radius:2px;margin:12px auto 0;}
+.comments-head{padding:14px 20px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.comments-title{font-size:15px;font-weight:700;color:#0A0A0A;}
+.comments-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);line-height:1;padding:0;}
+.comments-list{flex:1;overflow-y:auto;padding:12px 16px;}
+.comment-item{display:flex;gap:10px;margin-bottom:14px;}
+.comment-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+.comment-body{flex:1;}
+.comment-name{font-size:13px;font-weight:700;color:#0A0A0A;}
+.comment-time{font-size:11px;color:var(--muted);margin-left:6px;}
+.comment-text{font-size:14px;color:#0A0A0A;line-height:1.6;margin-top:2px;}
+.comment-reactions{display:flex;gap:8px;margin-top:5px;}
+.c-react-btn{display:inline-flex;align-items:center;gap:3px;font-size:12px;font-weight:500;color:var(--muted);background:none;border:none;cursor:pointer;padding:3px 6px;border-radius:5px;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
+.c-react-btn:hover{background:#F8F8F6;}
+.c-react-btn.c-liked{color:#E24B4A;}
+.c-react-btn.c-amened{color:var(--gold-dark);}
+.comments-empty{text-align:center;padding:30px 20px;font-size:14px;color:var(--muted);line-height:1.6;}
+.comments-input-wrap{padding:12px 16px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;background:#FFFFFF;}
+.comment-input{flex:1;border:1px solid var(--border-mid);border-radius:20px;padding:9px 16px;font-size:14px;font-family:'DM Sans',sans-serif;color:#0A0A0A;outline:none;background:#F8F8F6;}
+.comment-input:focus{border-color:#0A0A0A;background:#FFFFFF;}
+.comment-send{background:#0A0A0A;color:#FFFFFF;border:none;border-radius:20px;padding:9px 18px;font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;white-space:nowrap;}
+.comment-send:disabled{opacity:0.4;cursor:not-allowed;}
+
+/* AVATAR PICKER */
+.avatar-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.55);z-index:993;display:none;align-items:flex-end;justify-content:center;max-width:420px;margin:0 auto;}
+.avatar-overlay.show{display:flex;}
+.avatar-sheet{background:#FFFFFF;border-radius:20px 20px 0 0;padding:20px 20px 36px;width:100%;}
+.avatar-sheet-title{font-size:15px;font-weight:700;color:#0A0A0A;margin-bottom:4px;}
+.avatar-sheet-sub{font-size:12px;color:var(--muted);margin-bottom:18px;}
+.avatar-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:18px;}
+.av-option{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;cursor:pointer;border:2.5px solid transparent;transition:all 0.15s;margin:0 auto;}
+.av-option.selected{border-color:#0A0A0A;}
+.avatar-save{width:100%;padding:13px;background:#0A0A0A;color:#FFFFFF;border:none;border-radius:10px;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;}
+</style>
 </head>
 <body>
 <div class="shell">
@@ -448,10 +473,12 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
 <!-- PROFILE -->
 <div class="screen" id="screen-profile">
   <div class="prof-hero">
-    <div class="prof-av-ring" onclick="showAvatarPicker()" style="cursor:pointer;">
+    <div class="prof-av-ring" onclick="openAvatarPicker()" style="cursor:pointer;position:relative;">
       <div class="prof-av" id="prof-av">?</div>
+      <div style="position:absolute;bottom:0;right:0;width:18px;height:18px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #0A0A0A;">
+        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      </div>
     </div>
-    <div style="font-size:10px;color:rgba(255,255,255,0.35);margin-bottom:10px;letter-spacing:0.04em;cursor:pointer;" onclick="showAvatarPicker()">Tap to change avatar</div>
     <div class="prof-name" id="prof-name">Loading...</div>
     <div class="prof-handle" id="prof-handle">GOW Community</div>
     <div class="prof-stats">
@@ -685,79 +712,83 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
   </div>
 </div>
 
-<!-- AVATAR PICKER -->
-<div class="share-overlay" id="avatar-overlay">
-  <div class="share-sheet">
-    <div style="font-size:16px;font-weight:700;color:#0A0A0A;margin-bottom:4px;">Choose your avatar</div>
-    <div style="font-size:13px;color:var(--muted);margin-bottom:16px;">Pick one that represents you</div>
-    <div class="avatar-grid" id="avatar-grid"></div>
-    <button class="share-copy" style="margin-top:16px;" onclick="saveAvatar()">Save avatar</button>
-    <span class="share-dismiss" onclick="closeAvatarPicker()">Cancel</span>
+<!-- COMMENTS SHEET -->
+<div class="comments-overlay" id="comments-overlay" onclick="handleCommentsOverlayClick(event)">
+  <div class="comments-sheet" id="comments-sheet">
+    <div class="comments-handle"></div>
+    <div class="comments-head">
+      <div class="comments-title" id="comments-title">Comments</div>
+      <button class="comments-close" onclick="closeComments()">×</button>
+    </div>
+    <div class="comments-list" id="comments-list"></div>
+    <div class="comments-input-wrap">
+      <input class="comment-input" id="comment-input" type="text" placeholder="Add a comment..." maxlength="280"/>
+      <button class="comment-send" id="comment-send-btn" onclick="submitComment()">Post</button>
+    </div>
   </div>
 </div>
 
-<!-- COMMENTS SHEET -->
-<div class="share-overlay" id="comments-overlay">
-  <div class="share-sheet" style="max-height:80vh;overflow-y:auto;padding-bottom:30px;">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-      <div style="font-size:16px;font-weight:700;color:#0A0A0A;">Comments</div>
-      <span onclick="closeComments()" style="font-size:22px;cursor:pointer;color:var(--muted);line-height:1;">×</span>
-    </div>
-    <div id="comments-list" style="margin-bottom:14px;"></div>
-    <div class="comment-input-row">
-      <div class="comment-av" id="comment-my-av" style="background:#0A0A0A;color:#FFFFFF;">?</div>
-      <input class="comment-input" id="comment-text-input" placeholder="Add a comment..." maxlength="200"/>
-      <button class="comment-send" onclick="submitComment()">Post</button>
-    </div>
+<!-- AVATAR PICKER -->
+<div class="avatar-overlay" id="avatar-overlay" onclick="handleAvatarOverlayClick(event)">
+  <div class="avatar-sheet" id="avatar-sheet">
+    <div class="avatar-sheet-title">Choose your avatar</div>
+    <div class="avatar-sheet-sub">Pick one that represents you in the community</div>
+    <div class="avatar-grid" id="avatar-grid"></div>
+    <button class="avatar-save" onclick="saveAvatar()">Save avatar</button>
   </div>
 </div>
 
 </div><!-- shell -->
 
 <script>
-const AVATARS=[
-  {bg:'#0A0A0A',color:'#C6A85B'},
-  {bg:'#C6A85B',color:'#0A0A0A'},
-  {bg:'#1A1825',color:'#FFFFFF'},
-  {bg:'#F5EDD6',color:'#9A7D3A'},
-  {bg:'#2C2416',color:'#C6A85B'},
-  {bg:'#4A3728',color:'#F5EDD6'},
-  {bg:'#1C1C1C',color:'#C6A85B'},
-  {bg:'#8B6914',color:'#FFFFFF'},
-  {bg:'#F8F8F6',color:'#0A0A0A'},
-  {bg:'#3D3020',color:'#C6A85B'},
+// GOW AVATARS — 10 options with gold/dark/warm tones
+const GOW_AVATARS=[
+  {id:1,bg:'#0A0A0A',color:'#C6A85B',label:'Dark Gold'},
+  {id:2,bg:'#C6A85B',color:'#0A0A0A',label:'Gold'},
+  {id:3,bg:'#1A1825',color:'#C6A85B',label:'Deep'},
+  {id:4,bg:'#3D2B1F',color:'#F5EDD6',label:'Warm Brown'},
+  {id:5,bg:'#2C1A0E',color:'#C6A85B',label:'Espresso'},
+  {id:6,bg:'#9A7D3A',color:'#FFFFFF',label:'Muted Gold'},
+  {id:7,bg:'#F5EDD6',color:'#9A7D3A',label:'Cream'},
+  {id:8,bg:'#4A3728',color:'#F5EDD6',label:'Chestnut'},
+  {id:9,bg:'#2D2D2D',color:'#F5EDD6',label:'Charcoal'},
+  {id:10,bg:'#6B4C2A',color:'#F5EDD6',label:'Caramel'},
 ];
 
-let selectedAvatarId=0, currentCommentPostId=null;
+let selectedAvatarId=null;
 
-function getAvatarStyle(avatarId){
-  const av=AVATARS[avatarId%AVATARS.length];
-  return av;
+function getAvatarById(id){return GOW_AVATARS.find(a=>a.id===id)||GOW_AVATARS[0];}
+
+function renderAvatarCircle(name,avatarId,size=34,fontSize=13){
+  const av=getAvatarById(avatarId||1);
+  const initials=name?name.trim().split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2):'?';
+  return `<div style="width:${size}px;height:${size}px;border-radius:50%;background:${av.bg};display:flex;align-items:center;justify-content:center;font-size:${fontSize}px;font-weight:700;color:${av.color};flex-shrink:0;">${esc(initials)}</div>`;
 }
 
-function renderAvatarCircle(initials, avatarId, size=28){
-  const av=getAvatarStyle(avatarId);
-  return `<div style="width:${size}px;height:${size}px;border-radius:50%;background:${av.bg};color:${av.color};display:flex;align-items:center;justify-content:center;font-size:${size*0.38}px;font-weight:700;flex-shrink:0;">${initials}</div>`;
-}
-
-function showAvatarPicker(){
+function openAvatarPicker(){
   const grid=document.getElementById('avatar-grid');
-  if(!grid)return;
-  const initials=currentProfile?currentProfile.name.trim().split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2):'GN';
   grid.innerHTML='';
-  AVATARS.forEach((av,i)=>{
-    const btn=document.createElement('div');
-    btn.className='av-option'+(i===selectedAvatarId?' selected':'');
-    btn.style.cssText=`background:${av.bg};color:${av.color};`;
-    btn.textContent=initials;
-    btn.onclick=()=>{
-      selectedAvatarId=i;
-      document.querySelectorAll('.av-option').forEach(a=>a.classList.remove('selected'));
-      btn.classList.add('selected');
+  const currentId=currentProfile?.avatar_id||1;
+  selectedAvatarId=currentId;
+  GOW_AVATARS.forEach(av=>{
+    const initials=currentProfile?.name?currentProfile.name.trim().split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2):'ME';
+    const div=document.createElement('div');
+    div.className='av-option'+(av.id===currentId?' selected':'');
+    div.style.cssText=`background:${av.bg};color:${av.color};font-size:16px;font-weight:700;`;
+    div.textContent=initials;
+    div.dataset.id=av.id;
+    div.onclick=()=>{
+      document.querySelectorAll('.av-option').forEach(o=>o.classList.remove('selected'));
+      div.classList.add('selected');
+      selectedAvatarId=av.id;
     };
-    grid.appendChild(btn);
+    grid.appendChild(div);
   });
   document.getElementById('avatar-overlay').classList.add('show');
+}
+
+function handleAvatarOverlayClick(e){
+  if(e.target===document.getElementById('avatar-overlay'))closeAvatarPicker();
 }
 
 function closeAvatarPicker(){
@@ -765,106 +796,133 @@ function closeAvatarPicker(){
 }
 
 async function saveAvatar(){
-  if(!currentUser)return;
+  if(!selectedAvatarId||!currentUser)return;
   await sb.from('profiles').update({avatar_id:selectedAvatarId}).eq('id',currentUser.id);
   currentProfile.avatar_id=selectedAvatarId;
-  const av=getAvatarStyle(selectedAvatarId);
-  const profAv=document.getElementById('prof-av');
-  if(profAv){
-    profAv.style.color=av.color;
-    profAv.parentElement.style.background=av.bg;
-    profAv.parentElement.style.border='none';
-  }
+  // Update profile circle
+  const av=getAvatarById(selectedAvatarId);
   const initials=currentProfile.name.trim().split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
-  const commentAv=document.getElementById('comment-my-av');
-  if(commentAv){commentAv.style.background=av.bg;commentAv.style.color=av.color;commentAv.textContent=initials;}
+  const profAv=document.getElementById('prof-av');
+  if(profAv){profAv.textContent=initials;profAv.style.color=av.color;}
+  const ring=document.querySelector('.prof-av-ring');
+  if(ring)ring.style.borderColor=av.bg==='#C6A85B'?av.bg:'var(--gold)';
   closeAvatarPicker();
   showToast('Avatar updated');
+  loadFeed();
 }
 
-function openComments(postId){
-  currentCommentPostId=postId;
-  const list=document.getElementById('comments-list');
-  if(list)list.innerHTML='<div style="font-size:13px;color:var(--muted);text-align:center;padding:16px 0;">Loading...</div>';
+// COMMENTS
+let activePostId=null;
+
+function openComments(postId,postName){
+  activePostId=postId;
+  const title=document.getElementById('comments-title');
+  if(title)title.textContent=postName?postName+"'s post":'Comments';
+  document.getElementById('comments-list').innerHTML='<div class="comments-empty">Loading...</div>';
+  document.getElementById('comment-input').value='';
   document.getElementById('comments-overlay').classList.add('show');
   loadComments(postId);
 }
 
+function handleCommentsOverlayClick(e){
+  if(e.target===document.getElementById('comments-overlay'))closeComments();
+}
+
 function closeComments(){
   document.getElementById('comments-overlay').classList.remove('show');
-  currentCommentPostId=null;
+  activePostId=null;
 }
 
 async function loadComments(postId){
   const list=document.getElementById('comments-list');
-  if(!list)return;
   const{data:comments}=await sb.from('comments').select('*').eq('post_id',postId).order('created_at',{ascending:true});
   if(!comments||comments.length===0){
-    list.innerHTML='<div style="font-size:13px;color:var(--muted);text-align:center;padding:16px 0;">No comments yet. Be the first.</div>';
+    list.innerHTML='<div class="comments-empty">No comments yet.<br>Be the first to encourage someone.</div>';
     return;
   }
-  const{data:myReacts}=currentUser?await sb.from('comment_reactions').select('comment_id,type').eq('user_id',currentUser.id):{data:[]};
-  const likedSet=new Set((myReacts||[]).filter(r=>r.type==='like').map(r=>r.comment_id));
-  const amenSet=new Set((myReacts||[]).filter(r=>r.type==='amen').map(r=>r.comment_id));
+  // Get my comment reactions
+  let myReactSet=new Set(),myAmenSet=new Set();
+  if(currentUser){
+    const{data:myR}=await sb.from('comment_likes').select('comment_id,type').eq('user_id',currentUser.id);
+    (myR||[]).forEach(r=>{
+      if(r.type==='like')myReactSet.add(r.comment_id);
+      if(r.type==='amen')myAmenSet.add(r.comment_id);
+    });
+  }
   list.innerHTML='';
   comments.forEach(c=>{
-    const initials=c.name.trim().split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
-    const av=getAvatarStyle(c.avatar_id||0);
-    const liked=likedSet.has(c.id),amened=amenSet.has(c.id);
+    const div=document.createElement('div');
+    div.className='comment-item';
+    div.id='ci-'+c.id;
     const ago=timeAgo(new Date(c.created_at));
-    const item=document.createElement('div');
-    item.className='comment-item';
-    item.id='cmt-'+c.id;
-    item.innerHTML=`
-      <div style="width:28px;height:28px;border-radius:50%;background:${av.bg};color:${av.color};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">${initials}</div>
+    const liked=myReactSet.has(c.id),amened=myAmenSet.has(c.id);
+    const avHtml=renderAvatarCircle(c.name,c.avatar_id,30,11);
+    div.innerHTML=`
+      <div class="comment-av">${avHtml.replace('<div ','<div class="comment-av-inner" ')}</div>
       <div class="comment-body">
-        <div style="display:flex;align-items:baseline;justify-content:space-between;">
-          <span class="comment-name">${esc(c.name)}</span>
-          <span style="font-size:10px;color:var(--muted);">${ago}</span>
-        </div>
+        <span class="comment-name">${esc(c.name)}</span><span class="comment-time">${ago}</span>
         <div class="comment-text">${esc(c.text)}</div>
-        <div class="comment-actions">
-          <button class="mini-btn${liked?' liked':''}" onclick="toggleCommentReact('${c.id}','like',this)">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="${liked?'currentColor':'none'}" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <div class="comment-reactions">
+          <button class="c-react-btn${liked?' c-liked':''}" onclick="toggleCommentReact('${c.id}','like',this)">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="${liked?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
             ${c.likes||0}
           </button>
-          <button class="mini-btn${amened?' amened':''}" onclick="toggleCommentReact('${c.id}','amen',this)">
+          <button class="c-react-btn${amened?' c-amened':''}" onclick="toggleCommentReact('${c.id}','amen',this)">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
             Amen ${c.amens||0}
           </button>
         </div>
       </div>`;
-    list.appendChild(item);
+    list.appendChild(div);
   });
+  list.scrollTop=list.scrollHeight;
 }
 
 async function submitComment(){
-  const input=document.getElementById('comment-text-input');
-  const text=input?.value.trim();
-  if(!text||!currentCommentPostId||!currentUser)return;
-  const initials=currentProfile.name.trim().split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
-  await sb.from('comments').insert({post_id:currentCommentPostId,user_id:currentUser.id,name:currentProfile.name,avatar_id:currentProfile.avatar_id||0,text,likes:0,amens:0});
+  const input=document.getElementById('comment-input');
+  const text=input.value.trim();
+  if(!text||!activePostId||!currentUser){showToast('Sign in to comment');return;}
+  const btn=document.getElementById('comment-send-btn');
+  btn.disabled=true;
+  const{error}=await sb.from('comments').insert({
+    post_id:activePostId,
+    user_id:currentUser.id,
+    name:currentProfile.name,
+    avatar_id:currentProfile.avatar_id||1,
+    text,
+    likes:0,
+    amens:0
+  });
+  btn.disabled=false;
+  if(error){showToast('Could not post comment');return;}
   input.value='';
-  loadComments(currentCommentPostId);
+  loadComments(activePostId);
+  // bump comment count on post
+  await sb.from('posts').update({comment_count:sb.rpc?undefined:undefined}).eq('id',activePostId).then(()=>{});
 }
 
 async function toggleCommentReact(commentId,type,btn){
   if(!currentUser){showToast('Sign in to react');return;}
   const isLike=type==='like';
-  const isActive=btn.classList.contains(isLike?'liked':'amened');
+  const isActive=btn.classList.contains(isLike?'c-liked':'c-amened');
   const col=isLike?'likes':'amens';
   const cur=parseInt(btn.textContent.replace(/\D/g,''))||0;
   if(isActive){
-    await sb.from('comment_reactions').delete().eq('comment_id',commentId).eq('user_id',currentUser.id).eq('type',type);
+    await sb.from('comment_likes').delete().eq('comment_id',commentId).eq('user_id',currentUser.id).eq('type',type);
     await sb.from('comments').update({[col]:Math.max(0,cur-1)}).eq('id',commentId);
-    btn.className='mini-btn';
-    btn.innerHTML=(isLike?`<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> `:'Amen ')+(Math.max(0,cur-1));
+    btn.classList.remove(isLike?'c-liked':'c-amened');
+    btn.querySelector('svg').setAttribute('fill','none');
+    btn.childNodes[btn.childNodes.length-1].textContent=' '+(isLike?Math.max(0,cur-1):'Amen '+Math.max(0,cur-1));
   } else {
-    await sb.from('comment_reactions').upsert({comment_id:commentId,user_id:currentUser.id,type});
+    await sb.from('comment_likes').upsert({comment_id:commentId,user_id:currentUser.id,type});
     await sb.from('comments').update({[col]:cur+1}).eq('id',commentId);
-    btn.className='mini-btn '+(isLike?'liked':'amened');
-    btn.innerHTML=(isLike?`<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> `:'Amen ')+(cur+1);
+    btn.classList.add(isLike?'c-liked':'c-amened');
+    if(isLike)btn.querySelector('svg').setAttribute('fill','currentColor');
+    btn.childNodes[btn.childNodes.length-1].textContent=' '+(isLike?cur+1:'Amen '+(cur+1));
   }
 }
+
+const DAILY_PROMPTS=[
   'What is one thing God did for you today?',
   'Who are you grateful for and why?',
   'What almost went wrong but did not?',
@@ -1153,18 +1211,12 @@ async function enterApp(user){
 function updateProfileUI(){
   if(!currentProfile)return;
   const day=getDay();
+  const av=getAvatarById(currentProfile.avatar_id||1);
   const initials=currentProfile.name.trim().split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
-  selectedAvatarId=currentProfile.avatar_id||0;
-  const av=getAvatarStyle(selectedAvatarId);
   const profAv=document.getElementById('prof-av');
-  if(profAv){
-    profAv.textContent=initials;
-    profAv.style.color=av.color;
-    profAv.parentElement.style.background=av.bg;
-    profAv.parentElement.style.border='none';
-  }
-  const commentAv=document.getElementById('comment-my-av');
-  if(commentAv){commentAv.style.background=av.bg;commentAv.style.color=av.color;commentAv.textContent=initials;}
+  if(profAv){profAv.textContent=initials;profAv.style.color=av.color;}
+  const ring=document.querySelector('.prof-av-ring');
+  if(ring)ring.style.background=av.bg;
   document.getElementById('prof-name').textContent=currentProfile.name;
   document.getElementById('prof-handle').textContent='@'+currentProfile.name.toLowerCase().replace(/\s/g,'')+'· GOW';
   document.getElementById('p-streak').textContent=currentProfile.streak||0;
@@ -1210,11 +1262,24 @@ async function loadFeed(){
     const ago=timeAgo(t);
     const liked=likedSet.has(p.id),amened=amenSet.has(p.id);
     const isAdmin=currentProfile?.email===ADMIN_EMAIL;
-    const avatarId=p.avatar_id||0;
-    const av=getAvatarStyle(avatarId);
-    const pInitials=p.name.trim().split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
     const deleteBtn=isAdmin?`<button onclick="deletePost('${p.id}')" style="margin-left:auto;background:none;border:none;cursor:pointer;padding:6px 8px;border-radius:6px;display:inline-flex;align-items:center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(10,10,10,0.3)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>`:'';
-    d.innerHTML=`<div class="post-top"><div style="display:flex;align-items:center;gap:8px;"><div style="width:32px;height:32px;border-radius:50%;background:${av.bg};color:${av.color};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">${pInitials}</div><div><div class="post-name">${esc(p.name)}</div><div class="post-meta">${ago}</div></div></div><span class="post-day">Day ${p.day}</span></div><div class="post-text">${esc(p.text)}</div><div class="post-actions"><button class="act-btn${liked?' liked':''}" onclick="toggleReact('${p.id}','like',this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="${liked?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> ${p.likes||0}</button><button class="act-btn${amened?' amened':''}" onclick="toggleReact('${p.id}','amen',this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg> Amen ${p.amens||0}</button><button class="act-btn" onclick="openComments('${p.id}')" style="margin-left:auto;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button>${deleteBtn}</div>`;
+    const avHtml=renderAvatarCircle(p.name,p.avatar_id,34,13);
+    const commentCount=p.comment_count||0;
+    d.innerHTML=`
+      <div class="post-top">
+        <div style="display:flex;align-items:center;gap:9px;">
+          ${avHtml}
+          <div><span class="post-name">${esc(p.name)}</span><span class="post-meta">${ago}</span></div>
+        </div>
+        <span class="post-day">Day ${p.day}</span>
+      </div>
+      <div class="post-text" style="margin-top:10px;">${esc(p.text)}</div>
+      <div class="post-actions">
+        <button class="act-btn${liked?' liked':''}" onclick="toggleReact('${p.id}','like',this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="${liked?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> ${p.likes||0}</button>
+        <button class="act-btn${amened?' amened':''}" onclick="toggleReact('${p.id}','amen',this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg> Amen ${p.amens||0}</button>
+        <button class="act-btn" onclick="openComments('${p.id}','${esc(p.name).replace(/'/g,"\\'")}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>${commentCount>0?' '+commentCount:''}</button>
+        ${deleteBtn}
+      </div>`;
     c.appendChild(d);
   });
   document.getElementById('p-posts').textContent=posts.filter(p=>p.user_id===currentUser?.id).length;
@@ -1259,7 +1324,7 @@ async function submitPost(){
   const day=getDay();
   const flagged=isFlagged(text);
   const status=flagged?'pending':'approved';
-  const{error}=await sb.from('posts').insert({user_id:currentUser.id,name:currentProfile.name,text,day,status,likes:0,amens:0});
+  const{error}=await sb.from('posts').insert({user_id:currentUser.id,name:currentProfile.name,avatar_id:currentProfile.avatar_id||1,text,day,status,likes:0,amens:0});
   btn.disabled=false;btn.textContent='Share';
   if(error){showToast('Could not post. Try again.');return;}
   const postTextCopy=text;
