@@ -2424,7 +2424,7 @@ async function submitContact(){
   if(!text){msg.style.color='#CC3333';msg.textContent='Please enter a message';return;}
   if(!currentUser){msg.style.color='#CC3333';msg.textContent='Please sign in first';return;}
   msg.style.color='var(--muted)';msg.textContent='Sending...';
-  const insertData={
+  const result=await sb.from('messages').insert({
     user_id:currentUser.id,
     name:currentProfile?.name||'User',
     email:currentProfile?.email||currentUser.email||'',
@@ -2432,18 +2432,22 @@ async function submitContact(){
     read:false,
     thread:[],
     user_read:true
-  };
-  const result=await sb.from('messages').insert(insertData);
+  });
   if(result.error){
-    console.error('Insert error:',JSON.stringify(result.error));
     msg.style.color='#CC3333';msg.textContent='Could not send — try again';
     return;
   }
-  // notify admin — fire and forget, don't let it block success
-  sb.from('notifications').insert({user_id:currentUser.id,type:'message',message:(currentProfile?.name||'User')+' sent you a message',read:false}).catch(()=>{});
+  // Show success immediately
   msg.style.color='var(--gold-dark)';msg.textContent='Message sent — we will get back to you soon';
   document.getElementById('contact-field').value='';
   setTimeout(()=>closeContact(),2000);
+  // Fire notification in background — don't await
+  sb.from('notifications').insert({
+    user_id:currentUser.id,
+    type:'message',
+    message:(currentProfile?.name||'User')+' sent you a message',
+    read:false
+  }).catch(()=>{});
 }
 
 
