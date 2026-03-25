@@ -1017,6 +1017,21 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
   </div>
 </div>
 
+<!-- PASSWORD RESET SCREEN -->
+<div class="screen" id="screen-reset-password">
+  <div class="auth-top" style="padding:50px 28px 36px;">
+    <div class="auth-eyebrow">Almost there</div>
+    <div class="auth-headline" style="font-size:32px;">Set new password</div>
+    <div class="auth-sub">Enter a new password for your account.</div>
+  </div>
+  <div class="auth-body">
+    <div class="form-group"><label class="form-label">New password</label><input class="form-input" type="password" placeholder="Min 6 characters" id="reset-pass"/></div>
+    <div class="form-group"><label class="form-label">Confirm password</label><input class="form-input" type="password" placeholder="Repeat your password" id="reset-pass-confirm"/></div>
+    <button class="btn-primary" onclick="doResetPassword()">Update password</button>
+    <div class="auth-error" id="reset-msg" style="margin-top:12px;"></div>
+  </div>
+</div>
+
 <!-- SHARE OVERLAY -->
 <div class="share-overlay" id="share-overlay">
   <div class="share-sheet">
@@ -2870,12 +2885,37 @@ async function featurePost(postId){
     await enterApp(session.user);
   }
   sb.auth.onAuthStateChange(async(event,session)=>{
+    if(event==='PASSWORD_RECOVERY'){
+      setLoading(false);
+      document.querySelectorAll('.screen,.wt-screen').forEach(s=>{s.classList.remove('active');s.style.display='none';});
+      const r=document.getElementById('screen-reset-password');
+      if(r){r.style.display='flex';r.classList.add('active');}
+      return;
+    }
     if(event==='SIGNED_IN'&&session?.user&&!currentUser){
       isFirstTime=false;
       await enterApp(session.user);
     }
   });
 })();
+
+async function doResetPassword(){
+  const pass=document.getElementById('reset-pass').value.trim();
+  const confirm=document.getElementById('reset-pass-confirm').value.trim();
+  const msg=document.getElementById('reset-msg');
+  if(!pass||!confirm){msg.style.color='#CC3333';msg.textContent='Please fill in both fields';return;}
+  if(pass.length<6){msg.style.color='#CC3333';msg.textContent='Password must be at least 6 characters';return;}
+  if(pass!==confirm){msg.style.color='#CC3333';msg.textContent='Passwords do not match';return;}
+  msg.style.color='var(--muted)';msg.textContent='Updating...';
+  const{error}=await sb.auth.updateUser({password:pass});
+  if(error){msg.style.color='#CC3333';msg.textContent=error.message;return;}
+  msg.style.color='var(--gold-dark)';msg.textContent='Password updated successfully';
+  setTimeout(async()=>{
+    const{data:{session}}=await sb.auth.getSession();
+    if(session?.user)await enterApp(session.user);
+    else showScreen('screen-auth');
+  },1500);
+}
 </script>
 </body>
 </html>
