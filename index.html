@@ -399,6 +399,92 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
 .av-option{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;cursor:pointer;border:2.5px solid transparent;transition:all 0.15s;margin:0 auto;}
 .av-option.selected{border-color:#0A0A0A;}
 .avatar-save{width:100%;padding:13px;background:#0A0A0A;color:#FFFFFF;border:none;border-radius:10px;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;}
+
+/* WALKTHROUGH */
+.wt-screen{display:none;flex-direction:column;min-height:100vh;background:#0A0A0A;}
+.wt-screen.active{display:flex;}
+.wt-slides{flex:1;position:relative;overflow:hidden;}
+.wt-slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:40px 32px 36px;opacity:0;transform:translateX(30px);transition:all 0.4s ease;pointer-events:none;}
+.wt-slide.active{opacity:1;transform:translateX(0);pointer-events:all;}
+.wt-slide.exit{opacity:0;transform:translateX(-30px);}
+.wt-illus{margin-bottom:28px;}
+.wt-step{font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
+.wt-title{font-size:28px;font-weight:700;color:#FFFFFF;line-height:1.15;margin-bottom:14px;hyphens:none;}
+.wt-text{font-size:15px;color:rgba(255,255,255,0.5);line-height:1.75;}
+.wt-highlight{display:inline-flex;align-items:center;gap:6px;background:rgba(198,168,91,0.12);border:1px solid rgba(198,168,91,0.2);border-radius:8px;padding:8px 12px;margin-top:12px;font-size:13px;color:var(--gold);font-weight:500;}
+.wt-footer{padding:20px 32px 40px;display:flex;align-items:center;justify-content:space-between;background:#0A0A0A;}
+.wt-dots{display:flex;gap:6px;align-items:center;}
+.wt-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.2);transition:all 0.3s;}
+.wt-dot.active{background:var(--gold);width:18px;border-radius:3px;}
+.wt-btn{background:var(--gold);color:#0A0A0A;border:none;border-radius:8px;padding:12px 28px;font-size:14px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;}
+.wt-skip{font-size:12px;font-weight:600;color:rgba(255,255,255,0.3);cursor:pointer;border:none;background:none;font-family:'DM Sans',sans-serif;}
+
+/* SCRIPTURE CARD */
+.scripture-card{margin:12px 20px 0;background:#FFFFFF;border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;}
+.scripture-ref{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold-dark);margin-bottom:6px;}
+.scripture-text{font-size:14px;color:#0A0A0A;line-height:1.7;font-style:italic;}
+
+/* PRAYER WALL */
+.prayer-card{margin:0 20px 10px;background:#FFFFFF;border:1px solid var(--border);border-radius:var(--r);padding:17px;animation:fu 0.3s ease;}
+.prayer-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.prayer-text{font-size:15px;color:#0A0A0A;line-height:1.7;margin-bottom:12px;}
+.pray-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 14px;border-radius:6px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:1px solid var(--border-mid);background:#F8F8F6;color:#0A0A0A;transition:all 0.15s;}
+.pray-btn.praying{background:var(--gold-light);color:var(--gold-dark);border-color:rgba(198,168,91,0.3);}
+
+/* MILESTONE COMMUNITY BANNER */
+.community-milestone{margin:12px 20px 0;background:#0A0A0A;border-radius:var(--r);padding:16px 18px;display:none;align-items:center;gap:14px;}
+.community-milestone.show{display:flex;}
+.cm-icon{width:40px;height:40px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.cm-title{font-size:14px;font-weight:700;color:#FFFFFF;margin-bottom:2px;}
+.cm-sub{font-size:12px;color:rgba(255,255,255,0.45);}
+.cm-dismiss{background:none;border:none;font-size:16px;color:rgba(255,255,255,0.3);cursor:pointer;margin-left:auto;}
+
+/* FEATURED POST */
+.featured-card{margin:0 20px 10px;background:#0A0A0A;border-radius:var(--r);padding:17px;animation:fu 0.3s ease;}
+.featured-label{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.featured-name{font-size:14px;font-weight:700;color:#FFFFFF;}
+.featured-meta{font-size:12px;color:rgba(255,255,255,0.35);margin-left:6px;}
+.featured-text{font-size:15px;color:rgba(255,255,255,0.85);line-height:1.7;margin-top:8px;}
+
+/* STREAK FREEZE */
+.freeze-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:20px;font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;border:1px solid rgba(198,168,91,0.3);background:rgba(198,168,91,0.1);color:var(--gold-dark);transition:all 0.15s;margin-top:8px;}
+.freeze-btn:disabled{opacity:0.4;cursor:not-allowed;}
+
+/* JOURNAL VIEW */
+.journal-card{background:#FFFFFF;border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:8px;}
+.journal-day{font-size:10px;font-weight:700;color:var(--gold-dark);background:var(--gold-light);padding:3px 9px;border-radius:20px;display:inline-block;margin-bottom:8px;}
+.journal-text{font-size:14px;color:#0A0A0A;line-height:1.7;}
+.journal-date{font-size:11px;color:var(--muted);margin-top:6px;}
+
+/* INVITE */
+.invite-card{margin:12px 20px 0;background:#FFFFFF;border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;}
+.invite-title{font-size:14px;font-weight:700;color:#0A0A0A;margin-bottom:4px;}
+.invite-sub{font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.5;}
+.invite-link-box{background:#F8F8F6;border:1px solid var(--border-mid);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--muted);font-family:monospace;margin-bottom:10px;word-break:break-all;}
+.invite-copy{width:100%;padding:11px;background:#0A0A0A;color:#FFFFFF;border:none;border-radius:8px;font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;}
+
+/* DAY 30 WRAP UP */
+.wrapup-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:996;display:none;align-items:center;justify-content:center;max-width:420px;margin:0 auto;}
+.wrapup-overlay.show{display:flex;}
+.wrapup-card{background:#0A0A0A;border-radius:20px;padding:28px;width:calc(100% - 40px);max-height:85vh;overflow-y:auto;animation:popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);}
+.wrapup-title{font-size:22px;font-weight:700;color:#FFFFFF;margin-bottom:6px;text-align:center;}
+.wrapup-sub{font-size:13px;color:rgba(255,255,255,0.45);text-align:center;margin-bottom:20px;line-height:1.5;}
+.wrapup-stat{text-align:center;margin-bottom:20px;}
+.wrapup-stat-n{font-size:48px;font-weight:700;color:var(--gold);line-height:1;}
+.wrapup-stat-l{font-size:12px;color:rgba(255,255,255,0.4);margin-top:4px;text-transform:uppercase;letter-spacing:0.06em;}
+.wrapup-share{width:100%;padding:13px;background:var(--gold);color:#0A0A0A;border:none;border-radius:10px;font-size:14px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:16px;}
+.wrapup-close{display:block;text-align:center;margin-top:12px;font-size:13px;color:rgba(255,255,255,0.35);cursor:pointer;}
+
+/* SHOUTOUT */
+.shoutout-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;border:1px solid var(--border-mid);background:#F8F8F6;color:var(--muted);transition:all 0.15s;margin-bottom:8px;}
+.shoutout-badge{display:inline-flex;align-items:center;gap:4px;background:var(--gold-light);color:var(--gold-dark);border-radius:20px;padding:2px 8px;font-size:11px;font-weight:600;margin-left:4px;}
+.shoutout-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:994;display:none;align-items:flex-end;justify-content:center;max-width:420px;margin:0 auto;}
+.shoutout-overlay.show{display:flex;}
+.shoutout-sheet{background:#FFFFFF;border-radius:20px 20px 0 0;padding:20px 20px 36px;width:100%;max-height:70vh;display:flex;flex-direction:column;}
+.shoutout-list{flex:1;overflow-y:auto;margin-top:12px;}
+.shoutout-item{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);cursor:pointer;}
+.shoutout-item:last-child{border:none;}
+.shoutout-item:hover{opacity:0.7;}
 </style>
 </head>
 <body>
@@ -410,33 +496,85 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
 </div>
 <div class="toast" id="toast"></div>
 
-<!-- ONBOARDING -->
-<div class="ob-screen" id="screen-onboarding">
-  <div class="ob-slides">
-    <div class="ob-slide active" id="ob-slide-0">
-      <div class="ob-num">01 of 03</div>
-      <div class="ob-title">A generation living by the Word</div>
-      <div class="ob-text">GOW — Generation Of The Word — exists to raise up a generation that does not just know the Word of God, but lives by it. Identity. Purpose. Faith.</div>
+<!-- WALKTHROUGH -->
+<div class="wt-screen" id="screen-onboarding">
+  <div class="wt-slides">
+    <div class="wt-slide active" id="wt-slide-0">
+      <div class="wt-illus">
+        <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+          <circle cx="40" cy="40" r="36" fill="#C6A85B" fill-opacity="0.12" stroke="#C6A85B" stroke-width="0.8"/>
+          <circle cx="40" cy="40" r="24" fill="#C6A85B" fill-opacity="0.08"/>
+          <text x="40" y="46" text-anchor="middle" font-size="24" fill="#C6A85B">🙏</text>
+        </svg>
+      </div>
+      <div class="wt-step">Welcome</div>
+      <div class="wt-title">You are right on time</div>
+      <div class="wt-text">This is the GOW Gratitude Challenge — 30 days of showing up, posting what you are grateful for, and doing it together as a community rooted in faith.</div>
     </div>
-    <div class="ob-slide" id="ob-slide-1">
-      <div class="ob-num">02 of 03</div>
-      <div class="ob-title">30 days of becoming more grateful</div>
-      <div class="ob-text">Every April, the GOW community posts one thing they are grateful for every single day. It is not just a challenge. It is a habit that changes how you see everything.</div>
+    <div class="wt-slide" id="wt-slide-1">
+      <div class="wt-illus">
+        <svg width="80" height="72" viewBox="0 0 80 72" fill="none">
+          <rect x="4" y="8" width="72" height="56" rx="12" fill="#C6A85B" fill-opacity="0.1" stroke="#C6A85B" stroke-width="0.8"/>
+          <rect x="14" y="22" width="52" height="7" rx="3.5" fill="#C6A85B" fill-opacity="0.4"/>
+          <rect x="14" y="34" width="36" height="7" rx="3.5" fill="#C6A85B" fill-opacity="0.25"/>
+          <circle cx="62" cy="54" r="10" fill="#C6A85B"/>
+          <text x="62" y="58" text-anchor="middle" font-size="11" fill="#0A0A0A" font-weight="700">+1</text>
+        </svg>
+      </div>
+      <div class="wt-step">How it works — 01</div>
+      <div class="wt-title">Post every day, build your streak</div>
+      <div class="wt-text">Once a day, write one thing you are grateful for and hit Share. Every day you show up adds to your streak. Miss a day and it resets — so show up.</div>
+      <div class="wt-highlight">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 17c0 1.38-1.12 2.5-2.5 2.5a2.5 2.5 0 0 1-2.5-2.5C6 14 7 11 9 9c0 0-.5 3 2 4.5C11 9 13.5 6 16 4c0 3 1 5.5 1 7.5a5 5 0 0 1-5 5"/></svg>
+        Milestones at Day 3, 7, 14, 21 and 30
+      </div>
     </div>
-    <div class="ob-slide" id="ob-slide-2">
-      <div class="ob-num">03 of 03</div>
-      <div class="ob-title">You are not here by accident</div>
-      <div class="ob-text">This community was built for people who are still figuring out who they are — and believe the answer is in God. Welcome. You belong here.</div>
+    <div class="wt-slide" id="wt-slide-2">
+      <div class="wt-illus">
+        <svg width="80" height="72" viewBox="0 0 80 72" fill="none">
+          <rect x="4" y="4" width="72" height="50" rx="12" fill="#C6A85B" fill-opacity="0.1" stroke="#C6A85B" stroke-width="0.8"/>
+          <circle cx="20" cy="22" r="8" fill="#C6A85B" fill-opacity="0.3"/>
+          <rect x="32" y="17" width="30" height="5" rx="2.5" fill="#C6A85B" fill-opacity="0.4"/>
+          <rect x="32" y="25" width="20" height="4" rx="2" fill="#C6A85B" fill-opacity="0.2"/>
+          <rect x="8" y="40" width="22" height="8" rx="4" fill="#0A0A0A" fill-opacity="0.7"/>
+          <rect x="34" y="40" width="22" height="8" rx="4" fill="#C6A85B" fill-opacity="0.3"/>
+          <text x="19" y="46" text-anchor="middle" font-size="9" fill="#FFFFFF" font-weight="600">♥ Like</text>
+          <text x="45" y="46" text-anchor="middle" font-size="9" fill="#9A7D3A" font-weight="600">Amen</text>
+        </svg>
+      </div>
+      <div class="wt-step">How it works — 02</div>
+      <div class="wt-title">The community wall</div>
+      <div class="wt-text">Every approved post goes live on the wall for the whole community to see. Like a post. Say Amen. Leave a comment. This is not social media — it is a family showing up for each other.</div>
+    </div>
+    <div class="wt-slide" id="wt-slide-3">
+      <div class="wt-illus">
+        <svg width="80" height="72" viewBox="0 0 80 72" fill="none">
+          <circle cx="28" cy="30" r="14" fill="#C6A85B" fill-opacity="0.15" stroke="#C6A85B" stroke-width="0.8"/>
+          <circle cx="52" cy="30" r="14" fill="#C6A85B" fill-opacity="0.08" stroke="#C6A85B" stroke-width="0.8" stroke-dasharray="3 3"/>
+          <line x1="42" y1="30" x2="38" y2="30" stroke="#C6A85B" stroke-width="1.5" marker-end="url(#arr)"/>
+          <text x="28" y="34" text-anchor="middle" font-size="14">🤝</text>
+          <text x="52" y="34" text-anchor="middle" font-size="14">?</text>
+          <text x="40" y="62" text-anchor="middle" font-size="10" fill="#C6A85B" font-weight="600">Invite someone</text>
+        </svg>
+      </div>
+      <div class="wt-step">How it works — 03</div>
+      <div class="wt-title">Bring someone with you</div>
+      <div class="wt-text">Gratitude grows when it is shared. Your profile has a personal invite link — send it to one person who needs this right now. That is how this community grows.</div>
+      <div class="wt-highlight">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+        Share your link from your profile
+      </div>
     </div>
   </div>
-  <div class="ob-footer">
-    <button class="ob-skip" onclick="finishOnboarding()">Skip</button>
-    <div class="ob-dots">
-      <div class="ob-dot active" id="od-0"></div>
-      <div class="ob-dot" id="od-1"></div>
-      <div class="ob-dot" id="od-2"></div>
+  <div class="wt-footer">
+    <button class="wt-skip" onclick="finishOnboarding()">Skip</button>
+    <div class="wt-dots">
+      <div class="wt-dot active" id="wd-0"></div>
+      <div class="wt-dot" id="wd-1"></div>
+      <div class="wt-dot" id="wd-2"></div>
+      <div class="wt-dot" id="wd-3"></div>
     </div>
-    <button class="ob-btn" id="ob-btn" onclick="obNext()">Next</button>
+    <button class="wt-btn" id="wt-btn" onclick="wtNext()">Next</button>
   </div>
 </div>
 
@@ -492,7 +630,10 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
       <div class="streak-label">Your streak</div>
       <div class="streak-count" id="streak-count">0 days</div>
       <div class="streak-sub" id="streak-sub">Post today to start your streak</div>
-      <div style="margin-top:10px;"><span onclick="showScreen('screen-leaderboard')" style="font-size:11px;font-weight:600;color:var(--gold);cursor:pointer;letter-spacing:0.04em;">View leaderboard →</span></div>
+      <div style="margin-top:10px;display:flex;align-items:center;gap:12px;">
+        <span onclick="showScreen('screen-leaderboard')" style="font-size:11px;font-weight:600;color:var(--gold);cursor:pointer;letter-spacing:0.04em;">View leaderboard →</span>
+        <button class="freeze-btn" id="freeze-btn" onclick="useStreakFreeze()" style="margin-top:0;">❄ Freeze streak</button>
+      </div>
     </div>
     <div class="streak-icon"><span class="ico" style="color:var(--gold);"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 17c0 1.38-1.12 2.5-2.5 2.5a2.5 2.5 0 0 1-2.5-2.5C6 14 7 11 9 9c0 0-.5 3 2 4.5C11 9 13.5 6 16 4c0 3 1 5.5 1 7.5a5 5 0 0 1-5 5c-.83 0-1.63-.2-2.33-.55"/></svg></span></div>
   </div>
@@ -513,6 +654,24 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
 
   <div id="countdown-wrap"></div>
 
+  <div class="scripture-card" id="scripture-card">
+    <div class="scripture-ref" id="scripture-ref">Loading...</div>
+    <div class="scripture-text" id="scripture-text"></div>
+  </div>
+
+  <div class="community-milestone" id="community-milestone">
+    <div class="cm-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#0A0A0A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div>
+    <div><div class="cm-title" id="cm-title">Community milestone!</div><div class="cm-sub" id="cm-sub">You are part of something special</div></div>
+    <button class="cm-dismiss" onclick="dismissMilestone()">×</button>
+  </div>
+
+  <div class="invite-card" id="invite-card-home" style="display:none;">
+    <div class="invite-title">Bring someone with you</div>
+    <div class="invite-sub">Share your personal invite link and bring one person into the challenge.</div>
+    <div class="invite-link-box" id="invite-link-home">gowchallenge.com/?ref=...</div>
+    <button class="invite-copy" onclick="copyInviteLink()">Copy invite link</button>
+  </div>
+
   <div class="posted-today" id="posted-today">
     <div class="posted-check"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--gold)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
     <div><div class="posted-title">You showed up today</div><div class="posted-sub" id="posted-sub-text">Come back tomorrow for Day 2</div></div>
@@ -524,6 +683,12 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
     <div id="prompt-chips-wrap" style="margin-bottom:10px;">
       <div style="font-size:11px;font-weight:600;color:var(--muted);letter-spacing:0.04em;margin-bottom:8px;">Tap a prompt to get started</div>
       <div id="prompt-chips" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+    </div>
+    <div style="margin-bottom:8px;">
+      <button class="shoutout-btn" onclick="openShoutout()" id="shoutout-trigger">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <span id="shoutout-label">Tag someone</span>
+      </button>
     </div>
     <div class="compose">
       <div class="compose-hint" id="compose-hint">Day 1 of becoming more grateful.</div>
@@ -537,7 +702,10 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
   <div class="day-filter-wrap" id="day-filter-wrap"></div>
   <div class="feed-header">
     <div class="feed-title">Community</div>
-    <div class="feed-count" id="feed-count"></div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span onclick="showScreen('screen-prayer')" style="font-size:11px;font-weight:600;color:var(--gold-dark);cursor:pointer;background:var(--gold-light);padding:4px 10px;border-radius:20px;">🙏 Prayer wall</span>
+      <div class="feed-count" id="feed-count"></div>
+    </div>
   </div>
   <div class="people-count" id="people-count"></div>
   <div id="feed-container"></div>
@@ -590,6 +758,11 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
     <div class="settings-card">
       <div class="setting-row" onclick="showScreen('screen-notif-prefs')">Notification preferences <span style="color:#B0B0B0;">›</span></div>
       <div class="setting-row" onclick="showScreen('screen-privacy')">Privacy and safety <span style="color:#B0B0B0;">›</span></div>
+    </div>
+    <div class="sec-head">My journey</div>
+    <div class="settings-card">
+      <div class="setting-row" onclick="openJournal()">My journal <span style="color:#B0B0B0;">›</span></div>
+      <div class="setting-row" id="invite-row" onclick="copyInviteLink()">Copy invite link <span style="color:#B0B0B0;">›</span></div>
     </div>
     <div class="sec-head">Explore</div>
     <div class="settings-card">
@@ -858,6 +1031,56 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
     <div class="edit-actions"><button class="edit-cancel" onclick="closeEdit()">Cancel</button><button class="edit-save" onclick="saveEdit()">Save</button></div>
   </div>
 </div>
+<!-- PRAYER WALL -->
+<div class="screen" id="screen-prayer">
+  <div class="inner-bar"><button class="back-btn" onclick="showScreen('screen-home')">←</button><div class="inner-title">Prayer Wall</div></div>
+  <div style="padding:12px 20px 0;background:#F8F8F6;">
+    <div style="background:#0A0A0A;border-radius:var(--r);padding:14px 16px;margin-bottom:12px;">
+      <div style="font-size:13px;color:rgba(255,255,255,0.55);line-height:1.6;">Share a prayer request and let the community stand with you. Every Praying counts.</div>
+    </div>
+    <textarea id="prayer-compose" style="width:100%;border:1px solid var(--border-mid);border-radius:var(--r);padding:13px 16px;font-size:15px;font-family:'DM Sans',sans-serif;color:#0A0A0A;outline:none;resize:none;min-height:80px;background:#FFFFFF;margin-bottom:10px;" placeholder="Share your prayer request..." maxlength="300"></textarea>
+    <button onclick="submitPrayer()" style="width:100%;padding:12px;background:#0A0A0A;color:#FFFFFF;border:none;border-radius:8px;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;margin-bottom:14px;">Post prayer request</button>
+  </div>
+  <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);padding:0 20px 8px;background:#F8F8F6;">Community prayers</div>
+  <div id="prayer-feed" style="flex:1;background:#F8F8F6;"></div>
+  <div class="spacer"></div>
+</div>
+
+<!-- JOURNAL -->
+<div class="screen" id="screen-journal">
+  <div class="inner-bar"><button class="back-btn" onclick="showScreen('screen-profile')">←</button><div class="inner-title">My journal</div></div>
+  <div style="padding:16px 20px;flex:1;background:#F8F8F6;">
+    <div id="journal-feed"></div>
+  </div>
+</div>
+
+<!-- WRAPUP OVERLAY -->
+<div class="wrapup-overlay" id="wrapup-overlay">
+  <div class="wrapup-card">
+    <div style="text-align:center;margin-bottom:16px;">
+      <div style="font-size:36px;">🎉</div>
+    </div>
+    <div class="wrapup-title">You did it.</div>
+    <div class="wrapup-sub">30 days of gratitude. You are not the same person who started.</div>
+    <div class="wrapup-stat">
+      <div class="wrapup-stat-n" id="wu-streak">30</div>
+      <div class="wrapup-stat-l">Day streak</div>
+    </div>
+    <div id="wu-posts-list" style="max-height:240px;overflow-y:auto;"></div>
+    <button class="wrapup-share" onclick="shareWrapup()">Share your journey</button>
+    <span class="wrapup-close" onclick="document.getElementById('wrapup-overlay').classList.remove('show')">Close</span>
+  </div>
+</div>
+
+<!-- SHOUTOUT PICKER -->
+<div class="shoutout-overlay" id="shoutout-overlay" onclick="handleShoutoutOverlay(event)">
+  <div class="shoutout-sheet">
+    <div style="font-size:15px;font-weight:700;color:#0A0A0A;margin-bottom:4px;">Tag someone</div>
+    <div style="font-size:12px;color:var(--muted);">Pick one person from today's community</div>
+    <div class="shoutout-list" id="shoutout-list"></div>
+  </div>
+</div>
+
 <!-- COMMENTS SHEET -->
 <div class="comments-overlay" id="comments-overlay" onclick="handleCommentsOverlayClick(event)">
   <div class="comments-sheet" id="comments-sheet">
@@ -1581,6 +1804,7 @@ function showScreen(id){
   if(id==='screen-home'){loadFeed();buildDayFilter();updatePostedTodayState();}
   if(id==='screen-notifs'){const d=document.getElementById('ndot');if(d)d.style.display='none';loadNotifications();}
   if(id==='screen-leaderboard')loadLeaderboard();
+  if(id==='screen-prayer')loadPrayers();
   window.scrollTo(0,0);
 }
 
@@ -1696,6 +1920,11 @@ function updateProfileUI(){
   startCountdownTimer();
   subscribeToNotifications();
   loadBroadcast();
+  renderScripture();
+  setupInviteLink();
+  updateFreezeBtn();
+  checkCommunityMilestone();
+  checkDay30Wrapup();
   const isAdmin=currentProfile.email===ADMIN_EMAIL;
   const isMod=currentProfile.role==='moderator'||isAdmin;
   document.getElementById('admin-section').style.display=isMod?'block':'none';
@@ -1744,7 +1973,7 @@ async function loadFeed(){
         </div>
         <div style="display:flex;align-items:center;gap:4px;"><span class="post-day">Day ${p.day}</span>${optionsBtn}${deleteBtn}</div>
       </div>
-      <div class="post-text" style="margin-top:10px;">${esc(p.text)}</div>
+      <div class="post-text" style="margin-top:10px;">${esc(p.text)}${p.shoutout_name?'<div class="shoutout-badge" style="margin-top:6px;">🤝 Grateful for '+esc(p.shoutout_name)+'</div>':''}</div>
       <div class="post-actions">
         <button class="act-btn${liked?' liked':''}" onclick="toggleReact('${safeId}','like',this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="${liked?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> ${p.likes||0}</button>
         <button class="act-btn${amened?' amened':''}" onclick="toggleReact('${safeId}','amen',this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg> Amen ${p.amens||0}</button>
@@ -1796,12 +2025,17 @@ async function submitPost(){
   const day=getDay();
   const flagged=isFlagged(text);
   const status=flagged?'pending':'approved';
-  const{error}=await sb.from('posts').insert({user_id:currentUser.id,name:currentProfile.name,avatar_id:currentProfile.avatar_id||1,text,day,status,likes:0,amens:0});
+  const postData={user_id:currentUser.id,name:currentProfile.name,avatar_id:currentProfile.avatar_id||1,text,day,status,likes:0,amens:0};
+  if(selectedShoutout)postData.shoutout_name=selectedShoutout.name;
+  const{error}=await sb.from('posts').insert(postData);
   btn.disabled=false;btn.textContent='Share';
   if(error){showToast('Could not post. Try again.');return;}
   const postTextCopy=text;
   document.getElementById('compose-text').value='';
   document.getElementById('char-left').textContent='300';
+  selectedShoutout=null;
+  const sl=document.getElementById('shoutout-label');if(sl)sl.textContent='Tag someone';
+  const st=document.getElementById('shoutout-trigger');if(st){st.style.background='';st.style.color='';}
   if(flagged){
     const note=document.getElementById('pending-note');
     note.style.display='flex';setTimeout(()=>note.style.display='none',5000);
@@ -1880,21 +2114,28 @@ function removeCard(id){
   if(el){el.style.transition='opacity 0.25s';el.style.opacity='0';setTimeout(()=>el.remove(),260);}
 }
 
-function obNext(){
-  if(obStep<2){
-    document.getElementById('ob-slide-'+obStep).classList.remove('active');
-    document.getElementById('ob-slide-'+obStep).classList.add('exit');
-    document.getElementById('od-'+obStep).classList.remove('active');
-    obStep++;
-    document.getElementById('ob-slide-'+obStep).classList.add('active');
-    document.getElementById('od-'+obStep).classList.add('active');
-    setTimeout(()=>document.querySelectorAll('.ob-slide.exit').forEach(s=>s.classList.remove('exit')),400);
-    if(obStep===2)document.getElementById('ob-btn').textContent="Let's go";
+let wtStep=0;
+function wtNext(){
+  if(wtStep<3){
+    const cur=document.getElementById('wt-slide-'+wtStep);
+    const dot=document.getElementById('wd-'+wtStep);
+    if(cur){cur.classList.remove('active');cur.classList.add('exit');}
+    if(dot)dot.classList.remove('active');
+    wtStep++;
+    const next=document.getElementById('wt-slide-'+wtStep);
+    const nextDot=document.getElementById('wd-'+wtStep);
+    if(next)next.classList.add('active');
+    if(nextDot)nextDot.classList.add('active');
+    setTimeout(()=>document.querySelectorAll('.wt-slide.exit').forEach(s=>s.classList.remove('exit')),400);
+    const btn=document.getElementById('wt-btn');
+    if(btn)btn.textContent=wtStep===3?"Let's go":'Next';
   } else {finishOnboarding();}
 }
+function obNext(){wtNext();}
 
 function finishOnboarding(){
-  document.getElementById('screen-onboarding').classList.remove('active');
+  const ob=document.getElementById('screen-onboarding');
+  if(ob){ob.classList.remove('active');ob.style.display='none';}
   showScreen('screen-home');
 }
 
@@ -1989,6 +2230,296 @@ function timeAgo(date){
 
 function esc(str){
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+
+// ── SCRIPTURES ──────────────────────────────────────────────
+const SCRIPTURES=[
+  {ref:'1 Thessalonians 5:18',text:'Give thanks in all circumstances; for this is the will of God in Christ Jesus for you.'},
+  {ref:'Psalm 107:1',text:'Give thanks to the Lord, for he is good; his love endures forever.'},
+  {ref:'Colossians 3:15',text:'Let the peace of God rule in your hearts — and be thankful.'},
+  {ref:'Ephesians 2:8',text:'For by grace you have been saved through faith — and this is not your own doing. It is the gift of God.'},
+  {ref:'Psalm 100:4',text:'Enter his gates with thanksgiving and his courts with praise; give thanks to him and praise his name.'},
+  {ref:'Philippians 4:6',text:'Do not be anxious about anything, but in every situation present your requests to God with thanksgiving.'},
+  {ref:'Psalm 118:24',text:'This is the day the Lord has made; let us rejoice and be glad in it.'},
+  {ref:'James 1:17',text:'Every good and perfect gift is from above, coming down from the Father of heavenly lights.'},
+  {ref:'Lamentations 3:22-23',text:'The steadfast love of the Lord never ceases; his mercies never come to an end. They are new every morning.'},
+  {ref:'Romans 8:28',text:'And we know that in all things God works for the good of those who love him.'},
+  {ref:'Psalm 34:1',text:'I will extol the Lord at all times; his praise will always be on my lips.'},
+  {ref:'Hebrews 12:28',text:'Let us be thankful, and so worship God acceptably with reverence and awe.'},
+  {ref:'Colossians 4:2',text:'Devote yourselves to prayer, being watchful and thankful.'},
+  {ref:'Psalm 9:1',text:'I will give thanks to you, Lord, with all my heart; I will tell of all your wonderful deeds.'},
+  {ref:'2 Corinthians 9:15',text:'Thanks be to God for his indescribable gift!'},
+  {ref:'Psalm 136:1',text:'Give thanks to the Lord, for he is good. His love endures forever.'},
+  {ref:'Luke 17:16',text:'He threw himself at Jesus feet and thanked him — and he was a Samaritan.'},
+  {ref:'Deuteronomy 8:10',text:'When you have eaten and are satisfied, praise the Lord your God for the good land he has given you.'},
+  {ref:'Isaiah 12:4',text:'Give praise to the Lord, proclaim his name; make known among the nations what he has done.'},
+  {ref:'Psalm 69:30',text:'I will praise God\u2019s name in song and glorify him with thanksgiving.'},
+  {ref:'Romans 1:21',text:'Although they knew God, they neither glorified him as God nor gave thanks to him.'},
+  {ref:'Philippians 4:11',text:'I have learned, in whatsoever state I am, to be content.'},
+  {ref:'1 Chronicles 16:34',text:'Give thanks to the Lord, for he is good; his love endures forever.'},
+  {ref:'Psalm 28:7',text:'The Lord is my strength and my shield; my heart trusts in him, and he helps me.'},
+  {ref:'Ephesians 5:20',text:'Always giving thanks to God the Father for everything, in the name of our Lord Jesus Christ.'},
+  {ref:'Psalm 95:2',text:'Let us come before him with thanksgiving and extol him with music and song.'},
+  {ref:'Romans 5:3-4',text:'We also glory in our sufferings, because suffering produces perseverance; perseverance, character; and character, hope.'},
+  {ref:'Psalm 103:2',text:'Praise the Lord, my soul, and forget not all his benefits.'},
+  {ref:'John 11:41',text:'Father, I thank you that you have heard me.'},
+  {ref:'Revelation 7:12',text:'Praise and glory and wisdom and thanks and honor and power and strength be to our God for ever and ever.'},
+];
+
+function renderScripture(){
+  const day=getDay();
+  const s=SCRIPTURES[(day-1)%SCRIPTURES.length];
+  const ref=document.getElementById('scripture-ref');
+  const text=document.getElementById('scripture-text');
+  if(ref)ref.textContent=s.ref;
+  if(text)text.textContent='"'+s.text+'"';
+}
+
+// ── COMMUNITY MILESTONES ─────────────────────────────────────
+const COMM_MILESTONES=[
+  {count:50,msg:'50 posts on the wall — the community is showing up!'},
+  {count:100,msg:'100 posts together. This is what gratitude looks like.'},
+  {count:250,msg:'250 posts — a generation giving thanks. Keep going.'},
+  {count:500,msg:'500 posts! The wall is alive. GOW community showing up.'},
+  {count:1000,msg:'1000 posts. This is history being written together.'},
+];
+
+async function checkCommunityMilestone(){
+  try{
+    const{count}=await sb.from('posts').select('id',{count:'exact',head:true}).eq('status','approved');
+    const milestone=COMM_MILESTONES.slice().reverse().find(m=>count>=m.count);
+    if(!milestone)return;
+    const key='gow_cm_'+milestone.count;
+    let seen=false;
+    try{seen=localStorage.getItem(key)==='1';}catch(e){}
+    if(seen)return;
+    const banner=document.getElementById('community-milestone');
+    const sub=document.getElementById('cm-sub');
+    if(banner&&sub){sub.textContent=milestone.msg;banner.classList.add('show');banner.dataset.cm=milestone.count;}
+  }catch(e){}
+}
+
+function dismissMilestone(){
+  const banner=document.getElementById('community-milestone');
+  if(!banner)return;
+  try{localStorage.setItem('gow_cm_'+banner.dataset.cm,'1');}catch(e){}
+  banner.classList.remove('show');
+}
+
+// ── INVITE LINK ───────────────────────────────────────────────
+function getInviteLink(){
+  const name=(currentProfile?.name||'friend').split(' ')[0].toLowerCase();
+  return 'https://gowchallenge.com/?ref='+encodeURIComponent(name);
+}
+
+function setupInviteLink(){
+  const box=document.getElementById('invite-link-home');
+  const card=document.getElementById('invite-card-home');
+  if(box)box.textContent=getInviteLink();
+  if(card)card.style.display='block';
+}
+
+function copyInviteLink(){
+  const link=getInviteLink();
+  const text='Join me on the GOW 30-Day Gratitude Challenge — '+link;
+  try{navigator.clipboard.writeText(text);}
+  catch(e){const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);}
+  showToast('Invite link copied!');
+}
+
+// ── PRAYER WALL ───────────────────────────────────────────────
+async function loadPrayers(){
+  const feed=document.getElementById('prayer-feed');
+  if(!feed)return;
+  feed.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:14px;">Loading...</div>';
+  const{data:prayers}=await sb.from('prayers').select('*').order('created_at',{ascending:false}).limit(40);
+  if(!prayers||prayers.length===0){feed.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:14px;line-height:1.7;">No prayer requests yet.<br>Be the first to share.</div>';return;}
+  let myPrayingSet=new Set();
+  if(currentUser){
+    const{data:mine}=await sb.from('prayer_reactions').select('prayer_id').eq('user_id',currentUser.id);
+    (mine||[]).forEach(r=>myPrayingSet.add(r.prayer_id));
+  }
+  feed.innerHTML='';
+  prayers.forEach(p=>{
+    const div=document.createElement('div');div.className='prayer-card';
+    const praying=myPrayingSet.has(p.id);
+    const avHtml=renderAvatarCircle(p.name,p.avatar_id,34,13);
+    div.innerHTML=`
+      <div class="prayer-top">
+        <div style="display:flex;align-items:center;gap:9px;">${avHtml}<div><span style="font-size:14px;font-weight:700;color:#0A0A0A;">${esc(p.name)}</span><span style="font-size:12px;color:var(--muted);margin-left:6px;">${timeAgo(new Date(p.created_at))}</span></div></div>
+      </div>
+      <div class="prayer-text">${esc(p.text)}</div>
+      <button class="pray-btn${praying?' praying':''}" onclick="togglePraying('${p.id}',this)">
+        🙏 Praying ${p.praying_count||0}
+      </button>`;
+    feed.appendChild(div);
+  });
+}
+
+async function submitPrayer(){
+  const text=document.getElementById('prayer-compose').value.trim();
+  if(!text||!currentUser){showToast('Please sign in to post');return;}
+  await sb.from('prayers').insert({user_id:currentUser.id,name:currentProfile.name,avatar_id:currentProfile.avatar_id||1,text,praying_count:0});
+  document.getElementById('prayer-compose').value='';
+  showToast('Prayer posted — the community is with you');
+  loadPrayers();
+}
+
+async function togglePraying(prayerId,btn){
+  if(!currentUser){showToast('Sign in to pray');return;}
+  const praying=btn.classList.contains('praying');
+  if(praying){
+    await sb.from('prayer_reactions').delete().eq('prayer_id',prayerId).eq('user_id',currentUser.id);
+    const cur=parseInt(btn.textContent.replace(/\D/g,''))||0;
+    await sb.from('prayers').update({praying_count:Math.max(0,cur-1)}).eq('id',prayerId);
+    btn.classList.remove('praying');
+    btn.textContent='🙏 Praying '+Math.max(0,cur-1);
+  } else {
+    await sb.from('prayer_reactions').upsert({prayer_id:prayerId,user_id:currentUser.id});
+    const cur=parseInt(btn.textContent.replace(/\D/g,''))||0;
+    await sb.from('prayers').update({praying_count:cur+1}).eq('id',prayerId);
+    btn.classList.add('praying');
+    btn.textContent='🙏 Praying '+(cur+1);
+  }
+}
+
+// ── JOURNAL ───────────────────────────────────────────────────
+async function openJournal(){
+  showScreen('screen-journal');
+  const feed=document.getElementById('journal-feed');
+  feed.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:14px;">Loading...</div>';
+  const{data:posts}=await sb.from('posts').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:true});
+  if(!posts||posts.length===0){feed.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:14px;">You have not posted yet. Start today.</div>';return;}
+  feed.innerHTML='';
+  posts.forEach(p=>{
+    const div=document.createElement('div');div.className='journal-card';
+    const date=new Date(p.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    div.innerHTML=`<div class="journal-day">Day ${p.day}</div><div class="journal-text">${esc(p.text)}</div><div class="journal-date">${date}</div>`;
+    feed.appendChild(div);
+  });
+}
+
+// ── STREAK FREEZE ────────────────────────────────────────────
+function updateFreezeBtn(){
+  const btn=document.getElementById('freeze-btn');
+  if(!btn)return;
+  let used=false;
+  try{
+    const weekKey='gow_freeze_week_'+getWeekKey();
+    used=localStorage.getItem(weekKey)==='1';
+  }catch(e){}
+  btn.disabled=used;
+  btn.textContent=used?'❄ Freeze used':'❄ Freeze streak';
+}
+
+function getWeekKey(){
+  const d=new Date();
+  const jan1=new Date(d.getFullYear(),0,1);
+  return d.getFullYear()+'_w'+Math.ceil(((d-jan1)/86400000+jan1.getDay()+1)/7);
+}
+
+function useStreakFreeze(){
+  if(!currentUser)return;
+  const weekKey='gow_freeze_week_'+getWeekKey();
+  let used=false;
+  try{used=localStorage.getItem(weekKey)==='1';}catch(e){}
+  if(used){showToast('Freeze already used this week');return;}
+  if(!confirm('Use your streak freeze? Protects your streak if you miss today. One per week.'))return;
+  try{localStorage.setItem(weekKey,'1');}catch(e){}
+  // Mark as posted so streak is protected
+  markPostedToday();
+  updatePostedTodayState();
+  updateFreezeBtn();
+  showToast('Streak frozen — you are covered for today');
+}
+
+// ── SHOUTOUT ─────────────────────────────────────────────────
+let selectedShoutout=null;
+
+async function openShoutout(){
+  const overlay=document.getElementById('shoutout-overlay');
+  const list=document.getElementById('shoutout-list');
+  if(!overlay||!list)return;
+  overlay.classList.add('show');
+  list.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);font-size:14px;">Loading...</div>';
+  const{data:posts}=await sb.from('posts').select('user_id,name,avatar_id').eq('status','approved').neq('user_id',currentUser?.id||'').order('created_at',{ascending:false}).limit(30);
+  if(!posts||posts.length===0){list.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);font-size:14px;">No other posts yet today.</div>';return;}
+  const seen=new Set();
+  const unique=posts.filter(p=>{if(seen.has(p.user_id))return false;seen.add(p.user_id);return true;}).slice(0,15);
+  list.innerHTML='';
+  unique.forEach(p=>{
+    const div=document.createElement('div');div.className='shoutout-item';
+    const avHtml=renderAvatarCircle(p.name,p.avatar_id,36,13);
+    div.innerHTML=avHtml+'<span style="font-size:14px;font-weight:500;color:#0A0A0A;">'+esc(p.name)+'</span>';
+    div.onclick=()=>{
+      selectedShoutout={name:p.name,userId:p.user_id};
+      document.getElementById('shoutout-label').textContent='Tagging '+p.name+' ✓';
+      document.getElementById('shoutout-trigger').style.background='var(--gold-light)';
+      document.getElementById('shoutout-trigger').style.color='var(--gold-dark)';
+      overlay.classList.remove('show');
+    };
+    list.appendChild(div);
+  });
+}
+
+function handleShoutoutOverlay(e){if(e.target===document.getElementById('shoutout-overlay'))document.getElementById('shoutout-overlay').classList.remove('show');}
+
+// ── DAY 30 WRAPUP ────────────────────────────────────────────
+async function checkDay30Wrapup(){
+  if(getDay()<30||!currentUser)return;
+  const key='gow_wrapup_2026';
+  let shown=false;
+  try{shown=localStorage.getItem(key)==='1';}catch(e){}
+  if(shown)return;
+  const{data:posts}=await sb.from('posts').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:true});
+  if(!posts||posts.length<20)return;
+  try{localStorage.setItem(key,'1');}catch(e){}
+  document.getElementById('wu-streak').textContent=currentProfile?.streak||30;
+  const list=document.getElementById('wu-posts-list');
+  if(list){
+    list.innerHTML='';
+    posts.slice(0,5).forEach(p=>{
+      const div=document.createElement('div');
+      div.style.cssText='background:rgba(255,255,255,0.06);border-radius:8px;padding:10px 12px;margin-bottom:8px;font-size:13px;color:rgba(255,255,255,0.7);line-height:1.5;';
+      div.innerHTML='<span style="font-size:10px;color:var(--gold);font-weight:700;display:block;margin-bottom:4px;">Day '+p.day+'</span>'+esc(p.text.slice(0,100))+(p.text.length>100?'...':'');
+      list.appendChild(div);
+    });
+  }
+  setTimeout(()=>document.getElementById('wrapup-overlay').classList.add('show'),1500);
+}
+
+function shareWrapup(){
+  const text='I just completed 30 days of the GOW Gratitude Challenge — '+getInviteLink();
+  try{navigator.clipboard.writeText(text);}catch(e){}
+  showToast('Copied — share it everywhere!');
+}
+
+// ── FEATURED POST ─────────────────────────────────────────────
+async function loadFeaturedPost(){
+  try{
+    const{data}=await sb.from('featured_posts').select('post_id').eq('active',true).limit(1);
+    if(!data||data.length===0)return;
+    const{data:post}=await sb.from('posts').select('*').eq('id',data[0].post_id).single();
+    if(!post)return;
+    const c=document.getElementById('feed-container');
+    if(!c)return;
+    const div=document.createElement('div');div.className='featured-card';
+    const avHtml=renderAvatarCircle(post.name,post.avatar_id,34,13).replace('background:','background:');
+    div.innerHTML=`
+      <div class="featured-label"><svg width="13" height="13" viewBox="0 0 24 24" fill="var(--gold)" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Featured post</div>
+      <div style="display:flex;align-items:center;gap:9px;">${avHtml}<span class="featured-name">${esc(post.name)}</span><span class="featured-meta">Day ${post.day}</span></div>
+      <div class="featured-text">${esc(post.text)}</div>`;
+    c.insertBefore(div,c.firstChild);
+  }catch(e){}
+}
+
+// ── ADMIN FEATURED POST ───────────────────────────────────────
+async function featurePost(postId){
+  await sb.from('featured_posts').update({active:false}).eq('active',true);
+  await sb.from('featured_posts').insert({post_id:postId,active:true});
+  showToast('Post featured!');
+  loadFeed();
 }
 
 // Check existing session on load
