@@ -2072,7 +2072,7 @@ async function sendWelcomeEmail(name, email){
   try{
     await fetch('https://iifahicnurctwvdzocgb.supabase.co/functions/v1/send-email',{
       method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPABASE_KEY},
+      headers:{'Content-Type':'application/json'},
       body:JSON.stringify({type:'welcome',name,email})
     });
   }catch(e){console.log('Welcome email error:',e);}
