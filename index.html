@@ -2423,7 +2423,7 @@ async function submitContact(){
       read:false,
       thread:[]
     });
-    if(error)throw error;
+    if(error){console.error('Message insert error:',JSON.stringify(error));throw error;}
     // notify admin via notifications table
     await sb.from('notifications').insert({user_id:null,type:'message',message:currentProfile.name+' sent you a message',read:false}).catch(()=>{});
     msg.style.color='var(--gold-dark)';msg.textContent='Message sent — we will get back to you soon';
