@@ -485,6 +485,28 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
 .shoutout-item{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);cursor:pointer;}
 .shoutout-item:last-child{border:none;}
 .shoutout-item:hover{opacity:0.7;}
+
+/* MESSAGES */
+.msg-item{background:#FFFFFF;border:1px solid var(--border);border-radius:var(--r);padding:15px 16px;margin-bottom:8px;cursor:pointer;transition:background 0.15s;}
+.msg-item:hover{background:#F8F8F6;}
+.msg-item.unread{border-color:rgba(198,168,91,0.3);background:#FFFDF8;}
+.msg-from{font-size:14px;font-weight:700;color:#0A0A0A;margin-bottom:3px;}
+.msg-preview{font-size:13px;color:var(--muted);line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.msg-time{font-size:11px;color:var(--muted);margin-top:4px;}
+.msg-thread{padding:16px 20px;flex:1;overflow-y:auto;background:#F8F8F6;}
+.msg-bubble{max-width:85%;margin-bottom:12px;}
+.msg-bubble.sent{margin-left:auto;}
+.msg-bubble-text{padding:11px 14px;border-radius:14px;font-size:14px;line-height:1.6;}
+.msg-bubble.received .msg-bubble-text{background:#FFFFFF;border:1px solid var(--border);color:#0A0A0A;border-radius:4px 14px 14px 14px;}
+.msg-bubble.sent .msg-bubble-text{background:#0A0A0A;color:#FFFFFF;border-radius:14px 4px 14px 14px;}
+.msg-bubble.admin .msg-bubble-text{background:var(--gold-light);color:var(--gold-dark);border:1px solid rgba(198,168,91,0.3);border-radius:4px 14px 14px 14px;}
+.msg-bubble-meta{font-size:10px;color:var(--muted);margin-top:4px;padding:0 4px;}
+.msg-bubble.sent .msg-bubble-meta{text-align:right;}
+.msg-reply-wrap{padding:12px 16px;border-top:1px solid var(--border);background:#FFFFFF;display:flex;gap:10px;align-items:center;}
+.msg-reply-input{flex:1;border:1px solid var(--border-mid);border-radius:20px;padding:9px 16px;font-size:14px;font-family:'DM Sans',sans-serif;color:#0A0A0A;outline:none;background:#F8F8F6;}
+.msg-reply-input:focus{border-color:#0A0A0A;background:#FFFFFF;}
+.msg-reply-send{background:#0A0A0A;color:#FFFFFF;border:none;border-radius:20px;padding:9px 18px;font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;white-space:nowrap;}
+.msg-unread-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;}
 </style>
 </head>
 <body>
@@ -763,6 +785,7 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
     <div class="sec-head">My journey</div>
     <div class="settings-card">
       <div class="setting-row" onclick="openJournal()">My journal <span style="color:#B0B0B0;">›</span></div>
+      <div class="setting-row" onclick="openUserMessages()">Messages <span id="msg-badge-profile" style="background:var(--gold);color:#0A0A0A;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;display:none;margin-left:6px;"></span><span style="color:#B0B0B0;margin-left:auto;">›</span></div>
       <div class="setting-row" id="invite-row" onclick="copyInviteLink()">Copy invite link <span style="color:#B0B0B0;">›</span></div>
     </div>
     <div class="sec-head">Explore</div>
@@ -917,6 +940,7 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
     <button class="admin-tab active" id="atab-posts" onclick="switchAdminTab('posts')" style="flex:1;padding:12px;font-size:12px;font-weight:700;font-family:'DM Sans',sans-serif;color:var(--gold);background:none;border:none;border-bottom:2px solid var(--gold);cursor:pointer;letter-spacing:0.04em;text-transform:uppercase;">Posts</button>
     <button class="admin-tab" id="atab-team" onclick="switchAdminTab('team')" style="flex:1;padding:12px;font-size:12px;font-weight:700;font-family:'DM Sans',sans-serif;color:rgba(255,255,255,0.35);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;letter-spacing:0.04em;text-transform:uppercase;">Team</button>
     <button class="admin-tab" id="atab-broadcast" onclick="switchAdminTab('broadcast')" style="flex:1;padding:12px;font-size:12px;font-weight:700;font-family:'DM Sans',sans-serif;color:rgba(255,255,255,0.35);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;letter-spacing:0.04em;text-transform:uppercase;">Broadcast</button>
+    <button class="admin-tab" id="atab-messages" onclick="switchAdminTab('messages')" style="flex:1;padding:12px;font-size:12px;font-weight:700;font-family:'DM Sans',sans-serif;color:rgba(255,255,255,0.35);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;letter-spacing:0.04em;text-transform:uppercase;">Messages</button>
   </div>
 
   <div id="admin-posts-tab">
@@ -1098,6 +1122,24 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
     <div style="font-size:15px;font-weight:700;color:#0A0A0A;margin-bottom:4px;">Tag someone</div>
     <div style="font-size:12px;color:var(--muted);">Pick one person from today's community</div>
     <div class="shoutout-list" id="shoutout-list"></div>
+  </div>
+</div>
+
+<!-- USER MESSAGES -->
+<div class="screen" id="screen-messages">
+  <div class="inner-bar"><button class="back-btn" onclick="showScreen('screen-profile')">←</button><div class="inner-title">Messages</div></div>
+  <div style="flex:1;background:#F8F8F6;padding:16px 20px;">
+    <div id="user-msg-list"><div style="text-align:center;padding:40px 20px;color:var(--muted);font-size:14px;">Loading...</div></div>
+  </div>
+</div>
+
+<!-- MESSAGE THREAD (user) -->
+<div class="screen" id="screen-msg-thread">
+  <div class="inner-bar"><button class="back-btn" onclick="showScreen('screen-messages')">←</button><div class="inner-title" id="thread-title">Message</div></div>
+  <div class="msg-thread" id="msg-thread-list"></div>
+  <div class="msg-reply-wrap">
+    <input class="msg-reply-input" id="msg-reply-input" type="text" placeholder="Type a message..." maxlength="500"/>
+    <button class="msg-reply-send" onclick="sendUserReply()">Send</button>
   </div>
 </div>
 
@@ -1846,6 +1888,7 @@ function showScreen(id){
   const el=document.getElementById(id);if(el)el.classList.add('active');
   if(id==='screen-admin')loadModQueue();
   if(id==='screen-home'){loadFeed();buildDayFilter();updatePostedTodayState();}
+  if(id==='screen-messages')openUserMessages();
   if(id==='screen-notifs'){const d=document.getElementById('ndot');if(d)d.style.display='none';loadNotifications();}
   if(id==='screen-leaderboard')loadLeaderboard();
   if(id==='screen-prayer')loadPrayers();
@@ -1972,6 +2015,7 @@ function updateProfileUI(){
   updateFreezeBtn();
   checkCommunityMilestone();
   checkDay30Wrapup();
+  checkUnreadMessages();
   const isAdmin=currentProfile.email===ADMIN_EMAIL;
   const isMod=currentProfile.role==='moderator'||isAdmin;
   document.getElementById('admin-section').style.display=isMod?'block':'none';
@@ -2225,11 +2269,13 @@ function switchAdminTab(tab){
   const isPosts=tab==='posts';
   const isTeam=tab==='team';
   const isBroadcast=tab==='broadcast';
+  const isMessages=tab==='messages';
   document.getElementById('admin-posts-tab').style.display=isPosts?'block':'none';
   document.getElementById('admin-team-tab').style.display=isTeam?'flex':'none';
   document.getElementById('admin-team-tab').style.flexDirection='column';
   document.getElementById('admin-broadcast-tab').style.display=isBroadcast?'block':'none';
-  ['posts','team','broadcast'].forEach(t=>{
+  document.getElementById('admin-messages-tab').style.display=isMessages?'flex':'none';
+  ['posts','team','broadcast','messages'].forEach(t=>{
     const btn=document.getElementById('atab-'+t);
     if(!btn)return;
     const active=t===tab;
@@ -2238,6 +2284,7 @@ function switchAdminTab(tab){
   });
   if(isTeam)loadTeam();
   if(isBroadcast)loadActiveBroadcast();
+  if(isMessages)loadAdminMessages();
 }
 
 async function addModerator(){
@@ -2334,15 +2381,169 @@ async function submitContact(){
   if(!currentUser){msg.style.color='#CC3333';msg.textContent='Please sign in first';return;}
   msg.style.color='var(--muted)';msg.textContent='Sending...';
   try{
-    await fetch('https://iifahicnurctwvdzocgb.supabase.co/functions/v1/send-email',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({type:'contact',name:currentProfile.name,email:currentProfile.email,message:text})
+    const{error}=await sb.from('messages').insert({
+      user_id:currentUser.id,
+      name:currentProfile.name,
+      email:currentProfile.email,
+      text,
+      read:false,
+      thread:[]
     });
+    if(error)throw error;
     msg.style.color='var(--gold-dark)';msg.textContent='Message sent — we will get back to you soon';
     document.getElementById('contact-field').value='';
     setTimeout(()=>closeContact(),2000);
   }catch(e){msg.style.color='#CC3333';msg.textContent='Could not send — try again';}
+}
+
+
+// ── MESSAGES ──────────────────────────────────────────────
+let activeMessageId=null;
+
+async function openUserMessages(){
+  showScreen('screen-messages');
+  const list=document.getElementById('user-msg-list');
+  list.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:14px;">Loading...</div>';
+  const{data:msgs}=await sb.from('messages').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false});
+  if(!msgs||msgs.length===0){
+    list.innerHTML='<div style="text-align:center;padding:40px 20px;color:var(--muted);font-size:14px;line-height:1.7;">No messages yet.<br>Use Contact us to send us a message.</div>';
+    return;
+  }
+  list.innerHTML='';
+  msgs.forEach(m=>{
+    const hasReply=m.thread&&m.thread.length>0;
+    const lastMsg=hasReply?m.thread[m.thread.length-1]:null;
+    const preview=lastMsg?lastMsg.text:m.text;
+    const unread=hasReply&&!m.user_read;
+    const div=document.createElement('div');
+    div.className='msg-item'+(unread?' unread':'');
+    div.innerHTML=`
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;">
+        <div class="msg-from">Your message</div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          ${unread?'<div class="msg-unread-dot"></div>':''}
+          <div class="msg-time">${timeAgo(new Date(m.created_at))}</div>
+        </div>
+      </div>
+      <div class="msg-preview">${esc(preview)}</div>`;
+    div.onclick=()=>openUserThread(m);
+    list.appendChild(div);
+  });
+}
+
+async function openUserThread(msg){
+  activeMessageId=msg.id;
+  document.getElementById('thread-title').textContent='Message';
+  showScreen('screen-msg-thread');
+  // mark as read
+  await sb.from('messages').update({user_read:true}).eq('id',msg.id);
+  renderUserThread(msg);
+}
+
+function renderUserThread(msg){
+  const list=document.getElementById('msg-thread-list');
+  list.innerHTML='';
+  // original message
+  const orig=document.createElement('div');
+  orig.className='msg-bubble sent';
+  orig.innerHTML=`<div class="msg-bubble-text">${esc(msg.text)}</div><div class="msg-bubble-meta">${timeAgo(new Date(msg.created_at))}</div>`;
+  list.appendChild(orig);
+  // thread replies
+  (msg.thread||[]).forEach(t=>{
+    const div=document.createElement('div');
+    div.className='msg-bubble '+(t.from==='admin'?'admin':' sent');
+    div.innerHTML=`<div class="msg-bubble-text">${esc(t.text)}</div><div class="msg-bubble-meta">${t.from==='admin'?'GOW':'You'} · ${timeAgo(new Date(t.at))}</div>`;
+    list.appendChild(div);
+  });
+  list.scrollTop=list.scrollHeight;
+}
+
+async function sendUserReply(){
+  const input=document.getElementById('msg-reply-input');
+  const text=input.value.trim();
+  if(!text||!activeMessageId)return;
+  input.value='';
+  const{data:msg}=await sb.from('messages').select('thread').eq('id',activeMessageId).single();
+  const thread=[...(msg.thread||[]),{from:'user',text,at:new Date().toISOString()}];
+  await sb.from('messages').update({thread,read:false,user_read:true}).eq('id',activeMessageId);
+  const{data:updated}=await sb.from('messages').select('*').eq('id',activeMessageId).single();
+  if(updated)renderUserThread(updated);
+}
+
+// ADMIN MESSAGES
+async function loadAdminMessages(){
+  const list=document.getElementById('admin-msg-list');
+  if(!list)return;
+  list.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:14px;">Loading...</div>';
+  const{data:msgs}=await sb.from('messages').select('*').order('created_at',{ascending:false});
+  if(!msgs||msgs.length===0){list.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:14px;">No messages yet.</div>';return;}
+  list.innerHTML='';
+  msgs.forEach(m=>{
+    const unread=!m.read;
+    const preview=m.thread&&m.thread.length>0?m.thread[m.thread.length-1].text:m.text;
+    const div=document.createElement('div');
+    div.className='msg-item'+(unread?' unread':'');
+    div.innerHTML=`
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;">
+        <div class="msg-from">${esc(m.name)}</div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          ${unread?'<div class="msg-unread-dot"></div>':''}
+          <div class="msg-time">${timeAgo(new Date(m.created_at))}</div>
+        </div>
+      </div>
+      <div class="msg-preview">${esc(preview)}</div>`;
+    div.onclick=()=>openAdminThread(m);
+    list.appendChild(div);
+  });
+}
+
+async function openAdminThread(msg){
+  activeMessageId=msg.id;
+  document.getElementById('admin-thread-name').textContent=msg.name;
+  document.getElementById('admin-thread-email').textContent=msg.email;
+  // mark as read
+  await sb.from('messages').update({read:true}).eq('id',msg.id);
+  showScreen('screen-admin-thread');
+  renderAdminThread(msg);
+}
+
+function renderAdminThread(msg){
+  const list=document.getElementById('admin-thread-list');
+  list.innerHTML='';
+  const orig=document.createElement('div');
+  orig.className='msg-bubble received';
+  orig.innerHTML=`<div class="msg-bubble-text">${esc(msg.text)}</div><div class="msg-bubble-meta">${esc(msg.name)} · ${timeAgo(new Date(msg.created_at))}</div>`;
+  list.appendChild(orig);
+  (msg.thread||[]).forEach(t=>{
+    const div=document.createElement('div');
+    div.className='msg-bubble '+(t.from==='admin'?'sent':' received');
+    div.innerHTML=`<div class="msg-bubble-text">${esc(t.text)}</div><div class="msg-bubble-meta">${t.from==='admin'?'GOW':esc(msg.name)} · ${timeAgo(new Date(t.at))}</div>`;
+    list.appendChild(div);
+  });
+  list.scrollTop=list.scrollHeight;
+}
+
+async function sendAdminReply(){
+  const input=document.getElementById('admin-reply-input');
+  const text=input.value.trim();
+  if(!text||!activeMessageId)return;
+  input.value='';
+  const{data:msg}=await sb.from('messages').select('*').eq('id',activeMessageId).single();
+  const thread=[...(msg.thread||[]),{from:'admin',text,at:new Date().toISOString()}];
+  await sb.from('messages').update({thread,user_read:false}).eq('id',activeMessageId);
+  const{data:updated}=await sb.from('messages').select('*').eq('id',activeMessageId).single();
+  if(updated)renderAdminThread(updated);
+  showToast('Reply sent');
+}
+
+async function checkUnreadMessages(){
+  if(!currentUser)return;
+  const{data:msgs}=await sb.from('messages').select('id').eq('user_id',currentUser.id).eq('user_read',false);
+  const badge=document.getElementById('msg-badge-profile');
+  if(badge&&msgs&&msgs.length>0){
+    badge.textContent=msgs.length;
+    badge.style.display='inline-block';
+  }
 }
 
 // ── SCRIPTURES ──────────────────────────────────────────────
