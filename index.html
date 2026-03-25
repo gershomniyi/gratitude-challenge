@@ -2232,7 +2232,6 @@ async function notifyPostOwner(postId,type){
     :currentProfile.name+' said Amen on your post';
   await sb.from('notifications').insert({user_id:post.user_id,type,message:msg,read:false}).catch(()=>{});
 }
-
 async function deletePost(id){
   if(!confirm('Delete this post?'))return;
   const{error}=await sb.from('posts').delete().eq('id',id);
@@ -2460,13 +2459,10 @@ async function submitContact(){
   msg.style.color='var(--gold-dark)';msg.textContent='Message sent — we will get back to you soon';
   document.getElementById('contact-field').value='';
   setTimeout(()=>closeContact(),2000);
-  // Fire notification in background — don't await
-  sb.from('notifications').insert({
-    user_id:currentUser.id,
-    type:'message',
-    message:(currentProfile?.name||'User')+' sent you a message',
-    read:false
-  }).catch(()=>{});
+  // notify admin by finding their user ID
+  sb.from('profiles').select('id').eq('email',ADMIN_EMAIL).single().then(({data:admin})=>{
+    if(admin)sb.from('notifications').insert({user_id:admin.id,type:'message',message:(currentProfile?.name||'User')+' sent you a message',read:false}).catch(()=>{});
+  });
 }
 
 
