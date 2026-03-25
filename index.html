@@ -756,6 +756,7 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
     </div>
     <div class="sec-head">Account</div>
     <div class="settings-card">
+      <div class="setting-row" onclick="replayWalkthrough()">How the app works <span style="color:#B0B0B0;">›</span></div>
       <div class="setting-row" onclick="showScreen('screen-notif-prefs')">Notification preferences <span style="color:#B0B0B0;">›</span></div>
       <div class="setting-row" onclick="showScreen('screen-privacy')">Privacy and safety <span style="color:#B0B0B0;">›</span></div>
     </div>
@@ -1773,9 +1774,11 @@ async function saveEdit(){
 async function deleteOwnPost(id){
   document.querySelectorAll('.post-menu').forEach(m=>m.remove());
   if(!confirm('Delete your post?'))return;
-  await sb.from('posts').delete().eq('id',id);
+  const{error}=await sb.from('posts').delete().eq('id',id);
+  if(error){showToast('Could not delete — try again');return;}
+  const wrap=document.querySelector('[data-post-id="'+id+'"]');
+  if(wrap){wrap.style.transition='opacity 0.2s';wrap.style.opacity='0';setTimeout(()=>{wrap.remove();},220);}
   showToast('Post deleted');
-  loadFeed();
 }
 
 function getDay(){
@@ -1953,7 +1956,7 @@ async function loadFeed(){
   const likedSet=new Set((myLikes||[]).filter(l=>l.type==='like').map(l=>l.post_id));
   const amenSet=new Set((myLikes||[]).filter(l=>l.type==='amen').map(l=>l.post_id));
   posts.forEach(p=>{
-    const wrap=document.createElement('div');wrap.className='post-card-wrap';
+    const wrap=document.createElement('div');wrap.className='post-card-wrap';wrap.dataset.postId=p.id;
     const d=document.createElement('div');d.className='post-card';
     const t=new Date(p.created_at);
     const ago=timeAgo(t);
@@ -2071,9 +2074,12 @@ async function notifyPostOwner(postId,type){
 
 async function deletePost(id){
   if(!confirm('Delete this post?'))return;
-  await sb.from('posts').delete().eq('id',id);
+  const{error}=await sb.from('posts').delete().eq('id',id);
+  if(error){showToast('Could not delete — try again');return;}
+  // Remove from DOM instantly without reloading
+  const wrap=document.querySelector('[data-post-id="'+id+'"]');
+  if(wrap){wrap.style.transition='opacity 0.2s';wrap.style.opacity='0';setTimeout(()=>{wrap.remove();},220);}
   showToast('Post deleted');
-  loadFeed();
 }
 
 async function loadModQueue(){
@@ -2132,6 +2138,16 @@ function wtNext(){
   } else {finishOnboarding();}
 }
 function obNext(){wtNext();}
+
+function replayWalkthrough(){
+  wtStep=0;
+  document.querySelectorAll('.wt-slide').forEach((s,i)=>{s.classList.remove('active','exit');if(i===0)s.classList.add('active');});
+  document.querySelectorAll('.wt-dot').forEach((d,i)=>{d.classList.remove('active');if(i===0)d.classList.add('active');});
+  const btn=document.getElementById('wt-btn');if(btn)btn.textContent='Next';
+  document.querySelectorAll('.screen,.wt-screen').forEach(s=>s.classList.remove('active'));
+  const ob=document.getElementById('screen-onboarding');
+  if(ob){ob.style.display='flex';ob.classList.add('active');}
+}
 
 function finishOnboarding(){
   const ob=document.getElementById('screen-onboarding');
