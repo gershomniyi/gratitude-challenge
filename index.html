@@ -1763,6 +1763,16 @@ function subscribeToNotifications(){
         }
       })
     .subscribe();
+  // Also watch messages table for new messages (admin)
+  if(currentProfile?.email===ADMIN_EMAIL){
+    sb.channel('new-messages')
+      .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},
+        ()=>{
+          const dot=document.getElementById('ndot');
+          if(dot)dot.style.display='block';
+        })
+      .subscribe();
+  }
 }
 
 function prependNotifItem(n,list){
@@ -2414,28 +2424,26 @@ async function submitContact(){
   if(!text){msg.style.color='#CC3333';msg.textContent='Please enter a message';return;}
   if(!currentUser){msg.style.color='#CC3333';msg.textContent='Please sign in first';return;}
   msg.style.color='var(--muted)';msg.textContent='Sending...';
-  try{
-    const insertData={
-      user_id:currentUser.id,
-      name:currentProfile?.name||'User',
-      email:currentProfile?.email||currentUser.email||'',
-      text:text,
-      read:false,
-      thread:[],
-      user_read:true
-    };
-    console.log('Inserting message:',JSON.stringify(insertData));
-    const result=await sb.from('messages').insert(insertData);
-    console.log('Insert result:',JSON.stringify(result));
-    if(result.error){console.error('Insert error:',JSON.stringify(result.error));throw result.error;}
-    await sb.from('notifications').insert({user_id:null,type:'message',message:(currentProfile?.name||'User')+' sent you a message',read:false}).catch(e=>console.log('notif error:',e));
-    msg.style.color='var(--gold-dark)';msg.textContent='Message sent — we will get back to you soon';
-    document.getElementById('contact-field').value='';
-    setTimeout(()=>closeContact(),2000);
-  }catch(e){
-    console.error('Contact error:',e,JSON.stringify(e));
+  const insertData={
+    user_id:currentUser.id,
+    name:currentProfile?.name||'User',
+    email:currentProfile?.email||currentUser.email||'',
+    text:text,
+    read:false,
+    thread:[],
+    user_read:true
+  };
+  const result=await sb.from('messages').insert(insertData);
+  if(result.error){
+    console.error('Insert error:',JSON.stringify(result.error));
     msg.style.color='#CC3333';msg.textContent='Could not send — try again';
+    return;
   }
+  // notify admin — fire and forget, don't let it block success
+  sb.from('notifications').insert({user_id:currentUser.id,type:'message',message:(currentProfile?.name||'User')+' sent you a message',read:false}).catch(()=>{});
+  msg.style.color='var(--gold-dark)';msg.textContent='Message sent — we will get back to you soon';
+  document.getElementById('contact-field').value='';
+  setTimeout(()=>closeContact(),2000);
 }
 
 
