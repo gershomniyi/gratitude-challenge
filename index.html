@@ -1886,12 +1886,13 @@ async function enterApp(user){
     updateProfileUI();
     setLoading(false);
     if(isFirstTime){
-      obStep=0;
-      document.querySelectorAll('.ob-slide').forEach((s,i)=>{s.classList.remove('active','exit');if(i===0)s.classList.add('active');});
-      document.querySelectorAll('.ob-dot').forEach((d,i)=>{d.classList.remove('active');if(i===0)d.classList.add('active');});
-      document.getElementById('ob-btn').textContent='Next';
-      document.querySelectorAll('.screen,.ob-screen').forEach(s=>s.classList.remove('active'));
-      document.getElementById('screen-onboarding').classList.add('active');
+      wtStep=0;
+      document.querySelectorAll('.wt-slide').forEach((s,i)=>{s.classList.remove('active','exit');if(i===0)s.classList.add('active');});
+      document.querySelectorAll('.wt-dot').forEach((d,i)=>{d.classList.remove('active');if(i===0)d.classList.add('active');});
+      const wtbtn=document.getElementById('wt-btn');if(wtbtn)wtbtn.textContent='Next';
+      document.querySelectorAll('.screen,.wt-screen,.ob-screen').forEach(s=>{s.classList.remove('active');s.style.display='none';});
+      const obScreen=document.getElementById('screen-onboarding');
+      if(obScreen){obScreen.style.display='flex';obScreen.classList.add('active');}
     } else {
       showScreen('screen-home');
     }
