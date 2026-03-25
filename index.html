@@ -940,7 +940,7 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
     <button class="admin-tab active" id="atab-posts" onclick="switchAdminTab('posts')" style="flex:1;padding:12px;font-size:12px;font-weight:700;font-family:'DM Sans',sans-serif;color:var(--gold);background:none;border:none;border-bottom:2px solid var(--gold);cursor:pointer;letter-spacing:0.04em;text-transform:uppercase;">Posts</button>
     <button class="admin-tab" id="atab-team" onclick="switchAdminTab('team')" style="flex:1;padding:12px;font-size:12px;font-weight:700;font-family:'DM Sans',sans-serif;color:rgba(255,255,255,0.35);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;letter-spacing:0.04em;text-transform:uppercase;">Team</button>
     <button class="admin-tab" id="atab-broadcast" onclick="switchAdminTab('broadcast')" style="flex:1;padding:12px;font-size:12px;font-weight:700;font-family:'DM Sans',sans-serif;color:rgba(255,255,255,0.35);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;letter-spacing:0.04em;text-transform:uppercase;">Broadcast</button>
-    <button class="admin-tab" id="atab-messages" onclick="switchAdminTab('messages')" style="flex:1;padding:12px;font-size:12px;font-weight:700;font-family:'DM Sans',sans-serif;color:rgba(255,255,255,0.35);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;letter-spacing:0.04em;text-transform:uppercase;">Messages</button>
+    <button class="admin-tab" id="atab-messages" onclick="switchAdminTab('messages')" style="flex:1;padding:12px;font-size:12px;font-weight:700;font-family:'DM Sans',sans-serif;color:rgba(255,255,255,0.35);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;letter-spacing:0.04em;text-transform:uppercase;">Messages <span id="admin-msg-count" style="display:none;background:var(--gold);color:#0A0A0A;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:4px;"></span></button>
   </div>
 
   <div id="admin-posts-tab">
@@ -1750,6 +1750,19 @@ function buildDayFilter(){
 }
 
 // REAL-TIME NOTIFICATIONS
+async function checkAdminUnreadMessages(){
+  if(currentProfile?.email!==ADMIN_EMAIL)return;
+  const{data,count}=await sb.from('messages').select('id',{count:'exact',head:true}).eq('read',false);
+  const badge=document.getElementById('admin-msg-count');
+  const dot=document.getElementById('ndot');
+  if(count&&count>0){
+    if(badge){badge.textContent=count;badge.style.display='inline-block';}
+    if(dot)dot.style.display='block';
+  } else {
+    if(badge)badge.style.display='none';
+  }
+}
+
 function subscribeToNotifications(){
   if(!currentUser||notifSubscription)return;
   notifSubscription=sb.channel('notifs-'+currentUser.id)
@@ -1770,6 +1783,7 @@ function subscribeToNotifications(){
         ()=>{
           const dot=document.getElementById('ndot');
           if(dot)dot.style.display='block';
+          checkAdminUnreadMessages();
         })
       .subscribe();
   }
@@ -2060,6 +2074,7 @@ function updateProfileUI(){
   checkCommunityMilestone();
   checkDay30Wrapup();
   checkUnreadMessages();
+  checkAdminUnreadMessages();
   const isAdmin=currentProfile.email===ADMIN_EMAIL;
   const isMod=currentProfile.role==='moderator'||isAdmin;
   document.getElementById('admin-section').style.display=isMod?'block':'none';
@@ -2328,7 +2343,11 @@ function switchAdminTab(tab){
   });
   if(isTeam)loadTeam();
   if(isBroadcast)loadActiveBroadcast();
-  if(isMessages)loadAdminMessages();
+  if(isMessages){
+    loadAdminMessages();
+    const badge=document.getElementById('admin-msg-count');
+    if(badge)badge.style.display='none';
+  }
 }
 
 async function addModerator(){
