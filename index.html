@@ -1200,7 +1200,7 @@ async function saveAvatar(){
 }
 
 // COUNTDOWN — locks posting before April 1 2026
-const CHALLENGE_START=new Date('2026-04-01T00:00:00');
+const CHALLENGE_START=new Date('2026-04-01T00:00:00-06:00');
 
 function challengeStarted(){
   return new Date()>=CHALLENGE_START;
