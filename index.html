@@ -1857,6 +1857,8 @@ async function doSignup(){
   if(error){document.getElementById('signup-error').textContent=error.message;return;}
   if(data.user){
     await sb.from('profiles').upsert({id:data.user.id,name:n,email:e,role:'member',streak:0,days_in:0});
+    sendWelcomeEmail(n,e);
+    notifyAdminNewUser(n,e);
     isFirstTime=true;
     await enterApp(data.user);
   }
@@ -2064,6 +2066,70 @@ async function submitPost(){
   markPostedToday();
   updatePostedTodayState();
   notifyAdmin(currentProfile.name,text,day);
+}
+
+async function notifyAdminNewUser(name, email){
+  try{
+    await fetch('https://api.resend.com/emails',{
+      method:'POST',
+      headers:{'Authorization':'Bearer re_UrpDpDA4_avfBy4jwPvfXhU7epF13FWFD','Content-Type':'application/json'},
+      body:JSON.stringify({
+        from:'GOW Gratitude Challenge <noreply@gowchallenge.com>',
+        to:'gershomadeniyi@gmail.com',
+        subject:'New signup — '+name+' just joined',
+        html:`<div style="font-family:sans-serif;padding:24px;background:#F8F8F6;">
+          <div style="max-width:480px;margin:0 auto;background:#0A0A0A;border-radius:12px;padding:24px;">
+            <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#C6A85B;margin-bottom:12px;">New signup</div>
+            <div style="font-size:20px;font-weight:700;color:#FFFFFF;margin-bottom:6px;">${name}</div>
+            <div style="font-size:14px;color:rgba(255,255,255,0.45);margin-bottom:20px;">${email}</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.4);line-height:1.6;">Just joined the GOW Gratitude Challenge. The community is growing.</div>
+          </div>
+        </div>`
+      })
+    });
+  }catch(e){console.log('Admin notify error:',e);}
+}
+
+async function sendWelcomeEmail(name, email){
+  try{
+    await fetch('https://api.resend.com/emails',{
+      method:'POST',
+      headers:{'Authorization':'Bearer re_UrpDpDA4_avfBy4jwPvfXhU7epF13FWFD','Content-Type':'application/json'},
+      body:JSON.stringify({
+        from:'GOW Gratitude Challenge <noreply@gowchallenge.com>',
+        to:email,
+        subject:"You're in — the GOW Gratitude Challenge starts April 1",
+        html:`<!DOCTYPE html><html><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/></head><body style="margin:0;padding:0;background:#F8F8F6;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#F8F8F6;padding:40px 20px;">
+<tr><td align="center">
+<table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#0A0A0A;border-radius:16px;overflow:hidden;">
+  <tr><td style="padding:40px 36px 28px;text-align:center;">
+    <div style="font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#C6A85B;margin-bottom:16px;">Generation Of The Word</div>
+    <div style="font-size:28px;font-weight:700;color:#FFFFFF;line-height:1.2;margin-bottom:8px;">You are in.</div>
+    <div style="width:32px;height:1px;background:#C6A85B;margin:0 auto 24px;"></div>
+  </td></tr>
+  <tr><td style="padding:0 36px 32px;">
+    <p style="font-size:15px;color:rgba(255,255,255,0.7);line-height:1.75;margin:0 0 18px;">Hi ${name},</p>
+    <p style="font-size:15px;color:rgba(255,255,255,0.7);line-height:1.75;margin:0 0 18px;">Welcome to the GOW Gratitude Challenge — 30 days of showing up, posting what you are grateful for, and doing it together as a community rooted in faith.</p>
+    <p style="font-size:15px;color:rgba(255,255,255,0.7);line-height:1.75;margin:0 0 18px;">You signed up before it even started. That already says something about you.</p>
+    <div style="background:rgba(198,168,91,0.1);border:1px solid rgba(198,168,91,0.2);border-radius:10px;padding:18px 20px;margin:0 0 24px;">
+      <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#C6A85B;margin-bottom:8px;">What happens next</div>
+      <p style="font-size:14px;color:rgba(255,255,255,0.6);line-height:1.7;margin:0;">The challenge goes live on <strong style="color:#FFFFFF;">April 1</strong>. Between now and then — explore the app, set up your profile, and invite one person who needs this.</p>
+    </div>
+    <p style="font-size:14px;color:rgba(255,255,255,0.5);line-height:1.75;margin:0 0 28px;font-style:italic;">"Give thanks in all circumstances; for this is the will of God in Christ Jesus for you." — 1 Thessalonians 5:18</p>
+    <table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center">
+      <a href="https://gowchallenge.com" style="display:inline-block;background:#C6A85B;color:#0A0A0A;text-decoration:none;font-size:14px;font-weight:700;padding:14px 32px;border-radius:8px;">Open the app →</a>
+    </td></tr></table>
+  </td></tr>
+  <tr><td style="padding:20px 36px 32px;border-top:1px solid rgba(255,255,255,0.07);text-align:center;">
+    <p style="font-size:12px;color:rgba(255,255,255,0.25);margin:0;line-height:1.6;">— Gershom &amp; the GOW community<br>gowchallenge.com</p>
+  </td></tr>
+</table>
+</td></tr></table>
+</body></html>`
+      })
+    });
+  }catch(e){console.log('Welcome email error:',e);}
 }
 
 async function notifyAdmin(name,text,day){
