@@ -1202,7 +1202,7 @@ function renderCountdown(){
     <div class="countdown-wrap">
       <div class="countdown-eyebrow">Coming April 1</div>
       <div class="countdown-title">The challenge is almost here</div>
-      <div class="countdown-sub">Sign up, explore the app, and get ready.<br>Posting unlocks when the challenge begins.</div>
+      <div class="countdown-sub">Get ready. The wall opens and posting unlocks<br>the moment the challenge begins.</div>
       <div class="countdown-units">
         <div class="countdown-unit"><span class="countdown-num">${String(days).padStart(2,'0')}</span><span class="countdown-label">Days</span></div>
         <div class="countdown-sep">:</div>
@@ -1609,7 +1609,14 @@ function updatePostedTodayState(){
 function updateVideoCard(){
   const day=getDay();
   const title=document.getElementById('video-day-title');
-  if(title)title.textContent='Day '+day+' — Watch now';
+  const label=document.getElementById('video-day-label');
+  if(challengeStarted()){
+    if(title)title.textContent='Day '+day+' — Watch now';
+    if(label)label.textContent='Today\'s video';
+  } else {
+    if(title)title.textContent='Watch on YouTube';
+    if(label)label.textContent='GOW Channel';
+  }
 }
 
 // DAY FILTER
@@ -2075,11 +2082,19 @@ async function notifyPostOwner(postId,type){
 async function deletePost(id){
   if(!confirm('Delete this post?'))return;
   const{error}=await sb.from('posts').delete().eq('id',id);
-  if(error){showToast('Could not delete — try again');return;}
-  // Remove from DOM instantly without reloading
+  if(error){showToast('Could not delete — try again');console.error('Delete error:',error);return;}
   const wrap=document.querySelector('[data-post-id="'+id+'"]');
   if(wrap){wrap.style.transition='opacity 0.2s';wrap.style.opacity='0';setTimeout(()=>{wrap.remove();},220);}
   showToast('Post deleted');
+  // Verify it's gone after 2 seconds and reload if needed
+  setTimeout(async()=>{
+    const{data}=await sb.from('posts').select('id').eq('id',id).single();
+    if(data){
+      // Still exists — force reload to reflect true state
+      await sb.from('posts').delete().eq('id',id);
+      loadFeed();
+    }
+  },2000);
 }
 
 async function loadModQueue(){
