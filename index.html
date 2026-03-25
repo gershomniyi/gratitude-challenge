@@ -2877,6 +2877,19 @@ async function featurePost(postId){
 // Check existing session on load
 (async()=>{
   if(typeof lucide!=='undefined')lucide.createIcons();
+
+  // Check if this is a password reset link
+  const hash=window.location.hash;
+  if(hash&&hash.includes('type=recovery')){
+    setLoading(false);
+    document.querySelectorAll('.screen,.wt-screen').forEach(s=>{s.classList.remove('active');s.style.display='none';});
+    const r=document.getElementById('screen-reset-password');
+    if(r){r.style.display='flex';r.classList.add('active');}
+    // Let Supabase process the token silently
+    await sb.auth.getSession();
+    return;
+  }
+
   setLoading(true,'Loading...');
   const{data:{session}}=await sb.auth.getSession();
   setLoading(false);
