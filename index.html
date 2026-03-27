@@ -106,39 +106,40 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
 .ndot{position:absolute;top:5px;right:5px;width:7px;height:7px;border-radius:50%;background:#0A0A0A;border:2px solid #FFFFFF;}
 
 /* PROGRESS */
-.prog-wrap{background:#FFFFFF;padding:0 20px 15px;border-bottom:1px solid var(--border);}
-.prog-labels{display:flex;justify-content:space-between;font-size:10px;font-weight:600;color:var(--muted);letter-spacing:0.04em;text-transform:uppercase;margin-bottom:8px;}
+.prog-wrap{background:#FFFFFF;padding:6px 20px 12px;border-bottom:1px solid var(--border);}
+.prog-labels{display:flex;justify-content:space-between;font-size:10px;font-weight:600;color:var(--muted);letter-spacing:0.04em;text-transform:uppercase;margin-bottom:6px;}
 .prog-track{height:2px;background:var(--border-mid);border-radius:1px;}
 .prog-fill{height:100%;background:var(--gold);border-radius:1px;transition:width 0.5s;}
 
 /* STREAK */
-.streak-banner{margin:16px 20px 0;background:#0A0A0A;border-radius:var(--r);padding:20px 22px;display:flex;align-items:center;justify-content:space-between;}
-.streak-label{font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:5px;}
-.streak-count{font-size:26px;font-weight:700;color:#FFFFFF;line-height:1;}
-.streak-sub{font-size:12px;color:rgba(255,255,255,0.38);margin-top:5px;}
+.streak-banner{margin:14px 20px 0;background:#0A0A0A;border-radius:var(--r);padding:22px 24px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 20px rgba(0,0,0,0.08);}
+.streak-label{font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+.streak-count{font-size:30px;font-weight:900;color:#FFFFFF;line-height:1;letter-spacing:-0.02em;}
+.streak-sub{font-size:12px;color:rgba(255,255,255,0.35);margin-top:6px;line-height:1.4;}
 .streak-icon{font-size:30px;}
 
 /* COMPOSE */
-.compose-section{padding:16px 20px 0;}
-.compose-label{font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
-.compose{background:#FFFFFF;border:1px solid var(--border-mid);border-radius:var(--r);}
-.compose-hint{font-size:13px;font-style:italic;color:var(--gold-dark);padding:13px 16px 0;opacity:0.8;}
-.compose-field{width:100%;border:none;background:transparent;font-size:15px;font-family:'DM Sans',sans-serif;color:#0A0A0A;resize:none;outline:none;line-height:1.65;padding:10px 16px 13px;min-height:72px;}
-.compose-field::placeholder{color:rgba(10,10,10,0.28);}
+.compose-section{padding:20px 20px 0;}
+.compose-label{font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.compose{background:#FFFFFF;border:1.5px solid var(--border-mid);border-radius:var(--r);box-shadow:0 2px 12px rgba(0,0,0,0.04);}
+.compose:focus-within{border-color:rgba(10,10,10,0.18);box-shadow:0 2px 16px rgba(0,0,0,0.07);}
+.compose-hint{font-size:13px;font-style:italic;color:var(--gold-dark);padding:14px 16px 0;opacity:0.75;}
+.compose-field{width:100%;border:none;background:transparent;font-size:15px;font-family:'DM Sans',sans-serif;color:#0A0A0A;resize:none;outline:none;line-height:1.7;padding:10px 16px 14px;min-height:80px;}
+.compose-field::placeholder{color:rgba(10,10,10,0.25);}
 .compose-foot{display:flex;align-items:center;justify-content:space-between;padding:10px 16px 13px;border-top:1px solid var(--border);}
 .compose-char{font-size:11px;color:var(--muted);}
-.share-btn{background:#0A0A0A;color:#FFFFFF;border:none;border-radius:8px;padding:9px 22px;font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:opacity 0.2s;}
+.share-btn{background:#0A0A0A;color:#FFFFFF;border:none;border-radius:8px;padding:10px 24px;font-size:13px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;transition:opacity 0.2s;letter-spacing:0.02em;}
 .share-btn:hover{opacity:0.78;}
-.share-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.share-btn:disabled{opacity:0.35;cursor:not-allowed;}
 
 /* PENDING */
 .pending-note{margin:10px 20px 0;background:var(--gold-light);border-radius:var(--rsm);padding:10px 14px;font-size:13px;font-weight:500;color:var(--gold-dark);display:none;align-items:center;gap:8px;}
 
 /* FEED */
-.feed-header{display:flex;align-items:center;justify-content:space-between;padding:20px 20px 10px;}
-.feed-title{font-size:10px;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;color:var(--muted);}
+.feed-header{display:flex;align-items:center;justify-content:space-between;padding:22px 20px 10px;}
+.feed-title{font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);}
 .feed-count{font-size:11px;color:var(--muted);}
-.post-card{margin:0 20px 10px;background:#FFFFFF;border:1px solid var(--border);border-radius:var(--r);padding:17px;animation:fu 0.3s ease;}
+.post-card{margin:0 20px 10px;background:#FFFFFF;border:1px solid var(--border);border-radius:var(--r);padding:17px 18px;animation:fu 0.3s ease;}
 @keyframes fu{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
 .post-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
 .post-name{font-size:14px;font-weight:700;color:#0A0A0A;}
@@ -297,8 +298,8 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
 .posted-sub{font-size:12px;color:var(--muted);line-height:1.5;}
 
 /* VIDEO CARD */
-.video-card{margin:12px 20px 0;background:#0A0A0A;border-radius:var(--r);padding:15px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;border:1px solid rgba(198,168,91,0.2);text-decoration:none;}
-.video-card:active{opacity:0.85;}
+.video-card{margin:10px 20px 0;background:#0A0A0A;border-radius:var(--r);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;border:1px solid rgba(198,168,91,0.15);text-decoration:none;transition:opacity 0.15s;}
+.video-card:active{opacity:0.8;}
 .video-icon{width:38px;height:38px;border-radius:10px;background:var(--gold);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .video-label{font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:3px;}
 .video-title{font-size:14px;font-weight:700;color:#FFFFFF;}
@@ -420,9 +421,9 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
 .wt-skip{font-size:12px;font-weight:600;color:rgba(255,255,255,0.3);cursor:pointer;border:none;background:none;font-family:'DM Sans',sans-serif;}
 
 /* SCRIPTURE CARD */
-.scripture-card{margin:12px 20px 0;background:#FFFFFF;border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;}
-.scripture-ref{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold-dark);margin-bottom:6px;}
-.scripture-text{font-size:14px;color:#0A0A0A;line-height:1.7;font-style:italic;}
+.scripture-card{margin:16px 20px 0;background:transparent;border:none;border-radius:0;padding:0 2px;}
+.scripture-ref{font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-dark);margin-bottom:5px;}
+.scripture-text{font-size:14px;color:rgba(10,10,10,0.6);line-height:1.75;font-style:italic;border-left:2px solid var(--gold);padding-left:14px;}
 
 /* PRAYER WALL */
 .prayer-card{margin:0 20px 10px;background:#FFFFFF;border:1px solid var(--border);border-radius:var(--r);padding:17px;animation:fu 0.3s ease;}
@@ -457,7 +458,7 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
 .journal-date{font-size:11px;color:var(--muted);margin-top:6px;}
 
 /* INVITE */
-.invite-card{margin:12px 20px 0;background:#FFFFFF;border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;}
+.invite-card{margin:16px 20px 0;background:#FFFFFF;border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;}
 .invite-title{font-size:14px;font-weight:700;color:#0A0A0A;margin-bottom:4px;}
 .invite-sub{font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.5;}
 .invite-link-box{background:#F8F8F6;border:1px solid var(--border-mid);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--muted);font-family:monospace;margin-bottom:10px;word-break:break-all;}
@@ -674,11 +675,13 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
     <button class="broadcast-dismiss" onclick="dismissBroadcast()">×</button>
   </div>
 
-  <div id="countdown-wrap"></div>
+  <div id="countdown-wrap" style="margin-bottom:0;"></div>
 
-  <div class="scripture-card" id="scripture-card">
-    <div class="scripture-ref" id="scripture-ref">Loading...</div>
-    <div class="scripture-text" id="scripture-text"></div>
+  <div style="padding:0 20px;">
+    <div class="scripture-card" id="scripture-card">
+      <div class="scripture-ref" id="scripture-ref">Loading...</div>
+      <div class="scripture-text" id="scripture-text"></div>
+    </div>
   </div>
 
   <div class="community-milestone" id="community-milestone">
@@ -701,7 +704,7 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
 
   <div class="pending-note" id="pending-note">Your post is in review — it appears once approved</div>
   <div class="compose-section" id="compose-section-wrap">
-    <div class="compose-label">Today's gratitude</div>
+    <div class="compose-label">Post your gratitude</div>
     <div id="prompt-chips-wrap" style="margin-bottom:10px;">
       <div style="font-size:11px;font-weight:600;color:var(--muted);letter-spacing:0.04em;margin-bottom:8px;">Tap a prompt to get started</div>
       <div id="prompt-chips" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
@@ -723,11 +726,11 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
   </div>
   <div class="day-filter-wrap" id="day-filter-wrap"></div>
   <div class="feed-header">
-    <div class="feed-title">Community</div>
     <div style="display:flex;align-items:center;gap:10px;">
-      <span onclick="showScreen('screen-prayer')" style="font-size:11px;font-weight:600;color:var(--gold-dark);cursor:pointer;background:var(--gold-light);padding:4px 10px;border-radius:20px;">🙏 Prayer wall</span>
+      <div class="feed-title">Community</div>
       <div class="feed-count" id="feed-count"></div>
     </div>
+    <span onclick="showScreen('screen-prayer')" style="font-size:11px;font-weight:600;color:var(--gold-dark);cursor:pointer;background:var(--gold-light);padding:5px 12px;border-radius:20px;letter-spacing:0.02em;">🙏 Prayer wall</span>
   </div>
   <div class="people-count" id="people-count"></div>
   <div id="feed-container"></div>
