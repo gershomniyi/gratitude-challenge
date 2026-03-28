@@ -1850,8 +1850,11 @@ function showToast(msg){
   setTimeout(()=>t.classList.remove('show'),3000);
 }
 function showScreen(id){
-  document.querySelectorAll('.screen,.ob-screen').forEach(s=>s.classList.remove('active'));
-  const el=document.getElementById(id);if(el)el.classList.add('active');
+  document.querySelectorAll('.screen,.ob-screen,.wt-screen').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById(id);
+  if(el){el.classList.add('active');}
+  // Hide pill nav on auth screens
+  if(id==='screen-auth'||id==='screen-forgot'||id==='screen-reset-password'){showPillNav(false);}
   if(id==='screen-admin')loadModQueue();
   if(id==='screen-home'){loadFeed();buildDayFilter();updatePostedTodayState();showPillNav(true);}
   if(id==='screen-messages')openUserMessages();
@@ -2429,7 +2432,7 @@ function shareWrapup(){
   }
   setLoading(true,'Loading...');
   const{data:{session}}=await sb.auth.getSession();setLoading(false);
-  if(session?.user){isFirstTime=false;await enterApp(session.user);}
+  if(session?.user){isFirstTime=false;await enterApp(session.user);} else {setLoading(false);showScreen('screen-auth');}
   sb.auth.onAuthStateChange(async(event,session)=>{
     if(event==='PASSWORD_RECOVERY'){
       setLoading(false);
