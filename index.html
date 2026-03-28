@@ -3181,6 +3181,25 @@ function renderSeededFeed(c){
 }
 
 
+// ── PILL NAV FUNCTIONS ───────────────────────────────────
+function showPillNav(show){
+  var nav=document.getElementById('pill-nav');
+  if(nav)nav.classList[show?'add':'remove']('show');
+}
+
+function navPill(screenId,btnId){
+  showScreen(screenId);
+  document.querySelectorAll('.pn-item').forEach(function(b){b.classList.remove('active');});
+  var btn=document.getElementById(btnId);
+  if(btn)btn.classList.add('active');
+}
+
+function scrollToCompose(){
+  var el=document.getElementById('compose-section-wrap');
+  if(el)el.scrollIntoView({behavior:'smooth'});
+  setTimeout(function(){var f=document.getElementById('compose-text');if(f)f.focus();},400);
+}
+
 function renderPostCTA(){
   const wrap=document.getElementById('post-cta-wrap');
   if(!wrap)return;
@@ -3336,11 +3355,6 @@ async function doGoogleLogin(){
 }
 
 
-function scrollToCompose(){
-  const el=document.getElementById('compose-section-wrap');
-  if(el)el.scrollIntoView({behavior:'smooth'});
-  setTimeout(()=>{const f=document.getElementById('compose-text');if(f)f.focus();},400);
-}
 
 // ── END GOW v2 ADDITIONS
 
