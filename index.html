@@ -725,123 +725,144 @@ html,body{background:#E8E6E1;min-height:100vh;font-family:'DM Sans',sans-serif;c
 
 <!-- HOME -->
 <div class="screen" id="screen-home">
+
+  <!-- TOPBAR -->
   <div class="topbar">
-    <div><div class="t-wordmark">Gratitude</div><div class="t-sub">by GOW</div></div>
+    <div><div class="t-title">Gratitude</div><div class="t-sub">by GOW</div></div>
     <div class="topbar-right">
       <div class="day-tag" id="day-tag">Day 1</div>
       <button class="notif-btn" onclick="navTo('screen-notifs','pn-notifs')">
-        <span class="ico"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
         <div class="ndot" id="ndot" style="display:none;"></div>
       </button>
     </div>
   </div>
+
+  <!-- SLIM COUNTDOWN BANNER -->
+  <div id="countdown-banner-wrap"></div>
+
+  <!-- PROGRESS BAR -->
   <div class="prog-wrap">
     <div class="prog-labels"><span>April Challenge</span><span id="prog-label">Day 1 of 30</span></div>
     <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:3%"></div></div>
   </div>
 
-  <div class="streak-banner">
-    <div>
-      <div class="streak-label">Your streak</div>
-      <div class="streak-count" id="streak-count">0 days</div>
-      <div class="streak-sub" id="streak-sub">Post today to start your streak</div>
-      <div class="streak-actions">
-        <span class="streak-link" onclick="showScreen('screen-leaderboard')">Leaderboard →</span>
-        <button class="freeze-btn" id="freeze-btn" onclick="useStreakFreeze()">❄ Freeze streak</button>
-      </div>
-    </div>
-    <div class="streak-fire">
-      <span class="ico"><svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" fill="none" stroke-width="1.5"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 17c0 1.38-1.12 2.5-2.5 2.5a2.5 2.5 0 0 1-2.5-2.5C6 14 7 11 9 9c0 0-.5 3 2 4.5C11 9 13.5 6 16 4c0 3 1 5.5 1 7.5a5 5 0 0 1-5 5c-.83 0-1.63-.2-2.33-.55"/></svg></span>
-    </div>
-  </div>
-
-  <a class="video-card" id="video-card" href="https://www.youtube.com/@gershomadeniyi" target="_blank">
-    <div style="display:flex;align-items:center;gap:13px;">
-      <div class="video-icon"><svg viewBox="0 0 24 24" width="16" height="16" fill="#0A0A0A"><path d="M23 7s-.3-2-1.2-2.8c-1.1-1.2-2.4-1.2-3-1.3C16.2 2.8 12 2.8 12 2.8s-4.2 0-6.8.1c-.6.1-1.9.1-3 1.3C1.3 5 1 7 1 7S.7 9.1.7 11.2v2c0 2.1.3 4.2.3 4.2s.3 2 1.2 2.8c1.1 1.2 2.6 1.1 3.3 1.2C7.2 21.6 12 21.6 12 21.6s4.2 0 6.8-.2c.6-.1 1.9-.1 3-1.3.9-.8 1.2-2.8 1.2-2.8s.3-2.1.3-4.2v-2C23.3 9.1 23 7 23 7zM9.7 15.5V8.4l8.1 3.6-8.1 3.5z"/></svg></div>
-      <div><div class="video-label" id="video-day-label">Today's video</div><div class="video-title" id="video-day-title">Day 1 — Watch now</div><div class="video-handle">@gershomadeniyi</div></div>
-    </div>
-    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-  </a>
-
+  <!-- BROADCAST -->
   <div class="broadcast-banner" id="broadcast-banner">
-    <div class="broadcast-icon"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#0A0A0A" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+    <div class="broadcast-icon"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#0A0A0A" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
     <div class="broadcast-msg" id="broadcast-msg"></div>
     <button class="broadcast-dismiss" onclick="dismissBroadcast()">×</button>
   </div>
 
-  <div id="countdown-wrap"></div>
+  <!-- ① BIG POST CTA — Hero action -->
+  <div id="post-cta-wrap"><!-- rendered by JS --></div>
 
+  <!-- Posted today confirmation -->
+  <div class="posted-today" id="posted-today">
+    <div class="posted-check"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="var(--gold)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <div><div class="posted-title">You showed up today 🙌</div><div class="posted-sub" id="posted-sub-text">Come back tomorrow for Day 2</div></div>
+  </div>
+
+  <!-- Pending note -->
+  <div class="pending-note" id="pending-note">Your post is in review — it appears once approved</div>
+
+  <!-- COMPOSE BOX — shown after April 1 and not posted -->
+  <div id="compose-section-wrap" style="display:none;">
+    <div style="padding:16px 16px 0;">
+      <div style="margin-bottom:8px;">
+        <button class="shoutout-btn" onclick="openShoutout()" id="shoutout-trigger">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <span id="shoutout-label">Tag someone</span>
+        </button>
+      </div>
+      <div id="prompt-chips-wrap" style="margin-bottom:10px;">
+        <div style="font-size:10px;font-weight:600;color:var(--muted);letter-spacing:0.06em;margin-bottom:8px;">Tap a prompt to get started</div>
+        <div id="prompt-chips" style="display:flex;flex-wrap:wrap;gap:7px;"></div>
+      </div>
+      <div class="compose">
+        <div class="compose-hint" id="compose-hint">Day 1 of becoming more grateful.</div>
+        <textarea class="compose-field" id="compose-text" placeholder="What are you grateful for today?" rows="3" maxlength="300" oninput="updateChar(this)"></textarea>
+        <div class="compose-foot">
+          <span class="compose-char" id="char-left">300</span>
+          <button class="share-btn" id="share-btn" onclick="submitPost()">Share</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ② STREAK -->
+  <div class="streak-banner">
+    <div>
+      <div class="streak-label">Your streak</div>
+      <div class="streak-count" id="streak-count">0</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.35);margin-top:2px;">days</div>
+      <div class="streak-sub" id="streak-sub">Post today to start your streak</div>
+      <div style="margin-top:10px;display:flex;align-items:center;gap:10px;">
+        <button class="streak-link" onclick="navTo('screen-leaderboard','pn-home')">Leaderboard →</button>
+        <button class="freeze-btn" id="freeze-btn" onclick="useStreakFreeze()">❄ Freeze</button>
+      </div>
+    </div>
+    <div class="streak-icon"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="var(--gold)" stroke-width="1.5" opacity="0.6"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 17c0 1.38-1.12 2.5-2.5 2.5a2.5 2.5 0 0 1-2.5-2.5C6 14 7 11 9 9c0 0-.5 3 2 4.5C11 9 13.5 6 16 4c0 3 1 5.5 1 7.5a5 5 0 0 1-5 5c-.83 0-1.63-.2-2.33-.55"/></svg></div>
+  </div>
+
+  <!-- ③ SCRIPTURE -->
   <div class="scripture-card" id="scripture-card">
     <div class="scripture-ref" id="scripture-ref">Loading...</div>
     <div class="scripture-text" id="scripture-text"></div>
   </div>
 
-  <!-- BE GRATEFUL TEE -->
+  <!-- ④ YOUTUBE -->
+  <a class="video-card" id="video-card" href="https://www.youtube.com/@gershomadeniyi" target="_blank">
+    <div style="display:flex;align-items:center;gap:13px;">
+      <div class="video-icon"><svg viewBox="0 0 24 24" width="15" height="15" fill="#0A0A0A"><path d="M23 7s-.3-2-1.2-2.8c-1.1-1.2-2.4-1.2-3-1.3C16.2 2.8 12 2.8 12 2.8s-4.2 0-6.8.1c-.6.1-1.9.1-3 1.3C1.3 5 1 7 1 7S.7 9.1.7 11.2v2c0 2.1.3 4.2.3 4.2s.3 2 1.2 2.8c1.1 1.2 2.6 1.1 3.3 1.2C7.2 21.6 12 21.6 12 21.6s4.2 0 6.8-.2c.6-.1 1.9-.1 3-1.3.9-.8 1.2-2.8 1.2-2.8s.3-2.1.3-4.2v-2C23.3 9.1 23 7 23 7zM9.7 15.5V8.4l8.1 3.6-8.1 3.5z"/></svg></div>
+      <div><div class="video-eyebrow" id="video-day-label">GOW Channel</div><div class="video-title" id="video-day-title">Watch on YouTube</div><div class="video-handle">@gershomadeniyi</div></div>
+    </div>
+    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+  </a>
+
+  <!-- ⑤ BE GRATEFUL TEE -->
   <a href="https://genesiah.com/products/be-grateful-tee-acid-black" target="_blank" style="margin:12px 16px 0;background:#0F0E0C;border-radius:var(--r);padding:15px 18px;display:flex;align-items:center;justify-content:space-between;text-decoration:none;border:1px solid rgba(198,168,91,0.18);">
     <div>
       <div style="font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:5px;opacity:0.8;">Genesiah — Limited run</div>
-      <div style="font-size:15px;font-weight:700;color:#FFFFFF;letter-spacing:0.06em;">BE GRATEFUL. Tee</div>
+      <div style="font-size:15px;font-weight:700;color:#FFFFFF;letter-spacing:0.04em;">BE GRATEFUL. Tee</div>
       <div style="font-size:12px;color:rgba(255,255,255,0.35);margin-top:3px;">Acid Black · genesiah.com</div>
     </div>
-    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
   </a>
 
+  <!-- ⑥ INVITE PROGRESS -->
+  <div id="invite-progress-wrap" style="margin:12px 16px 0;background:#0F0E0C;border-radius:var(--r);padding:18px;border:1px solid rgba(198,168,91,0.15);">
+    <div style="font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);opacity:0.7;margin-bottom:8px;">Invite challenge</div>
+    <div style="font-size:15px;font-weight:700;color:#FFFFFF;margin-bottom:4px;">Invite 5 friends → Win a Genesiah Hoodie</div>
+    <div style="font-size:12px;color:rgba(255,255,255,0.35);margin-bottom:14px;line-height:1.5;">Top 3 inviters at end of April win a free hoodie. Invite people who actually sign up.</div>
+    <div style="background:rgba(255,255,255,0.06);border-radius:20px;height:6px;overflow:hidden;margin-bottom:8px;">
+      <div id="invite-progress-bar" style="height:100%;background:var(--gold);border-radius:20px;width:0%;transition:width 0.5s;"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div style="font-size:12px;color:rgba(255,255,255,0.45);" id="invite-progress-label">0 of 5 friends invited</div>
+      <button onclick="copyInviteLink()" style="background:var(--gold);color:#0F0E0C;border:none;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;">Share link</button>
+    </div>
+  </div>
+
+  <!-- Community milestone -->
   <div class="community-milestone" id="community-milestone">
-    <div class="cm-icon"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#0A0A0A" stroke-width="2.5"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div>
-    <div><div class="cm-title" id="cm-title">Community milestone!</div><div class="cm-sub" id="cm-sub">You are part of something special</div></div>
+    <div class="cm-icon"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#0A0A0A" stroke-width="2.5"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div>
+    <div><div class="cm-title" id="cm-title">Community milestone!</div><div class="cm-sub" id="cm-sub"></div></div>
     <button class="cm-dismiss" onclick="dismissMilestone()">×</button>
   </div>
 
-  <div class="invite-card" id="invite-card-home" style="display:none;">
-    <div class="invite-title">Bring someone with you</div>
-    <div class="invite-sub">Share your personal invite link and bring one person into the challenge.</div>
-    <div class="invite-link-box" id="invite-link-home">gowchallenge.com/?ref=...</div>
-    <button class="invite-copy" onclick="copyInviteLink()">Copy invite link</button>
-  </div>
-
-  <div class="posted-today" id="posted-today">
-    <div class="posted-check"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--gold)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
-    <div><div class="posted-title">You showed up today</div><div class="posted-sub" id="posted-sub-text">Come back tomorrow for Day 2</div></div>
-  </div>
-
-  <div class="pending-note" id="pending-note">Your post is in review — it appears once approved</div>
-
-  <div class="compose-section" id="compose-section-wrap">
-    <div class="compose-label">Today's gratitude</div>
-    <div id="prompt-chips-wrap" style="margin-bottom:10px;">
-      <div class="prompt-chips-label">Tap a prompt to get started</div>
-      <div id="prompt-chips" style="display:flex;flex-wrap:wrap;gap:7px;"></div>
-    </div>
-    <div style="margin-bottom:8px;">
-      <button class="shoutout-btn" onclick="openShoutout()" id="shoutout-trigger">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-        <span id="shoutout-label">Tag someone</span>
-      </button>
-    </div>
-    <div class="compose">
-      <div class="compose-hint" id="compose-hint">Day 1 of becoming more grateful.</div>
-      <textarea class="compose-field" id="compose-text" placeholder="What are you grateful for today?" rows="2" maxlength="300" oninput="updateChar(this)"></textarea>
-      <div class="compose-foot">
-        <span class="compose-char" id="char-left">300</span>
-        <button class="share-btn" id="share-btn" onclick="submitPost()">Share</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="day-filter-wrap" id="day-filter-wrap"></div>
-
+  <!-- ⑦ COMMUNITY FEED PREVIEW -->
   <div class="feed-header">
     <div class="feed-title">Community</div>
     <div style="display:flex;align-items:center;gap:10px;">
-      <span onclick="showScreen('screen-prayer')" style="font-size:11px;font-weight:600;color:var(--gold-dark);cursor:pointer;background:var(--gold-light);padding:4px 10px;border-radius:20px;border:1px solid var(--gold-mid);">🙏 Prayer wall</span>
+      <span style="font-size:11px;font-weight:600;color:var(--gold-dark);cursor:pointer;background:var(--gold-light);padding:4px 10px;border-radius:20px;border:1px solid rgba(198,168,91,0.2);" onclick="navTo('screen-prayer','pn-home')">🙏 Prayer wall</span>
       <div class="feed-count" id="feed-count"></div>
     </div>
   </div>
   <div class="people-count" id="people-count"></div>
+  <div class="day-filter-wrap" id="day-filter-wrap"></div>
   <div id="feed-container"></div>
   <div class="spacer"></div>
-
-</div>
 
 <!-- NOTIFICATIONS -->
 <div class="screen" id="screen-notifs">
@@ -1331,7 +1352,7 @@ async function saveAvatar(){
 }
 const CHALLENGE_START=new Date('2026-04-01T00:00:00-06:00');
 function challengeStarted(){return new Date()>=CHALLENGE_START;}
-function renderCountdown(){
+function renderCountdown_OLD(){
   const wrap=document.getElementById('countdown-wrap');
   if(!wrap)return;
   if(challengeStarted()){wrap.innerHTML='';return;}
@@ -1358,10 +1379,10 @@ function renderCountdown(){
     </div>`;
 }
 function startCountdownTimer(){
-  renderCountdown();
+  renderCountdownBanner();
   if(!challengeStarted()){
     setInterval(()=>{
-      renderCountdown();
+      renderCountdownBanner();
       if(challengeStarted()){updatePostedTodayState();loadFeed();}
     },1000);
   }
@@ -1497,8 +1518,72 @@ async function toggleCommentReact(commentId,type,btn){
     btn.childNodes[btn.childNodes.length-1].textContent=' '+(isLike?cur+1:'Amen '+(cur+1));
   }
 }
-const DAILY_PROMPTS=['What is one thing God did for you today?','Who are you grateful for and why?','What almost went wrong but did not?','What moment today reminded you of God\'s faithfulness?','What do you have today that you once prayed for?','What is one small blessing you almost overlooked?','Who showed up for you today?','What strength did God give you this week?','What are you learning that you are grateful for?','What door opened that you did not expect?'];
-const PROMPT_CHIPS=[['I am grateful for my family because...','God showed up today when...','One thing I almost missed today was...'],['I am thankful for my health because...','Someone blessed me today by...','A prayer God answered recently was...'],['I am grateful for where I am in life because...','God protected me today when...','One thing I took for granted but am thankful for is...'],['I am thankful for a friend who...','God reminded me of His love when...','A moment that made me smile today was...'],['I am grateful for the opportunity to...','God gave me strength today to...','Something that changed my perspective recently was...'],['I am thankful that God never...','One thing I am learning to appreciate is...','God provided for me today by...'],['I am grateful for my community because...','Today I witnessed God\'s goodness in...','Something small that meant a lot to me was...'],['I am thankful for a new day because...','God has been faithful to me in...','I am becoming more grateful for...'],['I am grateful for the Word of God because...','One thing God has taught me recently is...','A blessing I want to declare today is...'],['I am thankful for second chances because...','God moved in my situation when...','Today I choose to be grateful for...']];
+const DAILY_PROMPTS=[
+  'What is one thing God did for you that you did not deserve?',                          // Day 1  - Salvation & Foundation
+  'How has God's righteousness changed the way you see yourself?',                        // Day 2  - Righteousness
+  'Where in your life can you say God IS — present tense — right now?',                   // Day 3  - Yahweh I AM
+  'Who in your family are you most grateful for today and why?',                           // Day 4  - Family
+  'What does the cross mean to you personally — not in general, but to YOU?',             // Day 5  - Easter / The Cross
+  'Write about a moment when God's goodness showed up unexpectedly.',                     // Day 6  - His Goodness
+  'Describe a time God guided you when you had no idea where to go.',                      // Day 7  - His Guidance
+  'Are you grateful for healing — physical, emotional, or spiritual? Write about it.',    // Day 8  - Healing / Yahweh Rapha
+  'Step outside. What does creation tell you about God today?',                            // Day 9  - Creation (outside day)
+  'What has God provided for you that felt impossible before it happened?',                // Day 10 - El Shaddai
+  'Write about a provision — big or small — that only God could have orchestrated.',      // Day 11 - Yahweh Jireh
+  'What has marriage or your closest relationship taught you about gratitude?',            // Day 12 - Relationships
+  'When you worship, what are you most grateful for in that moment?',                     // Day 13 - Worship
+  'Look back two weeks. What has God done that you almost missed?',                        // Day 14 - Reflecting on Provision
+  'God's love never fails. Write about a time you experienced that firsthand.',           // Day 15 - Unfailing Love
+  'What hope do you have today that you did not have a year ago?',                         // Day 16 - Hope
+  'What battle has God fought for you that you could not have won alone?',                 // Day 17 - Yahweh Nissi / Victory
+  'Where in your life do you feel God's peace most right now?',                           // Day 18 - Yahweh Shalom / Peace
+  'What is one verse that has carried you through a hard season?',                         // Day 19 - His Word
+  'Write a song of remembrance — what has God done for you in these 20 days?',            // Day 20 - Song of Remembrance
+  'You are still here. What does that tell you about God?',                                // Day 21 - Reflecting on Healing (outside)
+  'What do you want your children or the next generation to know about God's faithfulness?', // Day 22 - Legacy / Family
+  'What strength has God given you recently that surprised even you?',                     // Day 23 - His Strength
+  'What does it mean to you that God has declared you righteous?',                         // Day 24 - Yahweh-Tsidkenu
+  'Write about a moment you experienced God's mercy when you expected judgment.',         // Day 25 - Mercy
+  'How has the Holy Spirit shown up in your life this month?',                             // Day 26 - The Holy Spirit
+  'Go somewhere and just worship. What flows out of you in that moment?',                  // Day 27 - Rejoicing (outside)
+  'Where do you feel God's presence most strongly right now?',                            // Day 28 - His Presence
+  'Heaven is real. How does that change how you live today?',                              // Day 29 - Promise of Heaven
+  'You made it 30 days. Write your vow of gratitude to God going forward.',               // Day 30 - The Vow / Finale
+];
+
+const PROMPT_CHIPS=[
+  ['I am grateful for salvation because...','God showed His grace when...','One thing I know I don't deserve is...'],
+  ['God's righteousness has changed me by...','I used to see myself as... but now I see...','I am grateful I no longer have to...'],
+  ['God IS my ___ right now because...','I felt His presence today when...','A present-tense miracle in my life is...'],
+  ['The family member I am most grateful for is...','God placed them in my life to...','One thing I learned about love from my family is...'],
+  ['The cross means to me personally...','I am grateful Jesus chose to go because...','Because of the cross I no longer have to carry...'],
+  ['An unexpected moment of God's goodness was...','I almost missed this blessing but...','God surprised me with...'],
+  ['A time God guided me with no clear path was...','I am grateful for the direction that came through...','Looking back, God was leading me when...'],
+  ['I am grateful for healing in the area of...','God restored what I thought was gone when...','A scar I am now grateful for is...'],
+  ['Looking at creation today I see...','God's power shows up in nature through...','One thing outdoors that points me to God is...'],
+  ['Something that felt impossible before God provided it was...','El Shaddai — God Almighty — showed up when...','I am grateful for supernatural provision in...'],
+  ['A specific provision I can trace back to God is...','I was running low on ___ and God...','Jehovah Jireh provided for me through...'],
+  ['A relationship I am grateful for today is...','This person has shown me God's love through...','Something I learned about gratitude in relationships is...'],
+  ['When I worship I feel most grateful for...','A worship moment that changed something in me was...','I am grateful that God inhabits our praise because...'],
+  ['In the last two weeks God has...','A blessing I almost missed was...','God has been faithful to me in ___ and I want to declare...'],
+  ['God's love never failed me when...','I felt His unfailing love most when...','Even in my worst season His love showed up as...'],
+  ['A hope I have now that I didn't have before is...','God restored my hope when...','I am walking toward ___ because I know God has...'],
+  ['A battle God fought for me that I couldn't win alone was...','Victory showed up in my situation when...','I used to be afraid of ___ and now I am grateful that...'],
+  ['I feel God's peace most when...','A situation that could have destroyed me but God gave me peace in...','Yahweh Shalom — the peace of God — looks like ___ in my life'],
+  ['A Bible verse that carried me through a hard season is...','God spoke to me through His Word when...','I am grateful for scripture because...'],
+  ['Looking back at 20 days of gratitude I can see...','God has been consistent in the area of...','A pattern of His faithfulness I notice is...'],
+  ['I am still here because...','God kept me when...','The fact that I made it through ___ tells me God is...'],
+  ['I want the next generation to know that God...','A legacy of faith I want to leave is...','What I am building now for my family is...'],
+  ['A strength God gave me recently that surprised me was...','I can do ___ because of who God is in me...','God made me strong in ___ when I thought I was weak'],
+  ['God has declared me righteous and that means...','I am grateful I don't have to earn my standing with God because...','Yahweh-Tsidkenu — my righteousness is God's and that changes...'],
+  ['A moment I expected judgment but received mercy was...','God's mercy looked like ___ in my life...','I am grateful for second chances because...'],
+  ['The Holy Spirit has been showing up in my life through...','A moment I felt the Spirit guide me was...','I am grateful the Spirit intercedes for me because...'],
+  ['If I could worship anywhere right now it would be...','What flows out of me when I truly worship is...','A breakthrough that came through praise was...'],
+  ['I feel God's presence strongest when...','A place or moment where heaven feels close is...','In His presence I find ___ which I can't find anywhere else'],
+  ['Knowing heaven is real changes how I live by...','I am grateful for the promise of eternity because...','Someone I look forward to seeing in heaven is...'],
+  ['My vow of gratitude to God going forward is...','30 days ago I started this challenge because ___ and now I...','What gratitude has done in me this month is...'],
+];
+
 function renderPromptChips(){
   const container=document.getElementById('prompt-chips');
   if(!container)return;
@@ -1607,8 +1692,8 @@ function updatePostedTodayState(){
   const day=getDay();const posted=hasPostedToday();
   const composeSection=document.getElementById('compose-section-wrap');
   const postedEl=document.getElementById('posted-today');const subEl=document.getElementById('posted-sub-text');
-  const notStarted=!challengeStarted();
-  if(composeSection)composeSection.style.display=(posted||notStarted)?'none':'block';
+  const notStarted=false; // Wall open before April 1 for engagement
+  if(composeSection)composeSection.style.display=(posted)?'none':'block';
   if(postedEl){postedEl.classList.toggle('show',posted&&!notStarted);}
   if(subEl&&posted)subEl.textContent='Come back tomorrow for Day '+(day+1<=30?day+1:30);
 }
@@ -1853,10 +1938,10 @@ function updateProfileUI(){
   document.getElementById('prog-label').textContent='Day '+day+' of 30';
   document.getElementById('prog-fill').style.width=Math.round((day/30)*100)+'%';
   document.getElementById('streak-count').textContent=(currentProfile.streak||0)+' days';
-  document.getElementById('streak-sub').textContent=currentProfile.streak>0?'You are building consistency. Keep going.':'Post today to start your streak';
+  document.getElementById('streak-sub').textContent=challengeStarted()?(currentProfile.streak>0?'You are building consistency. Keep going.':'Post today to start your streak'):'Streaks begin April 1st — post now to warm up';
   document.getElementById('compose-hint').textContent='Day '+day+' of becoming more grateful.';
   const promptEl=document.getElementById('daily-prompt-text');if(promptEl)promptEl.textContent=getDailyPrompt();
-  renderPromptChips();renderProfileBadges(currentProfile.streak||0);updateVideoCard();updatePostedTodayState();
+  renderPromptChips();renderProfileBadges(currentProfile.streak||0);updateVideoCard();updatePostedTodayState();renderPostCTA();loadInviteProgress();checkStreakWarning();
   startCountdownTimer();subscribeToNotifications();loadBroadcast();renderScripture();setupInviteLink();
   updateFreezeBtn();checkCommunityMilestone();checkDay30Wrapup();checkUnreadMessages();checkAdminUnreadMessages();
   const isAdmin=currentProfile.email===ADMIN_EMAIL;const isMod=currentProfile.role==='moderator'||isAdmin;
@@ -1868,11 +1953,7 @@ async function loadFeed(){
   let query=sb.from('posts').select('*').eq('status','approved').order('created_at',{ascending:false}).limit(50);
   if(activeDayFilter>0)query=query.eq('day',activeDayFilter);
   const{data:posts,error}=await query;
-  if(error||!posts||posts.length===0){c.innerHTML=`<div style="text-align:center;padding:48px 24px;">
-      <div style="font-size:32px;margin-bottom:16px;">✨</div>
-      <div style="font-size:16px;font-weight:700;color:#0F0E0C;margin-bottom:8px;">No posts yet</div>
-      <div style="font-size:14px;color:var(--muted);line-height:1.7;">Be the first to share your gratitude today. The wall opens April 1st.</div>
-    </div>`;document.getElementById('feed-count').textContent='';return;}
+  if(error||!posts||posts.length===0){renderSeededFeed(c);document.getElementById('feed-count').textContent='';return;}
   c.innerHTML='';
   document.getElementById('feed-count').textContent=posts.length+' post'+(posts.length!==1?'s':'');
   const pc=document.getElementById('people-count');if(pc&&posts.length>0)pc.textContent=posts.length+' people showed up today';
@@ -1944,8 +2025,11 @@ async function submitPost(){
   const st=document.getElementById('shoutout-trigger');if(st){st.style.background='';st.style.color='';}
   if(flagged){const note=document.getElementById('pending-note');note.style.display='flex';setTimeout(()=>note.style.display='none',5000);showToast('Post submitted — awaiting review');}
   else{showToast('Posted — you showed up today');loadFeed();}
-  await sb.from('profiles').update({days_in:(currentProfile.days_in||0)+1,streak:(currentProfile.streak||0)+1}).eq('id',currentUser.id);
-  currentProfile.days_in=(currentProfile.days_in||0)+1;currentProfile.streak=(currentProfile.streak||0)+1;
+  // Only count streak + days from April 1st onwards
+  if(challengeStarted()){
+    await sb.from('profiles').update({days_in:(currentProfile.days_in||0)+1,streak:(currentProfile.streak||0)+1}).eq('id',currentUser.id);
+    currentProfile.days_in=(currentProfile.days_in||0)+1;currentProfile.streak=(currentProfile.streak||0)+1;
+  }
   updateProfileUI();checkMilestone(currentProfile.streak);
   setTimeout(()=>showSharePopup(day,postTextCopy),700);
   markPostedToday();updatePostedTodayState();notifyAdmin(currentProfile.name,text,day);
@@ -2255,8 +2339,12 @@ async function openJournal(){
   if(!posts||posts.length===0){
     feed.innerHTML=`<div style="text-align:center;padding:48px 24px;">
       <div style="font-size:32px;margin-bottom:16px;">📖</div>
-      <div style="font-size:16px;font-weight:700;color:#0F0E0C;margin-bottom:8px;">No journal entries yet</div>
-      <div style="font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:20px;">Your gratitude posts will appear here as your personal journal. Start posting today.</div>
+      <div style="font-size:16px;font-weight:700;color:#0F0E0C;margin-bottom:8px;">Your journal starts today</div>
+      <div style="font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:8px;">Every post you share becomes a personal record of God's faithfulness in your life.</div>
+      <div style="background:var(--gold-light);border:1px solid rgba(198,168,91,0.2);border-radius:var(--r);padding:14px;margin-bottom:20px;text-align:left;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold-dark);margin-bottom:6px;">🏆 Complete all 30 days</div>
+        <div style="font-size:13px;color:#0F0E0C;line-height:1.6;">Finish the challenge and get featured on the GOW Instagram. Your story matters.</div>
+      </div>
       <button onclick="navTo('screen-home','pn-home')" style="background:#0F0E0C;color:#FFFFFF;border:none;border-radius:10px;padding:12px 24px;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;">Post today's gratitude →</button>
     </div>`;
     return;
@@ -2381,6 +2469,144 @@ function navTo(screenId, btnId){
 // Override showScreen to keep pill nav visible
 const _origShowScreen = showScreen;
 // Patch enterApp calls
+
+
+// ── SLIM COUNTDOWN BANNER ────────────────────────────
+function renderCountdownBanner(){
+  const wrap=document.getElementById('countdown-banner-wrap');
+  if(!wrap)return;
+  if(challengeStarted()){wrap.innerHTML='';return;}
+  const now=new Date();const diff=CHALLENGE_START-now;
+  const days=Math.floor(diff/(1000*60*60*24));
+  const hours=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+  const mins=Math.floor((diff%(1000*60*60))/(1000*60));
+  const secs=Math.floor((diff%(1000*60))/1000);
+  wrap.innerHTML=`<div style="background:#0F0E0C;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(198,168,91,0.12);">
+    <div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);opacity:0.7;">Coming April 1</div>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <div style="text-align:center;"><span style="font-size:16px;font-weight:700;color:#FFFFFF;">${String(days).padStart(2,'0')}</span><div style="font-size:8px;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.08em;">d</div></div>
+      <div style="color:var(--gold);opacity:0.4;font-size:14px;">:</div>
+      <div style="text-align:center;"><span style="font-size:16px;font-weight:700;color:#FFFFFF;">${String(hours).padStart(2,'0')}</span><div style="font-size:8px;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.08em;">h</div></div>
+      <div style="color:var(--gold);opacity:0.4;font-size:14px;">:</div>
+      <div style="text-align:center;"><span style="font-size:16px;font-weight:700;color:#FFFFFF;">${String(mins).padStart(2,'0')}</span><div style="font-size:8px;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.08em;">m</div></div>
+      <div style="color:var(--gold);opacity:0.4;font-size:14px;">:</div>
+      <div style="text-align:center;"><span style="font-size:16px;font-weight:700;color:#FFFFFF;">${String(secs).padStart(2,'0')}</span><div style="font-size:8px;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.08em;">s</div></div>
+    </div>
+  </div>`;
+}
+
+function startCountdownTimer(){
+  renderCountdownBanner();
+  if(!challengeStarted()){
+    setInterval(()=>{
+      renderCountdownBanner();
+      if(challengeStarted()){updatePostedTodayState();renderPostCTA();loadFeed();}
+    },1000);
+  }
+}
+
+// ── POST CTA HERO ─────────────────────────────────────
+function renderPostCTA(){
+  const wrap=document.getElementById('post-cta-wrap');
+  if(!wrap)return;
+  // CTA always visible — engagement open before April 1
+  if(hasPostedToday()){
+    wrap.innerHTML='';
+    return;
+  }
+  wrap.innerHTML=`<div style="margin:14px 16px 0;">
+    <div style="background:var(--gold);border-radius:var(--r);padding:18px 20px;cursor:pointer;" onclick="document.getElementById('compose-section-wrap').scrollIntoView({behavior:'smooth'});document.getElementById('compose-text').focus();">
+      <div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(15,14,12,0.6);margin-bottom:6px;">Day ${getDay()} · Today's prompt</div>
+      <div style="font-size:16px;font-weight:700;color:#0F0E0C;margin-bottom:12px;line-height:1.4;">${getDailyPrompt()}</div>
+      <div style="background:#0F0E0C;color:#FFFFFF;border-radius:8px;padding:12px;text-align:center;font-size:14px;font-weight:700;">✍ Write today's gratitude</div>
+    </div>
+  </div>`;
+}
+
+// ── INVITE PROGRESS ───────────────────────────────────
+async function loadInviteProgress(){
+  if(!currentUser)return;
+  try{
+    const{count}=await sb.from('profiles').select('id',{count:'exact',head:true}).eq('invited_by',currentUser.id);
+    const invited=count||0;
+    const goal=5;
+    const pct=Math.min((invited/goal)*100,100);
+    const bar=document.getElementById('invite-progress-bar');
+    const label=document.getElementById('invite-progress-label');
+    if(bar)bar.style.width=pct+'%';
+    if(label){
+      if(invited>=goal){
+        label.textContent='✅ Goal reached! You're entered to win';
+        label.style.color='var(--gold)';
+      } else {
+        label.textContent=invited+' of '+goal+' friends invited';
+      }
+    }
+  }catch(e){
+    // Column might not exist yet — silent fail
+    const label=document.getElementById('invite-progress-label');
+    if(label)label.textContent='Share your link to invite friends';
+  }
+}
+
+// ── SEEDED POSTS (shown when real feed is empty) ───────
+const SEEDED_POSTS=[
+  {name:'Marcus J.',avatar_id:1,text:'Grateful for another morning. I know that sounds simple but I lost a friend last year and I never take waking up for granted anymore. God is good.',day:1,likes:34,amens:21},
+  {name:'Amara O.',avatar_id:4,text:'I am grateful for the grace that carried me through a really hard week. I didn't deserve the peace I felt but He gave it anyway.',day:1,likes:22,amens:16},
+  {name:'Sarah T.',avatar_id:7,text:'Thankful for my husband today. He showed up for me in a way I needed and didn't even ask for. God knew.',day:1,likes:28,amens:19},
+  {name:'Devon C.',avatar_id:9,text:'God provided for me in a way I cannot explain. Was stressed about money and by end of day it was handled. He is Jehovah Jireh fr.',day:1,likes:41,amens:29},
+  {name:'Priya S.',avatar_id:2,text:'Coming from a Hindu background and finding Christ — every single day I am grateful that He found me first. His love is unlike anything I have ever known.',day:1,likes:37,amens:31},
+  {name:'James W.',avatar_id:5,text:'Grateful for this challenge. It is forcing me to slow down and actually notice what God is doing around me. I miss so much when I am moving too fast.',day:1,likes:18,amens:14},
+  {name:'Kezia M.',avatar_id:3,text:'My daughter laughed today — full belly laugh — and I realised joy is right in front of me if I choose to see it. Grateful for small holy moments.',day:1,likes:45,amens:33},
+  {name:'Tyler R.',avatar_id:8,text:'I am grateful for the Word of God. Every time I open my Bible something speaks directly to what I am walking through. It never gets old.',day:1,likes:19,amens:15},
+  {name:'Daniela V.',avatar_id:6,text:'Moved to Canada 2 years ago with nothing. Today I have a job, a church family, and peace in my heart. Gratitude doesn't even cover it.',day:1,likes:52,amens:38},
+  {name:'Aaron B.',avatar_id:1,text:'Grateful for a father who prayed over me. He is with the Lord now but his prayers are still working in my life. I feel them.',day:1,likes:61,amens:44},
+  {name:'Mei L.',avatar_id:7,text:'First time doing this challenge. Already on day 1 I am realising how much I take for granted. God has been so faithful and I barely even noticed.',day:1,likes:24,amens:18},
+  {name:'Jordan F.',avatar_id:9,text:'Grateful for sobriety. 18 months clean. God did what I could not do for myself and every day I wake up sober is a miracle I do not take lightly.',day:1,likes:77,amens:58},
+  {name:'Chioma E.',avatar_id:4,text:'Grateful for my church community here in Toronto. Came not knowing anyone. Now I have a family. God places the lonely in families — Psalm 68:6.',day:1,likes:33,amens:25},
+  {name:'Nathan H.',avatar_id:5,text:'Just grateful to be alive honestly. Went through a season that almost broke me. Standing on the other side of it is enough reason to praise Him.',day:1,likes:49,amens:37},
+  {name:'Aaliyah G.',avatar_id:2,text:'Grateful for second chances. I made choices I am not proud of but God did not give up on me. His mercies really are new every morning.',day:1,likes:56,amens:42},
+];
+
+function renderSeededFeed(container){
+  container.innerHTML='';
+  SEEDED_POSTS.forEach(p=>{
+    const wrap=document.createElement('div');wrap.className='post-card-wrap';
+    const d=document.createElement('div');d.className='post-card';
+    const av=renderAvatarCircle(p.name,p.avatar_id,34,13);
+    d.innerHTML=`<div class="post-top"><div style="display:flex;align-items:center;gap:9px;">${av}<div><span class="post-name">${esc(p.name)}</span><span class="post-meta">Just now</span></div></div><span class="post-day">Day ${p.day}</span></div><div class="post-text">${esc(p.text)}</div><div class="post-actions"><button class="act-btn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> ${p.likes}</button><button class="act-btn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg> Amen ${p.amens}</button></div>`;
+    wrap.appendChild(d);container.appendChild(wrap);
+  });
+  const fc=document.getElementById('feed-count');if(fc)fc.textContent=SEEDED_POSTS.length+' posts';
+  const pc=document.getElementById('people-count');if(pc)pc.textContent=SEEDED_POSTS.length+' people showed up today';
+}
+
+// ── STREAK LOSS WARNING ───────────────────────────────
+function checkStreakWarning(){
+  if(!currentUser||!currentProfile)return;
+  if(currentProfile.streak<1)return;
+  if(hasPostedToday())return;
+  const now=new Date();
+  const hour=now.getHours();
+  // Show warning after 6pm if not posted
+  if(hour>=18){
+    const existing=document.getElementById('streak-warning');
+    if(existing)return;
+    const warn=document.createElement('div');warn.id='streak-warning';
+    warn.style.cssText='margin:12px 16px 0;background:#1A0A0A;border:1px solid rgba(204,51,51,0.3);border-radius:var(--r);padding:14px 16px;display:flex;align-items:center;gap:12px;';
+    warn.innerHTML=`<div style="font-size:22px;">⚠️</div><div style="flex:1;"><div style="font-size:13px;font-weight:700;color:#FFFFFF;margin-bottom:3px;">Don't break your ${currentProfile.streak}-day streak</div><div style="font-size:12px;color:rgba(255,255,255,0.45);">Post today before midnight to keep it going.</div></div><button onclick="document.getElementById('compose-section-wrap').scrollIntoView({behavior:'smooth'});document.getElementById('compose-text').focus();" style="background:#CC3333;color:#FFFFFF;border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;white-space:nowrap;">Post now</button>`;
+    const postCta=document.getElementById('post-cta-wrap');
+    if(postCta)postCta.insertAdjacentElement('afterend',warn);
+  }
+}
+
+// ── REWARD SYSTEM INFO ────────────────────────────────
+function renderRewardCard(){
+  // Only show if challenge has started and user hasn't seen it
+  if(!challengeStarted())return;
+  let seen=false;try{seen=localStorage.getItem('gow_reward_seen')==='1';}catch(e){}
+  if(seen)return;
+}
 
 </script>
 </body>
