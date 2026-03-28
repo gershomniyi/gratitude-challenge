@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Gratitude Challenge — GOW</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <script>
   window.OneSignalDeferred = window.OneSignalDeferred || [];
@@ -37,65 +37,60 @@
   --gold-light:rgba(198,168,91,0.1);
   --gold-mid:rgba(198,168,91,0.2);
   --gold-dark:#9A7D3A;
-  --bg:#F5F2EC;
-  --bg2:#EDE9E0;
+  --bg:#F7F6F3;
   --surface:#FFFFFF;
-  --dark:#0F0E0C;
-  --dark2:#1A1814;
-  --muted:rgba(15,14,12,0.38);
-  --border:rgba(15,14,12,0.06);
-  --border-mid:rgba(15,14,12,0.11);
+  --dark:#0A0A0A;
+  --dark2:#141414;
+  --muted:rgba(10,10,10,0.4);
+  --border:rgba(10,10,10,0.06);
+  --border-mid:rgba(10,10,10,0.1);
   --r:14px;
   --rsm:10px;
-  --pill-h:68px;
-  --marquee-h:34px;
-  --shadow:0 1px 3px rgba(15,14,12,0.06), 0 4px 16px rgba(15,14,12,0.04);
-  --shadow-lg:0 8px 32px rgba(15,14,12,0.14);
-  --shadow-pill:0 8px 32px rgba(15,14,12,0.22), 0 2px 8px rgba(15,14,12,0.14);
+  --shadow:0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+  --shadow-lg:0 8px 32px rgba(0,0,0,0.12);
 }
 
 *{box-sizing:border-box;margin:0;padding:0;}
-html,body{background:#1A1814;min-height:100vh;font-family:'DM Sans',sans-serif;color:var(--dark);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;}
-.shell{max-width:420px;margin:0 auto;background:var(--bg);min-height:100vh;position:relative;overflow:hidden;}
-.screen{display:none;flex-direction:column;min-height:100vh;padding-bottom:calc(var(--pill-h) + var(--marquee-h) + 20px);}
-.screen.active{display:flex;}
-.screen.no-nav-pad{padding-bottom:0;}
+html,body{background:#E8E6E1;min-height:100vh;font-family:'DM Sans',sans-serif;color:var(--dark);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;}
 
-/* ── FLOATING PILL NAV ── */
-.pill-nav{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);height:var(--pill-h);background:var(--dark);border-radius:34px;display:none;align-items:center;padding:0 8px;z-index:90;box-shadow:var(--shadow-pill);border:1px solid rgba(255,255,255,0.06);gap:2px;min-width:260px;}
+.shell{max-width:420px;margin:0 auto;background:var(--bg);min-height:100vh;position:relative;overflow:hidden;}
+.screen{display:none;flex-direction:column;min-height:100vh;padding-bottom:calc(var(--pill-h) + var(--marquee-h) + 16px);}
+.screen.active{display:flex;}
+
+/* ── LOADING ── */
+.loading-overlay{position:fixed;inset:0;background:rgba(247,246,243,0.95);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;gap:16px;backdrop-filter:blur(8px);}
+.loading-overlay.hidden{display:none;}
+.spinner{width:24px;height:24px;border:1.5px solid var(--border-mid);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-text{font-size:12px;color:var(--muted);font-weight:500;letter-spacing:0.06em;text-transform:uppercase;}
+
+
+/* ── PILL NAV ── */
+.pill-nav{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);height:var(--pill-h);background:#0F0E0C;border-radius:34px;display:none;align-items:center;padding:0 8px;z-index:90;box-shadow:0 8px 32px rgba(15,14,12,0.25);border:1px solid rgba(255,255,255,0.06);gap:2px;}
 .pill-nav.show{display:flex;}
-.pn-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;width:52px;height:52px;border-radius:26px;cursor:pointer;border:none;background:transparent;font-family:'DM Sans',sans-serif;transition:all 0.2s cubic-bezier(0.25,0.46,0.45,0.94);position:relative;flex-shrink:0;}
+.pn-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;width:52px;height:52px;border-radius:26px;cursor:pointer;border:none;background:transparent;font-family:'DM Sans',sans-serif;transition:all 0.2s;position:relative;flex-shrink:0;}
 .pn-item:active{transform:scale(0.9);}
 .pn-item.active{background:var(--gold);}
 .pn-icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center;}
 .pn-icon svg{width:18px;height:18px;stroke:rgba(255,255,255,0.35);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;transition:stroke 0.2s;}
-.pn-item.active .pn-icon svg{stroke:var(--dark);}
-.pn-label{font-size:8px;font-weight:700;color:rgba(255,255,255,0.28);letter-spacing:0.06em;text-transform:uppercase;transition:color 0.2s;line-height:1;}
-.pn-item.active .pn-label{color:var(--dark);}
-.pn-badge{position:absolute;top:8px;right:8px;width:7px;height:7px;border-radius:50%;background:var(--gold);border:1.5px solid var(--dark);}
+.pn-item.active .pn-icon svg{stroke:#0F0E0C;}
+.pn-label{font-size:8px;font-weight:700;color:rgba(255,255,255,0.28);letter-spacing:0.06em;text-transform:uppercase;line-height:1;}
+.pn-item.active .pn-label{color:#0F0E0C;}
+.pn-badge{position:absolute;top:8px;right:8px;width:7px;height:7px;border-radius:50%;background:var(--gold);border:1.5px solid #0F0E0C;}
 .pn-item.admin-pill{background:rgba(198,168,91,0.07);border:1px solid rgba(198,168,91,0.18);}
-.pn-item.admin-pill .pn-icon svg{stroke:var(--gold);opacity:0.6;}
-.pn-item.admin-pill .pn-label{color:var(--gold);opacity:0.6;}
+.pn-item.admin-pill .pn-icon svg{stroke:var(--gold);opacity:0.7;}
+.pn-item.admin-pill .pn-label{color:var(--gold);opacity:0.7;}
 .pn-item.admin-pill.active{background:var(--gold);border-color:var(--gold);}
-.pn-item.admin-pill.active .pn-icon svg{stroke:var(--dark);opacity:1;}
-.pn-item.admin-pill.active .pn-label{color:var(--dark);opacity:1;}
-
+.pn-item.admin-pill.active .pn-icon svg{stroke:#0F0E0C;opacity:1;}
+.pn-item.admin-pill.active .pn-label{color:#0F0E0C;opacity:1;}
 /* ── MARQUEE ── */
-.marquee-strip{position:fixed;bottom:calc(var(--pill-h) + 6px);left:50%;transform:translateX(-50%);width:calc(100% - 40px);max-width:380px;height:var(--marquee-h);background:var(--dark2);border-radius:20px;overflow:hidden;z-index:89;cursor:pointer;display:none;align-items:center;border:1px solid rgba(198,168,91,0.12);}
+.marquee-strip{position:fixed;bottom:calc(var(--pill-h) + 6px);left:50%;transform:translateX(-50%);width:calc(100% - 40px);max-width:380px;height:var(--marquee-h);background:#1A1814;border-radius:20px;overflow:hidden;z-index:89;cursor:pointer;display:none;align-items:center;border:1px solid rgba(198,168,91,0.12);}
 .marquee-strip.show{display:flex;}
 .marquee-track{display:flex;align-items:center;white-space:nowrap;animation:marquee 20s linear infinite;}
 .marquee-track:hover{animation-play-state:paused;}
 .marquee-item{font-size:10px;font-weight:700;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;padding:0 20px;opacity:0.8;}
-.marquee-dot{color:rgba(198,168,91,0.35);font-size:7px;}
+.marquee-dot{color:rgba(198,168,91,0.35);font-size:7px;padding:0 4px;}
 @keyframes marquee{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
-
-/* ── LOADING ── */
-.loading-overlay{position:fixed;inset:0;background:var(--dark);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;gap:18px;}
-.loading-overlay.hidden{display:none;}
-.loading-logo{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:600;color:var(--gold);letter-spacing:0.08em;}
-.spinner{width:20px;height:20px;border:1.5px solid rgba(198,168,91,0.2);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg);}}
-.loading-text{font-size:11px;color:rgba(198,168,91,0.35);font-weight:500;letter-spacing:0.1em;text-transform:uppercase;}
 
 /* ── TOAST ── */
 .toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%) translateY(8px);background:var(--dark);color:#fff;font-size:13px;font-weight:500;padding:11px 22px;border-radius:24px;opacity:0;transition:all 0.25s cubic-bezier(0.34,1.56,0.64,1);pointer-events:none;white-space:nowrap;z-index:998;box-shadow:0 8px 24px rgba(0,0,0,0.2);}
@@ -568,45 +563,31 @@ html,body{background:#1A1814;min-height:100vh;font-family:'DM Sans',sans-serif;c
 <!-- MARQUEE -->
 <div class="marquee-strip" id="marquee-strip" onclick="window.open('https://genesiah.com/products/be-grateful-tee-acid-black','_blank')">
   <div class="marquee-track">
-    <span class="marquee-item">BE GRATEFUL.</span><span class="marquee-dot">✦</span>
-    <span class="marquee-item">Tee available now</span><span class="marquee-dot">✦</span>
-    <span class="marquee-item">genesiah.com</span><span class="marquee-dot">✦</span>
-    <span class="marquee-item">Limited run</span><span class="marquee-dot">✦</span>
-    <span class="marquee-item">BE GRATEFUL.</span><span class="marquee-dot">✦</span>
-    <span class="marquee-item">Tee available now</span><span class="marquee-dot">✦</span>
-    <span class="marquee-item">genesiah.com</span><span class="marquee-dot">✦</span>
-    <span class="marquee-item">Limited run</span><span class="marquee-dot">✦</span>
-    <span class="marquee-item">BE GRATEFUL.</span><span class="marquee-dot">✦</span>
-    <span class="marquee-item">Tee available now</span><span class="marquee-dot">✦</span>
-    <span class="marquee-item">genesiah.com</span><span class="marquee-dot">✦</span>
-    <span class="marquee-item">Limited run</span><span class="marquee-dot">✦</span>
-    <span class="marquee-item">BE GRATEFUL.</span><span class="marquee-dot">✦</span>
-    <span class="marquee-item">Tee available now</span><span class="marquee-dot">✦</span>
-    <span class="marquee-item">genesiah.com</span><span class="marquee-dot">✦</span>
-    <span class="marquee-item">Limited run</span><span class="marquee-dot">✦</span>
+    <span class="marquee-item">BE GRATEFUL.</span><span class="marquee-dot">✦</span><span class="marquee-item">Tee available now</span><span class="marquee-dot">✦</span><span class="marquee-item">genesiah.com</span><span class="marquee-dot">✦</span><span class="marquee-item">Limited run</span><span class="marquee-dot">✦</span><span class="marquee-item">BE GRATEFUL.</span><span class="marquee-dot">✦</span><span class="marquee-item">Tee available now</span><span class="marquee-dot">✦</span><span class="marquee-item">genesiah.com</span><span class="marquee-dot">✦</span><span class="marquee-item">Limited run</span><span class="marquee-dot">✦</span><span class="marquee-item">BE GRATEFUL.</span><span class="marquee-dot">✦</span><span class="marquee-item">Tee available now</span><span class="marquee-dot">✦</span><span class="marquee-item">genesiah.com</span><span class="marquee-dot">✦</span><span class="marquee-item">Limited run</span><span class="marquee-dot">✦</span><span class="marquee-item">BE GRATEFUL.</span><span class="marquee-dot">✦</span><span class="marquee-item">Tee available now</span><span class="marquee-dot">✦</span><span class="marquee-item">genesiah.com</span><span class="marquee-dot">✦</span><span class="marquee-item">Limited run</span><span class="marquee-dot">✦</span>
   </div>
 </div>
 
 <!-- FLOATING PILL NAV -->
 <nav class="pill-nav" id="pill-nav">
-  <button class="pn-item active" id="pn-home" onclick="showTab('home')">
+  <button class="pn-item active" id="pn-home" onclick="navTo('screen-home','pn-home')">
     <div class="pn-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
     <span class="pn-label">Home</span>
   </button>
-  <button class="pn-item" id="pn-community" onclick="showTab('community')">
-    <div class="pn-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-    <span class="pn-label">Together</span>
+  <button class="pn-item" id="pn-notifs" onclick="navTo('screen-notifs','pn-notifs')">
+    <div class="pn-icon"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+    <span class="pn-label">Alerts</span>
+    <div class="pn-badge" id="pn-notif-badge" style="display:none;"></div>
   </button>
-  <button class="pn-item" id="pn-journal" onclick="showTab('journal')">
+  <button class="pn-item" id="pn-journal" onclick="navTo('screen-journal','pn-journal')">
     <div class="pn-icon"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
     <span class="pn-label">Journal</span>
   </button>
-  <button class="pn-item" id="pn-you" onclick="showTab('you')">
+  <button class="pn-item" id="pn-profile" onclick="navTo('screen-profile','pn-profile')">
     <div class="pn-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
     <span class="pn-label">You</span>
     <div class="pn-badge" id="pn-you-badge" style="display:none;"></div>
   </button>
-  <button class="pn-item admin-pill" id="pn-admin" onclick="showTab('admin')" style="display:none;">
+  <button class="pn-item admin-pill" id="pn-admin" onclick="navTo('screen-admin','pn-admin')" style="display:none;">
     <div class="pn-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
     <span class="pn-label">Admin</span>
     <div class="pn-badge" id="pn-admin-badge" style="display:none;"></div>
@@ -702,7 +683,7 @@ html,body{background:#1A1814;min-height:100vh;font-family:'DM Sans',sans-serif;c
 </div>
 
 <!-- AUTH -->
-<div class="screen active no-nav-pad" id="screen-auth">
+<div class="screen active" id="screen-auth">
   <div class="auth-top">
     <div class="auth-eyebrow">Generation Of The Word</div>
     <div class="auth-headline">Gratitude<br>Challenge</div>
@@ -741,7 +722,7 @@ html,body{background:#1A1814;min-height:100vh;font-family:'DM Sans',sans-serif;c
     <div><div class="t-wordmark">Gratitude</div><div class="t-sub">by GOW</div></div>
     <div class="topbar-right">
       <div class="day-tag" id="day-tag">Day 1</div>
-      <button class="notif-btn" onclick="showScreen('screen-notifs')">
+      <button class="notif-btn" onclick="navTo('screen-notifs','pn-notifs')">
         <span class="ico"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
         <div class="ndot" id="ndot" style="display:none;"></div>
       </button>
@@ -758,7 +739,7 @@ html,body{background:#1A1814;min-height:100vh;font-family:'DM Sans',sans-serif;c
       <div class="streak-count" id="streak-count">0 days</div>
       <div class="streak-sub" id="streak-sub">Post today to start your streak</div>
       <div class="streak-actions">
-        <span class="streak-link" onclick="showTab('community');setTimeout(()=>switchCommunityTab('lb'),50);">Leaderboard →</span>
+        <span class="streak-link" onclick="showScreen('screen-leaderboard')">Leaderboard →</span>
         <button class="freeze-btn" id="freeze-btn" onclick="useStreakFreeze()">❄ Freeze streak</button>
       </div>
     </div>
@@ -835,7 +816,7 @@ html,body{background:#1A1814;min-height:100vh;font-family:'DM Sans',sans-serif;c
   <div class="feed-header">
     <div class="feed-title">Community</div>
     <div style="display:flex;align-items:center;gap:10px;">
-      <span onclick="showTab('community');setTimeout(()=>switchCommunityTab('prayer'),50);" style="font-size:11px;font-weight:600;color:var(--gold-dark);cursor:pointer;background:var(--gold-light);padding:4px 10px;border-radius:20px;border:1px solid var(--gold-mid);">🙏 Prayer wall</span>
+      <span onclick="showScreen('screen-prayer')" style="font-size:11px;font-weight:600;color:var(--gold-dark);cursor:pointer;background:var(--gold-light);padding:4px 10px;border-radius:20px;border:1px solid var(--gold-mid);">🙏 Prayer wall</span>
       <div class="feed-count" id="feed-count"></div>
     </div>
   </div>
@@ -847,13 +828,62 @@ html,body{background:#1A1814;min-height:100vh;font-family:'DM Sans',sans-serif;c
 
 <!-- NOTIFICATIONS -->
 <div class="screen" id="screen-notifs">
-  <div class="inner-bar"><button class="back-btn" onclick="showTab('home')">←</button><div class="inner-title">Notifications</div></div>
+  <div class="inner-bar"><button class="back-btn" onclick="navTo('screen-home','pn-home')">←</button><div class="inner-title">Notifications</div></div>
   <div class="notif-body" id="notif-list"><div style="text-align:center;padding:40px 20px;color:var(--muted);font-size:14px;">Loading...</div></div>
+</div>
+
+<!-- PROFILE -->
+<div class="screen" id="screen-profile">
+  <div class="prof-hero">
+    <div class="prof-av-ring" onclick="openAvatarPicker()">
+      <div class="prof-av" id="prof-av">?</div>
+      <div style="position:absolute;bottom:0;right:0;width:18px;height:18px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--dark);">
+        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="var(--dark)" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      </div>
+    </div>
+    <div class="prof-name" id="prof-name">Loading...</div>
+    <div class="prof-handle" id="prof-handle">GOW Community</div>
+    <div class="prof-stats">
+      <div class="pstat"><div class="pstat-n" id="p-posts">0</div><div class="pstat-l">Posts</div></div>
+      <div class="pstat"><div class="pstat-n" id="p-streak">0</div><div class="pstat-l">Streak</div></div>
+      <div class="pstat"><div class="pstat-n" id="p-days">0</div><div class="pstat-l">Days in</div></div>
+    </div>
+  </div>
+  <div class="prof-body">
+    <div class="badges-section" id="badges-section" style="display:none;">
+      <div class="sec-head">Badges earned</div>
+      <div class="badges-row" id="badges-row"></div>
+    </div>
+    <div class="sec-head">Account</div>
+    <div class="settings-card">
+      <div class="setting-row" onclick="replayWalkthrough()">How the app works <span style="color:var(--muted);">›</span></div>
+      <div class="setting-row" onclick="showScreen('screen-notif-prefs')">Notification preferences <span style="color:var(--muted);">›</span></div>
+      <div class="setting-row" onclick="showScreen('screen-privacy')">Privacy and safety <span style="color:var(--muted);">›</span></div>
+    </div>
+    <div class="sec-head">My journey</div>
+    <div class="settings-card">
+      <div class="setting-row" onclick="openJournal()">My journal <span style="color:var(--muted);">›</span></div>
+      <div class="setting-row" onclick="openUserMessages()">Messages <span id="msg-badge-profile" style="background:var(--gold);color:var(--dark);font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;display:none;margin-left:6px;"></span><span style="color:var(--muted);margin-left:auto;">›</span></div>
+      <div class="setting-row" id="invite-row" onclick="copyInviteLink()">Copy invite link <span style="color:var(--muted);">›</span></div>
+    </div>
+    <div class="sec-head">Explore</div>
+    <div class="settings-card">
+      <div class="setting-row" onclick="showScreen('screen-about-gow')">About GOW <span style="color:var(--muted);">›</span></div>
+      <div class="setting-row" onclick="openContact()">Contact us <span style="color:var(--muted);">›</span></div>
+    </div>
+    <div id="admin-section" style="display:none;">
+      <div class="sec-head">Admin</div>
+      <div class="settings-card">
+        <div class="setting-row" onclick="navTo('screen-admin','pn-admin')" style="color:var(--gold-dark);font-weight:600;">Moderation dashboard <span style="color:var(--muted);">›</span></div>
+      </div>
+    </div>
+    <button class="logout-btn" onclick="doLogout()">Sign out</button>
+  </div>
 </div>
 
 <!-- NOTIF PREFS -->
 <div class="screen" id="screen-notif-prefs">
-  <div class="inner-bar"><button class="back-btn" onclick="goBack()">←</button><div class="inner-title">Notifications</div></div>
+  <div class="inner-bar"><button class="back-btn" onclick="navTo('screen-profile','pn-profile')">←</button><div class="inner-title">Notifications</div></div>
   <div class="content-body">
     <div class="sec-head">Push</div>
     <div class="settings-card">
@@ -872,7 +902,7 @@ html,body{background:#1A1814;min-height:100vh;font-family:'DM Sans',sans-serif;c
 
 <!-- PRIVACY -->
 <div class="screen" id="screen-privacy">
-  <div class="inner-bar"><button class="back-btn" onclick="goBack()">←</button><div class="inner-title">Privacy and safety</div></div>
+  <div class="inner-bar"><button class="back-btn" onclick="navTo('screen-profile','pn-profile')">←</button><div class="inner-title">Privacy and safety</div></div>
   <div class="content-body">
     <div class="sec-head">Visibility</div>
     <div class="settings-card">
@@ -885,6 +915,43 @@ html,body{background:#1A1814;min-height:100vh;font-family:'DM Sans',sans-serif;c
       <div class="setting-row" style="border:none;">Block a user <span style="color:var(--muted);">›</span></div>
     </div>
   </div>
+</div>
+
+<!-- GENESIAH / SHOP -->
+<div class="screen" id="screen-genesiah">
+  <div class="topbar">
+    <div><div class="t-wordmark">Shop</div><div class="t-sub">by Genesiah</div></div>
+  </div>
+  <div style="margin:16px 16px 0;background:var(--dark);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow-lg);">
+    <img src="https://genesiah.com/cdn/shop/files/9EC412BF-6D46-45D6-8FF2-984793B9CDCD.png?v=1773979206&width=800" alt="Be Grateful Tee" style="width:100%;display:block;"/>
+    <div style="padding:18px 20px 20px;">
+      <div style="font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:7px;opacity:0.8;">Part of the 30-Day Gratitude Challenge</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:#FFFFFF;margin-bottom:6px;line-height:1.15;">Be Grateful Tee — Acid Black</div>
+      <div style="width:20px;height:1px;background:var(--gold);margin:10px 0 12px;"></div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.45);line-height:1.7;margin-bottom:6px;font-style:italic;">"Let the peace of God rule in your hearts — and be thankful." — Colossians 3:15</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.38);line-height:1.65;margin-bottom:18px;">280 GSM heavyweight oversized tee. BE GRATEFUL. on the chest. Built for those who choose gratitude every single day. Limited run.</div>
+      <a href="https://genesiah.com/products/be-grateful-tee-acid-black" target="_blank" style="display:block;text-align:center;background:var(--gold);color:var(--dark);text-decoration:none;font-size:14px;font-weight:700;padding:14px;border-radius:10px;letter-spacing:0.02em;">Get yours →</a>
+    </div>
+  </div>
+  <div style="margin:12px 16px 0;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--shadow);">
+    <div>
+      <div style="font-size:14px;font-weight:700;color:var(--dark);margin-bottom:3px;">Explore the full collection</div>
+      <div style="font-size:12px;color:var(--muted);">More pieces at genesiah.com</div>
+    </div>
+    <a href="https://genesiah.com/collections/all" target="_blank" style="background:var(--dark);color:#FFFFFF;text-decoration:none;font-size:12px;font-weight:600;padding:9px 16px;border-radius:8px;white-space:nowrap;">Browse →</a>
+  </div>
+  <div style="margin:12px 16px 0;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;box-shadow:var(--shadow);">
+    <div style="font-size:14px;font-weight:700;color:var(--dark);margin-bottom:6px;">About Genesiah</div>
+    <div style="font-size:13px;color:var(--muted);line-height:1.75;">Genesiah is more than clothing. Every piece is a statement about identity — who you are in Christ, not who the world labels you.</div>
+    <div style="display:flex;gap:10px;margin-top:12px;">
+      <a href="https://www.instagram.com/genesiahapparel" target="_blank" style="flex:1;text-align:center;background:var(--bg);border:1px solid var(--border-mid);color:var(--dark);text-decoration:none;font-size:12px;font-weight:600;padding:9px;border-radius:8px;">Instagram →</a>
+      <a href="https://www.tiktok.com/@genesiahapparel" target="_blank" style="flex:1;text-align:center;background:var(--bg);border:1px solid var(--border-mid);color:var(--dark);text-decoration:none;font-size:12px;font-weight:600;padding:9px;border-radius:8px;">TikTok →</a>
+    </div>
+  </div>
+  <div style="text-align:center;padding:20px 0 8px;">
+    <span onclick="showScreen('screen-about-gow')" style="font-size:12px;font-weight:600;color:var(--muted);letter-spacing:0.04em;cursor:pointer;border-bottom:1px solid var(--border-mid);padding-bottom:2px;">About GOW →</span>
+  </div>
+  <div class="spacer"></div>
 </div>
 
 <!-- ABOUT GOW -->
@@ -922,7 +989,7 @@ html,body{background:#1A1814;min-height:100vh;font-family:'DM Sans',sans-serif;c
 <!-- ADMIN -->
 <div class="screen" id="screen-admin">
   <div class="admin-bar">
-    <button class="back-btn" onclick="goBack()" style="color:#FFFFFF;opacity:0.6;">←</button>
+    <button class="back-btn" onclick="navTo('screen-profile','pn-profile')" style="color:#FFFFFF;opacity:0.6;">←</button>
     <div><div class="admin-title">Moderation</div><div class="admin-sub">Admin only</div></div>
     <div class="admin-badge" id="admin-badge">0 pending</div>
   </div>
@@ -975,7 +1042,7 @@ html,body{background:#1A1814;min-height:100vh;font-family:'DM Sans',sans-serif;c
 <!-- ADMIN MESSAGE THREAD -->
 <div class="screen" id="screen-admin-thread">
   <div class="admin-bar">
-    <button class="back-btn" onclick="goBack()" style="color:#FFFFFF;opacity:0.6;">←</button>
+    <button class="back-btn" onclick="navTo('screen-admin','pn-admin')" style="color:#FFFFFF;opacity:0.6;">←</button>
     <div><div class="admin-title" id="admin-thread-name">Message</div><div class="admin-sub" id="admin-thread-email"></div></div>
   </div>
   <div class="msg-thread" id="admin-thread-list"></div>
@@ -1046,7 +1113,7 @@ html,body{background:#1A1814;min-height:100vh;font-family:'DM Sans',sans-serif;c
 
 <!-- LEADERBOARD -->
 <div class="screen" id="screen-leaderboard">
-  <div class="inner-bar"><button class="back-btn" onclick="showTab('home')">←</button><div class="inner-title">Leaderboard</div></div>
+  <div class="inner-bar"><button class="back-btn" onclick="navTo('screen-home','pn-home')">←</button><div class="inner-title">Leaderboard</div></div>
   <div style="padding:14px 16px 8px;background:var(--bg);">
     <div style="background:var(--dark);border-radius:var(--r);padding:16px 18px;margin-bottom:4px;box-shadow:var(--shadow-lg);">
       <div style="font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:5px;opacity:0.8;">Top streaks</div>
@@ -1059,7 +1126,7 @@ html,body{background:#1A1814;min-height:100vh;font-family:'DM Sans',sans-serif;c
 
 <!-- USER PROFILE -->
 <div class="screen" id="screen-user-profile">
-  <div class="inner-bar"><button class="back-btn" onclick="showTab('home')">←</button><div class="inner-title" id="user-prof-title">Profile</div></div>
+  <div class="inner-bar"><button class="back-btn" onclick="navTo('screen-home','pn-home')">←</button><div class="inner-title" id="user-prof-title">Profile</div></div>
   <div class="user-prof-hero">
     <div style="width:60px;height:60px;border-radius:50%;border:1.5px solid rgba(198,168,91,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;" id="user-prof-av-ring"><div style="font-size:20px;font-weight:700;color:#FFFFFF;" id="user-prof-av">?</div></div>
     <div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:#FFFFFF;" id="user-prof-name">...</div>
@@ -1084,7 +1151,7 @@ html,body{background:#1A1814;min-height:100vh;font-family:'DM Sans',sans-serif;c
 
 <!-- PRAYER WALL -->
 <div class="screen" id="screen-prayer">
-  <div class="inner-bar"><button class="back-btn" onclick="showTab('home')">←</button><div class="inner-title">Prayer Wall</div></div>
+  <div class="inner-bar"><button class="back-btn" onclick="navTo('screen-home','pn-home')">←</button><div class="inner-title">Prayer Wall</div></div>
   <div style="padding:12px 16px 0;background:var(--bg);">
     <div style="background:var(--dark);border-radius:var(--r);padding:14px 16px;margin-bottom:12px;box-shadow:var(--shadow-lg);">
       <div style="font-size:13px;color:rgba(255,255,255,0.45);line-height:1.7;">Share a prayer request and let the community stand with you.</div>
@@ -1095,6 +1162,14 @@ html,body{background:#1A1814;min-height:100vh;font-family:'DM Sans',sans-serif;c
   <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);padding:0 16px 8px;background:var(--bg);">Community prayers</div>
   <div id="prayer-feed" style="flex:1;background:var(--bg);"></div>
   <div class="spacer"></div>
+</div>
+
+<!-- JOURNAL -->
+<div class="screen" id="screen-journal">
+  <div class="inner-bar"><button class="back-btn" onclick="navTo('screen-profile','pn-profile')">←</button><div class="inner-title">My journal</div></div>
+  <div style="padding:16px 20px;flex:1;background:var(--bg);">
+    <div id="journal-feed"></div>
+  </div>
 </div>
 
 <!-- WRAPUP OVERLAY -->
@@ -1124,7 +1199,7 @@ html,body{background:#1A1814;min-height:100vh;font-family:'DM Sans',sans-serif;c
 
 <!-- USER MESSAGES -->
 <div class="screen" id="screen-messages">
-  <div class="inner-bar"><button class="back-btn" onclick="goBack()">←</button><div class="inner-title">Messages</div></div>
+  <div class="inner-bar"><button class="back-btn" onclick="navTo('screen-profile','pn-profile')">←</button><div class="inner-title">Messages</div></div>
   <div style="flex:1;background:var(--bg);padding:16px 20px;">
     <div id="user-msg-list"><div style="text-align:center;padding:40px 20px;color:var(--muted);font-size:14px;">Loading...</div></div>
   </div>
@@ -1179,173 +1254,6 @@ html,body{background:#1A1814;min-height:100vh;font-family:'DM Sans',sans-serif;c
     <div class="avatar-grid" id="avatar-grid"></div>
     <button class="avatar-save" onclick="saveAvatar()">Save avatar</button>
   </div>
-</div>
-
-
-<!-- ══ COMMUNITY TAB ══ -->
-<div class="screen" id="screen-community">
-  <div style="background:var(--dark);padding:32px 20px 20px;">
-    <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:500;color:#FFFFFF;margin-bottom:4px;">Community</div>
-    <div style="font-size:12px;color:rgba(255,255,255,0.28);">Everyone showing up together</div>
-  </div>
-  <div style="display:flex;padding:12px 16px 0;gap:8px;">
-    <button class="day-pill active" id="ctab-wall" onclick="switchCommunityTab('wall')">Wall</button>
-    <button class="day-pill" id="ctab-prayer" onclick="switchCommunityTab('prayer')">Prayer</button>
-    <button class="day-pill" id="ctab-lb" onclick="switchCommunityTab('lb')">Top Streaks</button>
-  </div>
-  <div id="community-wall-section">
-    <div class="day-filter-wrap" id="day-filter-community"></div>
-    <div style="padding:4px 16px 8px;display:flex;justify-content:space-between;align-items:center;">
-      <div class="feed-count" id="community-feed-count" style="font-size:11px;color:var(--muted);"></div>
-    </div>
-    <div id="community-feed"></div>
-  </div>
-  <div id="community-prayer-section" style="display:none;">
-    <div style="padding:12px 16px 0;">
-      <div style="background:var(--dark);border-radius:var(--r);padding:14px 16px;margin-bottom:12px;">
-        <div style="font-size:13px;color:rgba(255,255,255,0.42);line-height:1.7;">Share a prayer request and let the community stand with you.</div>
-      </div>
-      <textarea id="prayer-compose" style="width:100%;border:1px solid var(--border-mid);border-radius:var(--r);padding:13px 16px;font-size:15px;font-family:'DM Sans',sans-serif;color:var(--dark);outline:none;resize:none;min-height:80px;background:var(--surface);margin-bottom:10px;" placeholder="Share your prayer request..." maxlength="300"></textarea>
-      <button onclick="submitPrayer()" style="width:100%;padding:12px;background:var(--dark);color:#FFFFFF;border:none;border-radius:8px;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;margin-bottom:14px;">Post prayer request</button>
-    </div>
-    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);padding:0 16px 8px;">Community prayers</div>
-    <div id="prayer-feed"></div>
-  </div>
-  <div id="community-lb-section" style="display:none;">
-    <div style="padding:14px 16px 8px;">
-      <div style="background:var(--dark);border-radius:var(--r);padding:14px 16px;">
-        <div style="font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:4px;opacity:0.7;">Top streaks</div>
-        <div style="font-size:13px;color:rgba(255,255,255,0.32);line-height:1.5;">The community showing up every single day.</div>
-      </div>
-    </div>
-    <div id="lb-list" style="padding-top:8px;"></div>
-  </div>
-  <div class="spacer"></div>
-</div>
-
-<!-- ══ JOURNAL TAB ══ -->
-<div class="screen" id="screen-journal-tab">
-  <div style="background:var(--dark);padding:36px 20px 24px;">
-    <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:500;color:#FFFFFF;margin-bottom:6px;">My Journal</div>
-    <div style="font-size:12px;color:rgba(255,255,255,0.28);margin-bottom:16px;">Your gratitude journey — one day at a time</div>
-    <div style="display:flex;gap:12px;">
-      <div style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:10px;text-align:center;">
-        <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gold);" id="j-posts">0</div>
-        <div style="font-size:9px;color:rgba(255,255,255,0.28);text-transform:uppercase;letter-spacing:0.08em;margin-top:2px;">Posts</div>
-      </div>
-      <div style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:10px;text-align:center;">
-        <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gold);" id="j-streak">0</div>
-        <div style="font-size:9px;color:rgba(255,255,255,0.28);text-transform:uppercase;letter-spacing:0.08em;margin-top:2px;">Streak</div>
-      </div>
-      <div style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:10px;text-align:center;">
-        <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gold);" id="j-days">0</div>
-        <div style="font-size:9px;color:rgba(255,255,255,0.28);text-transform:uppercase;letter-spacing:0.08em;margin-top:2px;">Days in</div>
-      </div>
-    </div>
-    <div id="journal-badges-section" style="display:none;margin-top:16px;">
-      <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.28);margin-bottom:10px;">Badges earned</div>
-      <div id="journal-badges-row" style="display:flex;gap:10px;flex-wrap:wrap;"></div>
-    </div>
-  </div>
-  <div style="padding:16px;flex:1;background:var(--bg);">
-    <div id="journal-feed-tab"></div>
-  </div>
-  <div class="spacer"></div>
-</div>
-
-<!-- ══ YOU TAB ══ -->
-<div class="screen" id="screen-you">
-  <div class="prof-hero">
-    <div class="prof-av-ring" onclick="openAvatarPicker()" style="cursor:pointer;position:relative;">
-      <div class="prof-av" id="prof-av-you">?</div>
-      <div style="position:absolute;bottom:0;right:0;width:18px;height:18px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--dark);">
-        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="var(--dark)" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-      </div>
-    </div>
-    <div class="prof-name" id="prof-name-you">Loading...</div>
-    <div class="prof-handle" id="prof-handle-you">GOW Community</div>
-    <div class="prof-stats">
-      <div class="pstat"><div class="pstat-n" id="p-posts-you">0</div><div class="pstat-l">Posts</div></div>
-      <div class="pstat"><div class="pstat-n" id="p-streak-you">0</div><div class="pstat-l">Streak</div></div>
-      <div class="pstat"><div class="pstat-n" id="p-days-you">0</div><div class="pstat-l">Days in</div></div>
-    </div>
-  </div>
-  <div class="prof-body">
-    <div class="sec-head">Account</div>
-    <div class="settings-card">
-      <div class="setting-row" onclick="replayWalkthrough()">How the app works <span style="color:var(--muted);">›</span></div>
-      <div class="setting-row" onclick="showScreen('screen-notif-prefs')">Notifications <span style="color:var(--muted);">›</span></div>
-      <div class="setting-row" onclick="showScreen('screen-privacy')">Privacy and safety <span style="color:var(--muted);">›</span></div>
-    </div>
-    <div class="sec-head">Messages</div>
-    <div class="settings-card">
-      <div class="setting-row" onclick="openUserMessages()">Messages <span id="msg-badge-you" style="background:var(--gold);color:var(--dark);font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;display:none;margin-left:6px;"></span><span style="color:var(--muted);margin-left:auto;">›</span></div>
-      <div class="setting-row" onclick="openContact()">Contact us <span style="color:var(--muted);">›</span></div>
-    </div>
-    <div class="sec-head">Share</div>
-    <div class="settings-card">
-      <div class="setting-row" onclick="copyInviteLink()">Copy invite link <span style="color:var(--muted);">›</span></div>
-    </div>
-    <div class="sec-head">Explore</div>
-    <div class="settings-card">
-      <div class="setting-row" onclick="showScreen('screen-about-gow')">About GOW <span style="color:var(--muted);">›</span></div>
-    </div>
-    <button class="logout-btn" onclick="doLogout()">Sign out</button>
-  </div>
-  <div class="spacer"></div>
-</div>
-
-<!-- ══ ADMIN TAB ══ -->
-<div class="screen" id="screen-admin-tab">
-  <div style="background:var(--dark2);padding:20px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:12px;">
-    <div>
-      <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:#FFFFFF;">Moderation</div>
-      <div style="font-size:10px;color:rgba(255,255,255,0.28);text-transform:uppercase;letter-spacing:0.08em;margin-top:2px;">Admin only</div>
-    </div>
-    <div class="admin-badge" id="admin-badge" style="margin-left:auto;">0 pending</div>
-  </div>
-  <div style="display:flex;background:var(--dark2);border-bottom:1px solid rgba(255,255,255,0.06);">
-    <button class="admin-tab active" id="atab-posts" onclick="switchAdminTab('posts')" style="flex:1;padding:12px;font-size:10px;font-weight:700;font-family:'DM Sans',sans-serif;color:var(--gold);background:none;border:none;border-bottom:2px solid var(--gold);cursor:pointer;letter-spacing:0.08em;text-transform:uppercase;">Posts</button>
-    <button class="admin-tab" id="atab-team" onclick="switchAdminTab('team')" style="flex:1;padding:12px;font-size:10px;font-weight:700;font-family:'DM Sans',sans-serif;color:rgba(255,255,255,0.3);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;letter-spacing:0.08em;text-transform:uppercase;">Team</button>
-    <button class="admin-tab" id="atab-broadcast" onclick="switchAdminTab('broadcast')" style="flex:1;padding:12px;font-size:10px;font-weight:700;font-family:'DM Sans',sans-serif;color:rgba(255,255,255,0.3);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;letter-spacing:0.08em;text-transform:uppercase;">Broadcast</button>
-    <button class="admin-tab" id="atab-messages" onclick="switchAdminTab('messages')" style="flex:1;padding:12px;font-size:10px;font-weight:700;font-family:'DM Sans',sans-serif;color:rgba(255,255,255,0.3);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;letter-spacing:0.08em;text-transform:uppercase;">Messages <span id="admin-msg-count" style="display:none;background:var(--gold);color:var(--dark);font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:4px;"></span></button>
-  </div>
-  <div id="admin-posts-tab">
-    <div class="stat-row">
-      <div class="stat-box"><div class="stat-n" id="s-total">0</div><div class="stat-l">Total</div></div>
-      <div class="stat-box"><div class="stat-n" id="s-pending" style="color:var(--gold);">0</div><div class="stat-l">Pending</div></div>
-      <div class="stat-box"><div class="stat-n" id="s-live">0</div><div class="stat-l">Live</div></div>
-    </div>
-    <div class="mod-head">Pending review</div>
-    <div id="mod-queue"></div>
-  </div>
-  <div id="admin-team-tab" style="display:none;padding:16px 20px;background:var(--bg);flex:1;">
-    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:10px;">Add moderator</div>
-    <div style="background:var(--surface);border:1px solid var(--border-mid);border-radius:var(--r);padding:14px;margin-bottom:16px;">
-      <div style="font-size:13px;color:var(--muted);margin-bottom:10px;line-height:1.6;">Enter their email. They need to sign up first.</div>
-      <input class="form-input" type="email" id="mod-email-input" placeholder="email@example.com" style="margin-bottom:10px;"/>
-      <button onclick="addModerator()" style="width:100%;padding:12px;background:var(--dark);color:#FFFFFF;border:none;border-radius:8px;font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;">Assign as moderator</button>
-      <div id="mod-assign-msg" style="font-size:13px;margin-top:8px;text-align:center;"></div>
-    </div>
-    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:10px;">Current moderators</div>
-    <div id="mod-team-list"><div class="mod-empty">No moderators assigned yet</div></div>
-  </div>
-  <div id="admin-broadcast-tab" style="display:none;padding:16px 20px;background:var(--bg);flex:1;">
-    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:10px;">Send broadcast message</div>
-    <div style="background:var(--surface);border:1px solid var(--border-mid);border-radius:var(--r);padding:14px;margin-bottom:16px;">
-      <div style="font-size:13px;color:var(--muted);margin-bottom:10px;line-height:1.6;">This message appears as a banner for every user when they open the app.</div>
-      <textarea id="broadcast-input" style="width:100%;border:1px solid var(--border-mid);border-radius:var(--rsm);padding:12px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--dark);outline:none;resize:none;min-height:90px;background:var(--bg);margin-bottom:10px;" placeholder="e.g. Day 5 video is live — go watch it then post your gratitude."></textarea>
-      <button onclick="sendBroadcast()" style="width:100%;padding:12px;background:var(--gold);color:var(--dark);border:none;border-radius:8px;font-size:13px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;">Send to everyone</button>
-      <div id="broadcast-send-msg" style="font-size:13px;margin-top:8px;text-align:center;"></div>
-    </div>
-    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:10px;">Active message</div>
-    <div id="broadcast-active" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;"><div style="font-size:13px;color:var(--muted);">No active broadcast.</div></div>
-    <button onclick="clearBroadcast()" style="width:100%;margin-top:10px;padding:12px;background:var(--surface);color:#CC3333;border:1px solid rgba(204,51,51,0.15);border-radius:8px;font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;">Clear broadcast</button>
-  </div>
-  <div id="admin-messages-tab" style="display:none;flex:1;flex-direction:column;background:var(--bg);">
-    <div id="admin-msg-list" style="padding:14px 16px;"></div>
-  </div>
-  <div class="spacer"></div>
 </div>
 
 </div><!-- shell -->
@@ -1719,12 +1627,14 @@ function subscribeToNotifications(){
     .on('postgres_changes',{event:'INSERT',schema:'public',table:'notifications',filter:'user_id=eq.'+currentUser.id},
       payload=>{
         const dot=document.getElementById('ndot');if(dot)dot.style.display='block';
+        const _pnb=document.getElementById('pn-notif-badge');if(_pnb)_pnb.style.display='block';
         const list=document.getElementById('notif-list');
         if(list&&document.getElementById('screen-notifs')?.classList.contains('active')){prependNotifItem(payload.new,list);}
       }).subscribe();
   if(currentProfile?.email===ADMIN_EMAIL){
     sb.channel('new-messages').on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},()=>{
-      const dot=document.getElementById('ndot');if(dot)dot.style.display='block';checkAdminUnreadMessages();
+      const dot=document.getElementById('ndot');if(dot)dot.style.display='block';
+        const _pnb=document.getElementById('pn-notif-badge');if(_pnb)_pnb.style.display='block';checkAdminUnreadMessages();
     }).subscribe();
   }
 }
@@ -1833,63 +1743,7 @@ function getDay(){
   const diff=Math.floor((now-start)/(1000*60*60*24))+1;
   return Math.min(Math.max(diff,1),30);
 }
-// ── PILL NAV TAB SYSTEM ──────────────────────────────
-const TAB_SCREENS={home:'screen-home',community:'screen-community',journal:'screen-journal-tab',you:'screen-you',admin:'screen-admin-tab'};
-
-function showPillNav(show){
-  const nav=document.getElementById('pill-nav');
-  const marquee=document.getElementById('marquee-strip');
-  if(nav)nav.classList.toggle('show',show);
-  if(marquee)marquee.classList.toggle('show',show);
-}
-
-function showTab(tab){
-  Object.values(TAB_SCREENS).forEach(sid=>{
-    const s=document.getElementById(sid);
-    if(s){s.classList.remove('active');s.style.display='none';}
-  });
-  Object.keys(TAB_SCREENS).forEach(t=>{
-    const btn=document.getElementById('pn-'+t);
-    if(btn)btn.classList.remove('active');
-  });
-  const screenId=TAB_SCREENS[tab];
-  if(!screenId)return;
-  const screen=document.getElementById(screenId);
-  if(screen){screen.style.display='flex';screen.classList.add('active');}
-  const btn=document.getElementById('pn-'+tab);
-  if(btn)btn.classList.add('active');
-  window.scrollTo(0,0);
-  if(tab==='home'){loadFeed();buildDayFilter();updatePostedTodayState();}
-  if(tab==='community'){loadCommunityContent();}
-  if(tab==='journal'){loadJournalContent();}
-  if(tab==='admin'){loadModQueue();}
-}
-
-function loadCommunityContent(){
-  // Community tab — show prayer wall link + leaderboard in community screen
-  const lb=document.getElementById('lb-list');if(lb)loadLeaderboard();
-  loadPrayers();
-  loadFeed(); // reuse feed for community wall
-}
-
-function loadJournalContent(){
-  const feed=document.getElementById('journal-feed-tab');
-  if(!feed||!currentUser)return;
-  feed.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:14px;">Loading...</div>';
-  sb.from('posts').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:true}).then(({data:posts})=>{
-    if(!posts||posts.length===0){feed.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:14px;">You have not posted yet. Start today.</div>';return;}
-    feed.innerHTML='';
-    posts.forEach(p=>{
-      const div=document.createElement('div');div.className='journal-card';
-      const date=new Date(p.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'});
-      div.innerHTML='<div class="journal-day">Day '+p.day+'</div><div class="journal-text">'+esc(p.text)+'</div><div class="journal-date">'+date+'</div>';
-      feed.appendChild(div);
-    });
-  });
-}
-
 function setLoading(show,text='Loading...'){
-
   const el=document.getElementById('loading');el.classList.toggle('hidden',!show);
   document.getElementById('loading-text').textContent=text;
 }
@@ -1897,19 +1751,16 @@ function showToast(msg){
   const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),3000);
 }
-let _prevTab='home';
 function showScreen(id){
-  // Hide all tab screens + inner screens
-  document.querySelectorAll('.screen,.ob-screen,.wt-screen').forEach(s=>{s.classList.remove('active');});
+  document.querySelectorAll('.screen,.ob-screen').forEach(s=>s.classList.remove('active'));
   const el=document.getElementById(id);if(el)el.classList.add('active');
-  if(id==='screen-notifs'){const d=document.getElementById('ndot');if(d)d.style.display='none';loadNotifications();}
+  if(id==='screen-admin')loadModQueue();
+  if(id==='screen-home'){loadFeed();buildDayFilter();updatePostedTodayState();showPillNav(true);}
   if(id==='screen-messages')openUserMessages();
+  if(id==='screen-notifs'){const d=document.getElementById('ndot');if(d)d.style.display='none';loadNotifications();}
+  if(id==='screen-leaderboard')loadLeaderboard();
   if(id==='screen-prayer')loadPrayers();
   window.scrollTo(0,0);
-}
-function goBack(){
-  document.querySelectorAll('.screen,.ob-screen,.wt-screen').forEach(s=>s.classList.remove('active'));
-  showTab(_prevTab||'home');
 }
 function switchTab(t){
   document.getElementById('login-form').style.display=t==='login'?'block':'none';
@@ -1943,12 +1794,7 @@ async function doSignup(){
     sendWelcomeEmail(n,e);notifyAdminNewUser(n,e);isFirstTime=true;await enterApp(data.user);
   }
 }
-async function doLogout(){
-  await sb.auth.signOut();currentUser=null;currentProfile=null;
-  showPillNav(false);
-  document.querySelectorAll('.screen,.wt-screen').forEach(s=>{s.classList.remove('active');s.style.display='none';});
-  const auth=document.getElementById('screen-auth');if(auth){auth.style.display='flex';auth.classList.add('active');}
-}
+async function doLogout(){await sb.auth.signOut();currentUser=null;currentProfile=null;showScreen('screen-auth');}
 async function enterApp(user){
   currentUser=user;setLoading(true,'Loading your profile...');
   try{
@@ -1965,8 +1811,6 @@ async function enterApp(user){
       document.querySelectorAll('.wt-dot').forEach((d,i)=>{d.classList.remove('active');if(i===0)d.classList.add('active');});
       const wtbtn=document.getElementById('wt-btn');if(wtbtn)wtbtn.textContent='Next';
       document.querySelectorAll('.screen,.wt-screen,.ob-screen').forEach(s=>{s.classList.remove('active');s.style.display='none';});
-      showPillNav(false);
-      showPillNav(false);
       const obScreen=document.getElementById('screen-onboarding');
       if(obScreen){obScreen.style.display='flex';obScreen.classList.add('active');}
     } else {showScreen('screen-home');}
@@ -1982,17 +1826,12 @@ function updateProfileUI(){
   const ring=document.querySelector('.prof-av-ring');if(ring){ring.style.background=av.bg;}
   document.getElementById('prof-name').textContent=currentProfile.name;
   document.getElementById('prof-handle').textContent='@'+currentProfile.name.toLowerCase().replace(/\s/g,'')+'· GOW';
-  const _youName=document.getElementById('prof-name-you');if(_youName)_youName.textContent=currentProfile.name;
-  const _youHandle=document.getElementById('prof-handle-you');if(_youHandle)_youHandle.textContent='@'+currentProfile.name.toLowerCase().replace(/\s/g,'')+'· GOW';
-  const _youAv=document.getElementById('prof-av-you');if(_youAv){_youAv.textContent=initials;_youAv.style.color=av.color;}
-  const _youStreak=document.getElementById('p-streak-you');if(_youStreak)_youStreak.textContent=currentProfile.streak||0;
-  const _youDays=document.getElementById('p-days-you');if(_youDays)_youDays.textContent=currentProfile.days_in||0;
   document.getElementById('p-streak').textContent=currentProfile.streak||0;
   document.getElementById('p-days').textContent=currentProfile.days_in||0;
   document.getElementById('day-tag').textContent='Day '+day;
   document.getElementById('prog-label').textContent='Day '+day+' of 30';
   document.getElementById('prog-fill').style.width=Math.round((day/30)*100)+'%';
-  const _sc=document.getElementById('streak-count');if(_sc)_sc.textContent=currentProfile.streak||0;
+  document.getElementById('streak-count').textContent=(currentProfile.streak||0)+' days';
   document.getElementById('streak-sub').textContent=currentProfile.streak>0?'You are building consistency. Keep going.':'Post today to start your streak';
   document.getElementById('compose-hint').textContent='Day '+day+' of becoming more grateful.';
   const promptEl=document.getElementById('daily-prompt-text');if(promptEl)promptEl.textContent=getDailyPrompt();
@@ -2000,10 +1839,7 @@ function updateProfileUI(){
   startCountdownTimer();subscribeToNotifications();loadBroadcast();renderScripture();setupInviteLink();
   updateFreezeBtn();checkCommunityMilestone();checkDay30Wrapup();checkUnreadMessages();checkAdminUnreadMessages();
   const isAdmin=currentProfile.email===ADMIN_EMAIL;const isMod=currentProfile.role==='moderator'||isAdmin;
-  const adminBtn=document.getElementById('pn-admin');if(adminBtn)adminBtn.style.display=isMod?'flex':'none';
-  const adminSect=document.getElementById('admin-section');if(adminSect)adminSect.style.display=isMod?'block':'none';
-  syncYouTab();
-  syncJournalStats();
+  document.getElementById('admin-section').style.display=isMod?'block':'none';
 }
 async function loadFeed(){
   const c=document.getElementById('feed-container');
@@ -2148,14 +1984,14 @@ function replayWalkthrough(){
   document.querySelectorAll('.wt-slide').forEach((s,i)=>{s.classList.remove('active','exit');if(i===0)s.classList.add('active');});
   document.querySelectorAll('.wt-dot').forEach((d,i)=>{d.classList.remove('active');if(i===0)d.classList.add('active');});
   const btn=document.getElementById('wt-btn');if(btn)btn.textContent='Next';
+  document.querySelectorAll('.screen,.wt-screen').forEach(s=>s.classList.remove('active'));
   showPillNav(false);
-  document.querySelectorAll('.screen,.wt-screen').forEach(s=>{s.classList.remove('active');s.style.display='none';});
   const ob=document.getElementById('screen-onboarding');if(ob){ob.style.display='flex';ob.classList.add('active');}
 }
 function finishOnboarding(){
   const ob=document.getElementById('screen-onboarding');if(ob){ob.classList.remove('active');ob.style.display='none';}
   showPillNav(true);
-  showTab('home');
+  showScreen('screen-home');
 }
 function switchAdminTab(tab){
   const isPosts=tab==='posts',isTeam=tab==='team',isBroadcast=tab==='broadcast',isMessages=tab==='messages';
@@ -2383,7 +2219,19 @@ async function togglePraying(prayerId,btn){
     btn.classList.add('praying');btn.textContent='🙏 Praying '+(cur+1);
   }
 }
-
+async function openJournal(){
+  showScreen('screen-journal');const feed=document.getElementById('journal-feed');
+  feed.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:14px;">Loading...</div>';
+  const{data:posts}=await sb.from('posts').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:true});
+  if(!posts||posts.length===0){feed.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:14px;">You have not posted yet. Start today.</div>';return;}
+  feed.innerHTML='';
+  posts.forEach(p=>{
+    const div=document.createElement('div');div.className='journal-card';
+    const date=new Date(p.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    div.innerHTML=`<div class="journal-day">Day ${p.day}</div><div class="journal-text">${esc(p.text)}</div><div class="journal-date">${date}</div>`;
+    feed.appendChild(div);
+  });
+}
 function updateFreezeBtn(){
   const btn=document.getElementById('freeze-btn');if(!btn)return;
   let used=false;try{const weekKey='gow_freeze_week_'+getWeekKey();used=localStorage.getItem(weekKey)==='1';}catch(e){}
@@ -2456,7 +2304,7 @@ function shareWrapup(){
   }
   setLoading(true,'Loading...');
   const{data:{session}}=await sb.auth.getSession();setLoading(false);
-  if(session?.user){isFirstTime=false;await enterApp(session.user);} else {showPillNav(false);}
+  if(session?.user){isFirstTime=false;await enterApp(session.user);}
   sb.auth.onAuthStateChange(async(event,session)=>{
     if(event==='PASSWORD_RECOVERY'){
       setLoading(false);
@@ -2479,148 +2327,25 @@ async function doResetPassword(){
 }
 
 // ── PILL NAV ─────────────────────────────────────────
-
 function showPillNav(show){
   const nav=document.getElementById('pill-nav');
   const mq=document.getElementById('marquee-strip');
-  if(nav){if(show)nav.classList.add('show');else nav.classList.remove('show');}
-  if(mq){if(show)mq.classList.add('show');else mq.classList.remove('show');}
+  if(nav){nav.classList[show?'add':'remove']('show');}
+  if(mq){mq.classList[show?'add':'remove']('show');}
 }
 
-function showTab(tab){
-  _prevTab=tab;
-  Object.values(TAB_SCREENS).forEach(sid=>{
-    const s=document.getElementById(sid);
-    if(s)s.classList.remove('active');
-  });
-  Object.keys(TAB_SCREENS).forEach(t=>{
-    const btn=document.getElementById('pn-'+t);
-    if(btn)btn.classList.remove('active');
-  });
-  const sid=TAB_SCREENS[tab];
-  if(!sid)return;
-  const screen=document.getElementById(sid);
-  if(screen)screen.classList.add('active');
-  const btn=document.getElementById('pn-'+tab);
+function navTo(screenId, btnId){
+  // Show target screen, hide others
+  showScreen(screenId);
+  // Update pill active state
+  document.querySelectorAll('.pn-item').forEach(b=>b.classList.remove('active'));
+  const btn=document.getElementById(btnId);
   if(btn)btn.classList.add('active');
-  window.scrollTo(0,0);
-  if(tab==='home'){loadFeed();buildDayFilter();updatePostedTodayState();}
-  if(tab==='community'){switchCommunityTab('wall');}
-  if(tab==='journal'){loadJournalContent();}
-  if(tab==='admin'){loadModQueue();loadAdminMessages();}
 }
 
-// ── COMMUNITY TAB ─────────────────────────────────────
-let _communityTab='wall';
-let communityDayFilter=0;
-
-function switchCommunityTab(tab){
-  _communityTab=tab;
-  ['wall','prayer','lb'].forEach(t=>{
-    const btn=document.getElementById('ctab-'+t);
-    const sec=document.getElementById('community-'+t+'-section');
-    if(btn)btn.classList.toggle('active',t===tab);
-    if(sec)sec.style.display=t===tab?'block':'none';
-  });
-  if(tab==='wall'){buildCommunityFilter();loadCommunityFeed();}
-  if(tab==='prayer')loadPrayers();
-  if(tab==='lb')loadLeaderboard();
-}
-
-function buildCommunityFilter(){
-  const wrap=document.getElementById('day-filter-community');if(!wrap)return;
-  const day=getDay();wrap.innerHTML='';
-  const all=document.createElement('button');all.className='day-pill'+(communityDayFilter===0?' active':'');all.textContent='All days';
-  all.onclick=()=>{communityDayFilter=0;buildCommunityFilter();loadCommunityFeed();};wrap.appendChild(all);
-  for(let i=1;i<=day;i++){
-    const p=document.createElement('button');p.className='day-pill'+(communityDayFilter===i?' active':'');p.textContent='Day '+i;
-    p.onclick=(d=>()=>{communityDayFilter=d;buildCommunityFilter();loadCommunityFeed();})(i);wrap.appendChild(p);
-  }
-}
-
-async function loadCommunityFeed(){
-  const c=document.getElementById('community-feed');if(!c)return;
-  c.innerHTML='<div class="empty-feed">Loading...</div>';
-  let q=sb.from('posts').select('*').eq('status','approved').order('created_at',{ascending:false}).limit(50);
-  if(communityDayFilter>0)q=q.eq('day',communityDayFilter);
-  const{data:posts}=await q;
-  const fc=document.getElementById('community-feed-count');
-  if(!posts||posts.length===0){c.innerHTML='<div class="empty-feed">No posts yet.</div>';if(fc)fc.textContent='';return;}
-  if(fc)fc.textContent=posts.length+' post'+(posts.length!==1?'s':'');
-  c.innerHTML='';
-  let myLikes=[];if(currentUser){const r=await sb.from('likes').select('post_id,type').eq('user_id',currentUser.id);myLikes=r.data||[];}
-  const likedSet=new Set((myLikes||[]).filter(l=>l.type==='like').map(l=>l.post_id));
-  const amenSet=new Set((myLikes||[]).filter(l=>l.type==='amen').map(l=>l.post_id));
-  const isAdm=currentProfile?.email===ADMIN_EMAIL;
-  posts.forEach(p=>{
-    const wrap=document.createElement('div');wrap.className='post-card-wrap';wrap.dataset.postId=p.id;
-    const d=document.createElement('div');d.className='post-card';
-    const liked=likedSet.has(p.id),amened=amenSet.has(p.id);
-    const isOwn=p.user_id===currentUser?.id;
-    const avHtml=renderAvatarCircle(p.name,p.avatar_id,34,13);
-    const sid=p.id;const ago=timeAgo(new Date(p.created_at));
-    const optBtn=isOwn?`<button onclick="togglePostMenu('${sid}',this)" style="margin-left:auto;background:none;border:none;cursor:pointer;padding:4px 8px;color:var(--muted);font-size:18px;line-height:1;">···</button>`:'';
-    const delBtn=isAdm&&!isOwn?`<button onclick="deletePost('${sid}')" style="margin-left:auto;background:none;border:none;cursor:pointer;padding:6px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(15,14,12,0.25)" stroke-width="1.75"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>`:'';
-    d.innerHTML=`<div class="post-top"><div style="display:flex;align-items:center;gap:9px;cursor:pointer;" onclick="openUserProfile('${sid}',${p.avatar_id||1})">${avHtml}<div><span class="post-name">${esc(p.name)}</span><span class="post-meta">${ago}</span></div></div><div style="display:flex;align-items:center;gap:4px;"><span class="post-day">Day ${p.day}</span>${optBtn}${delBtn}</div></div><div class="post-text">${esc(p.text)}${p.shoutout_name?'<div class="shoutout-badge">🤝 '+esc(p.shoutout_name)+'</div>':''}</div><div class="post-actions"><button class="act-btn${liked?' liked':''}" onclick="toggleReact('${sid}','like',this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="${liked?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> ${p.likes||0}</button><button class="act-btn${amened?' amened':''}" onclick="toggleReact('${sid}','amen',this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg> Amen ${p.amens||0}</button><button class="act-btn" onclick="openComments('${sid}','')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button></div>`;
-    wrap.appendChild(d);c.appendChild(wrap);
-  });
-}
-
-// ── JOURNAL TAB LOAD ──────────────────────────────────
-async function loadJournalContent(){
-  const feed=document.getElementById('journal-feed-tab');if(!feed||!currentUser)return;
-  syncJournalStats();
-  feed.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:14px;">Loading...</div>';
-  const{data:posts}=await sb.from('posts').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:true});
-  const jp=document.getElementById('j-posts');if(jp)jp.textContent=posts?.length||0;
-  if(!posts||posts.length===0){feed.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:14px;">You have not posted yet. Start today.</div>';return;}
-  feed.innerHTML='';
-  posts.forEach(p=>{
-    const div=document.createElement('div');div.className='journal-card';
-    const date=new Date(p.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'});
-    div.innerHTML='<div class="journal-day">Day '+p.day+'</div><div class="journal-text">'+esc(p.text)+'</div><div class="journal-date">'+date+'</div>';
-    feed.appendChild(div);
-  });
-}
-
-function syncJournalStats(){
-  if(!currentProfile)return;
-  const streak=currentProfile.streak||0;
-  const el_s=document.getElementById('j-streak');if(el_s)el_s.textContent=streak;
-  const el_d=document.getElementById('j-days');if(el_d)el_d.textContent=currentProfile.days_in||0;
-  renderJournalBadges(streak);
-}
-
-function renderJournalBadges(streak){
-  const row=document.getElementById('journal-badges-row');const section=document.getElementById('journal-badges-section');
-  if(!row||!section)return;
-  const earned=MILESTONES.filter(m=>streak>=m.day);
-  if(earned.length===0){section.style.display='none';return;}
-  section.style.display='block';row.innerHTML='';
-  earned.forEach(m=>{
-    const wrap=document.createElement('div');wrap.style.cssText='display:flex;flex-direction:column;align-items:center;gap:5px;';
-    wrap.innerHTML=buildBadgeSVG(m.day,64)+'<div style="font-size:9px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:rgba(255,255,255,0.35);">'+m.title+'</div>';
-    row.appendChild(wrap);
-  });
-}
-
-// ── SYNC YOU TAB ──────────────────────────────────────
-function syncYouTab(){
-  if(!currentProfile)return;
-  const av=getAvatarById(currentProfile.avatar_id||1);
-  const initials=currentProfile.name.trim().split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
-  ['prof-av','prof-av-you'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el){el.textContent=initials;el.style.color=av.color;}
-  });
-  document.querySelectorAll('.prof-av-ring').forEach(r=>r.style.background=av.bg);
-  ['prof-name','prof-name-you'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=currentProfile.name;});
-  const handle='@'+currentProfile.name.toLowerCase().replace(/\s/g,'')+'· GOW';
-  ['prof-handle','prof-handle-you'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=handle;});
-  const streak=currentProfile.streak||0;
-  ['p-streak','p-streak-you'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=streak;});
-  ['p-days','p-days-you'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=currentProfile.days_in||0;});
-}
+// Override showScreen to keep pill nav visible
+const _origShowScreen = showScreen;
+// Patch enterApp calls
 
 </script>
 </body>
