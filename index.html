@@ -3554,10 +3554,12 @@ async function submitAdminMsgCompose(){
     read:false
   }).catch(()=>{});
   status.style.color='var(--gold-dark)';
-  status.textContent='Message sent to '+(_adminMsgTarget.name||'user');
-  showToast('Message delivered');
+  status.style.fontWeight='600';
+  status.style.fontSize='14px';
+  status.textContent='✓ Message sent to '+(_adminMsgTarget.name||'user');
+  showToast('Message delivered to '+(_adminMsgTarget.name||'user'));
   if(field)field.value='';
-  setTimeout(()=>closeAdminMsgCompose(),1500);
+  setTimeout(()=>closeAdminMsgCompose(),3000);
 }
 
 </script>
