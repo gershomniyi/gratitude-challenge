@@ -2027,9 +2027,11 @@ function updateProfileUI(){
   document.getElementById('streak-sub').textContent=challengeStarted()?(currentProfile.streak>0?'You are building consistency. Keep going.':'Post today to start your streak'):'Streaks begin April 1st — post now to warm up';
   document.getElementById('compose-hint').textContent='Day '+day+(typeof DAY_IDENTITIES!=='undefined'?': '+DAY_IDENTITIES[Math.min(day-1,29)]:'')+' — write it like you\'re talking to God.';
   const promptEl=document.getElementById('daily-prompt-text');if(promptEl)promptEl.textContent=getDailyPrompt();
-  renderPromptChips();renderProfileBadges(currentProfile.streak||0);updateVideoCard();updatePostedTodayState();renderPostCTA();loadInviteProgress();checkStreakWarning();
-  startCountdownTimer();subscribeToNotifications();loadBroadcast();renderScripture();setupInviteLink();
-  updateFreezeBtn();checkCommunityMilestone();checkDay30Wrapup();checkUnreadMessages();checkAdminUnreadMessages();
+  try{renderPromptChips();renderProfileBadges(currentProfile.streak||0);}catch(e){}
+  try{updateVideoCard();updatePostedTodayState();renderPostCTA();}catch(e){}
+  try{loadInviteProgress();checkStreakWarning();}catch(e){}
+  try{startCountdownTimer();subscribeToNotifications();loadBroadcast();renderScripture();setupInviteLink();}catch(e){}
+  try{updateFreezeBtn();checkCommunityMilestone();checkDay30Wrapup();checkUnreadMessages();checkAdminUnreadMessages();}catch(e){}
   const isAdmin=currentProfile.email===ADMIN_EMAIL;const isMod=currentProfile.role==='moderator'||isAdmin;
   document.getElementById('admin-section').style.display=isMod?'block':'none';
 }
@@ -2361,9 +2363,11 @@ async function sendAdminReply(){
 }
 async function checkUnreadMessages(){
   if(!currentUser)return;
-  const{data:msgs}=await sb.from('messages').select('id').eq('user_id',currentUser.id).eq('user_read',false);
-  const badge=document.getElementById('msg-badge-profile');
-  if(badge&&msgs&&msgs.length>0){badge.textContent=msgs.length;badge.style.display='inline-block';}
+  try{
+    const{data:msgs}=await sb.from('messages').select('id').eq('receiver_id',currentUser.id).eq('read',false);
+    const badge=document.getElementById('msg-badge-profile');
+    if(badge&&msgs&&msgs.length>0){badge.textContent=msgs.length;badge.style.display='inline-block';}
+  }catch(e){}
 }
 const SCRIPTURES=[{ref:'1 Thessalonians 5:18',text:'Give thanks in all circumstances; for this is the will of God in Christ Jesus for you.'},{ref:'Psalm 107:1',text:'Give thanks to the Lord, for he is good; his love endures forever.'},{ref:'Colossians 3:15',text:'Let the peace of God rule in your hearts — and be thankful.'},{ref:'Ephesians 2:8',text:'For by grace you have been saved through faith — and this is not your own doing. It is the gift of God.'},{ref:'Psalm 100:4',text:'Enter his gates with thanksgiving and his courts with praise; give thanks to him and praise his name.'},{ref:'Philippians 4:6',text:'Do not be anxious about anything, but in every situation present your requests to God with thanksgiving.'},{ref:'Psalm 118:24',text:'This is the day the Lord has made; let us rejoice and be glad in it.'},{ref:'James 1:17',text:'Every good and perfect gift is from above, coming down from the Father of heavenly lights.'},{ref:'Lamentations 3:22-23',text:'The steadfast love of the Lord never ceases; his mercies never come to an end. They are new every morning.'},{ref:'Romans 8:28',text:'And we know that in all things God works for the good of those who love him.'},{ref:'Psalm 34:1',text:'I will extol the Lord at all times; his praise will always be on my lips.'},{ref:'Hebrews 12:28',text:'Let us be thankful, and so worship God acceptably with reverence and awe.'},{ref:'Colossians 4:2',text:'Devote yourselves to prayer, being watchful and thankful.'},{ref:'Psalm 9:1',text:'I will give thanks to you, Lord, with all my heart; I will tell of all your wonderful deeds.'},{ref:'2 Corinthians 9:15',text:'Thanks be to God for his indescribable gift!'},{ref:'Psalm 136:1',text:'Give thanks to the Lord, for he is good. His love endures forever.'},{ref:'Luke 17:16',text:'He threw himself at Jesus feet and thanked him — and he was a Samaritan.'},{ref:'Deuteronomy 8:10',text:'When you have eaten and are satisfied, praise the Lord your God for the good land he has given you.'},{ref:'Isaiah 12:4',text:'Give praise to the Lord, proclaim his name; make known among the nations what he has done.'},{ref:'Psalm 69:30',text:'I will praise God\'s name in song and glorify him with thanksgiving.'},{ref:'Romans 1:21',text:'Although they knew God, they neither glorified him as God nor gave thanks to him.'},{ref:'Philippians 4:11',text:'I have learned, in whatsoever state I am, to be content.'},{ref:'1 Chronicles 16:34',text:'Give thanks to the Lord, for he is good; his love endures forever.'},{ref:'Psalm 28:7',text:'The Lord is my strength and my shield; my heart trusts in him, and he helps me.'},{ref:'Ephesians 5:20',text:'Always giving thanks to God the Father for everything, in the name of our Lord Jesus Christ.'},{ref:'Psalm 95:2',text:'Let us come before him with thanksgiving and extol him with music and song.'},{ref:'Romans 5:3-4',text:'We also glory in our sufferings, because suffering produces perseverance; perseverance, character; and character, hope.'},{ref:'Psalm 103:2',text:'Praise the Lord, my soul, and forget not all his benefits.'},{ref:'John 11:41',text:'Father, I thank you that you have heard me.'},{ref:'Revelation 7:12',text:'Praise and glory and wisdom and thanks and honor and power and strength be to our God for ever and ever.'}];
 function renderScripture(){
