@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Gratitude Challenge — GOW</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <script>
   window.OneSignalDeferred = window.OneSignalDeferred || [];
@@ -54,7 +54,7 @@
 html,body{background:#E8E6E1;min-height:100vh;font-family:'DM Sans',sans-serif;color:var(--dark);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;}
 
 .shell{max-width:420px;margin:0 auto;background:var(--bg);min-height:100vh;position:relative;overflow:hidden;}
-.screen{display:none;flex-direction:column;min-height:100vh;padding-bottom:calc(var(--pill-h) + var(--marquee-h) + 16px);}
+.screen{display:none;flex-direction:column;min-height:100vh;padding-bottom:calc(var(--pill-h) + 24px);}
 .screen.active{display:flex;}
 
 /* ── LOADING ── */
@@ -66,7 +66,7 @@ html,body{background:#E8E6E1;min-height:100vh;font-family:'DM Sans',sans-serif;c
 
 
 /* ── PILL NAV ── */
-.pill-nav{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);height:var(--pill-h);background:#0F0E0C;border-radius:34px;display:none;align-items:center;padding:0 8px;z-index:90;box-shadow:0 8px 32px rgba(15,14,12,0.25);border:1px solid rgba(255,255,255,0.06);gap:2px;}
+.pill-nav{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);height:var(--pill-h);background:#0F0E0C;border-radius:34px;display:none;align-items:center;padding:0 8px;z-index:90;box-shadow:0 8px 32px rgba(15,14,12,0.25);border:1px solid rgba(255,255,255,0.06);gap:2px;}
 .pill-nav.show{display:flex;}
 .pn-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;width:52px;height:52px;border-radius:26px;cursor:pointer;border:none;background:transparent;font-family:'DM Sans',sans-serif;transition:all 0.2s;position:relative;flex-shrink:0;}
 .pn-item:active{transform:scale(0.9);}
@@ -83,14 +83,7 @@ html,body{background:#E8E6E1;min-height:100vh;font-family:'DM Sans',sans-serif;c
 .pn-item.admin-pill.active{background:var(--gold);border-color:var(--gold);}
 .pn-item.admin-pill.active .pn-icon svg{stroke:#0F0E0C;opacity:1;}
 .pn-item.admin-pill.active .pn-label{color:#0F0E0C;opacity:1;}
-/* ── MARQUEE ── */
-.marquee-strip{position:fixed;bottom:calc(var(--pill-h) + 6px);left:50%;transform:translateX(-50%);width:calc(100% - 40px);max-width:380px;height:var(--marquee-h);background:#1A1814;border-radius:20px;overflow:hidden;z-index:89;cursor:pointer;display:none;align-items:center;border:1px solid rgba(198,168,91,0.12);}
-.marquee-strip.show{display:flex;}
-.marquee-track{display:flex;align-items:center;white-space:nowrap;animation:marquee 20s linear infinite;}
-.marquee-track:hover{animation-play-state:paused;}
-.marquee-item{font-size:10px;font-weight:700;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;padding:0 20px;opacity:0.8;}
-.marquee-dot{color:rgba(198,168,91,0.35);font-size:7px;padding:0 4px;}
-@keyframes marquee{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+100%{transform:translateX(-50%);}}
 
 /* ── TOAST ── */
 .toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%) translateY(8px);background:var(--dark);color:#fff;font-size:13px;font-weight:500;padding:11px 22px;border-radius:24px;opacity:0;transition:all 0.25s cubic-bezier(0.34,1.56,0.64,1);pointer-events:none;white-space:nowrap;z-index:998;box-shadow:0 8px 24px rgba(0,0,0,0.2);}
@@ -105,7 +98,7 @@ html,body{background:#E8E6E1;min-height:100vh;font-family:'DM Sans',sans-serif;c
 .wt-slide.exit{opacity:0;transform:translateX(-24px);}
 .wt-illus{margin-bottom:32px;}
 .wt-step{font-size:10px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:18px;}
-.wt-title{font-family:'Cormorant Garamond',serif;font-size:32px;color:#FFFFFF;line-height:1.1;margin-bottom:16px;}
+.wt-title{font-family:'DM Sans',sans-serif;font-size:32px;color:#FFFFFF;line-height:1.1;margin-bottom:16px;}
 .wt-text{font-size:15px;color:rgba(255,255,255,0.45);line-height:1.8;}
 .wt-footer{padding:24px 32px 44px;display:flex;align-items:center;justify-content:space-between;background:var(--dark2);}
 .wt-dots{display:flex;gap:6px;align-items:center;}
@@ -121,7 +114,7 @@ html,body{background:#E8E6E1;min-height:100vh;font-family:'DM Sans',sans-serif;c
 .auth-top{padding:64px 28px 44px;background:var(--dark);position:relative;overflow:hidden;}
 .auth-top::before{content:'';position:absolute;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(198,168,91,0.08) 0%,transparent 70%);top:-120px;right:-100px;pointer-events:none;}
 .auth-eyebrow{font-size:10px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;opacity:0.8;}
-.auth-headline{font-family:'Cormorant Garamond',serif;font-size:44px;color:#FFFFFF;line-height:1.0;margin-bottom:12px;}
+.auth-headline{font-family:'DM Sans',sans-serif;font-size:44px;color:#FFFFFF;line-height:1.0;margin-bottom:12px;}
 .auth-sub{font-size:14px;color:rgba(255,255,255,0.35);line-height:1.8;}
 .auth-body{background:var(--bg);flex:1;padding:36px 24px 40px;}
 .auth-tabs{display:flex;border-bottom:1px solid var(--border-mid);margin-bottom:28px;gap:4px;}
@@ -142,7 +135,7 @@ html,body{background:#E8E6E1;min-height:100vh;font-family:'DM Sans',sans-serif;c
 
 /* ── TOPBAR ── */
 .topbar{background:var(--surface);padding:16px 20px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;backdrop-filter:blur(12px);}
-.t-wordmark{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--dark);line-height:1;}
+.t-wordmark{font-family:'DM Sans',sans-serif;font-size:20px;color:var(--dark);line-height:1;}
 .t-sub{font-size:9px;color:var(--muted);font-weight:600;margin-top:2px;letter-spacing:0.1em;text-transform:uppercase;}
 .topbar-right{display:flex;align-items:center;gap:8px;}
 .day-tag{font-size:11px;font-weight:600;color:var(--gold-dark);background:var(--gold-light);padding:5px 12px;border-radius:20px;border:1px solid var(--gold-mid);}
@@ -159,7 +152,7 @@ html,body{background:#E8E6E1;min-height:100vh;font-family:'DM Sans',sans-serif;c
 /* ── STREAK BANNER ── */
 .streak-banner{margin:16px 16px 0;background:var(--dark);border-radius:var(--r);padding:20px;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--shadow-lg);}
 .streak-label{font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;opacity:0.8;}
-.streak-count{font-family:'Cormorant Garamond',serif;font-size:30px;color:#FFFFFF;line-height:1;}
+.streak-count{font-family:'DM Sans',sans-serif;font-size:30px;color:#FFFFFF;line-height:1;}
 .streak-sub{font-size:12px;color:rgba(255,255,255,0.32);margin-top:5px;line-height:1.4;}
 .streak-actions{display:flex;align-items:center;gap:10px;margin-top:12px;}
 .streak-link{font-size:11px;font-weight:600;color:var(--gold);cursor:pointer;letter-spacing:0.04em;opacity:0.9;}
@@ -179,18 +172,19 @@ html,body{background:#E8E6E1;min-height:100vh;font-family:'DM Sans',sans-serif;c
 /* ── COUNTDOWN ── */
 .countdown-wrap{margin:12px 16px 0;background:var(--dark);border-radius:var(--r);padding:22px 20px;text-align:center;box-shadow:var(--shadow-lg);}
 .countdown-eyebrow{font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;opacity:0.8;}
-.countdown-title{font-family:'Cormorant Garamond',serif;font-size:22px;color:#FFFFFF;margin-bottom:5px;line-height:1.2;}
+.countdown-title{font-family:'DM Sans',sans-serif;font-size:22px;color:#FFFFFF;margin-bottom:5px;line-height:1.2;}
 .countdown-sub{font-size:12px;color:rgba(255,255,255,0.32);margin-bottom:20px;line-height:1.6;}
 .countdown-units{display:flex;justify-content:center;gap:8px;align-items:center;}
 .countdown-unit{text-align:center;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:10px 14px;}
-.countdown-num{font-family:'Cormorant Garamond',serif;font-size:28px;color:#FFFFFF;line-height:1;display:block;}
+.countdown-num{font-family:'DM Sans',sans-serif;font-size:28px;color:#FFFFFF;line-height:1;display:block;}
 .countdown-label{font-size:8px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-top:4px;display:block;}
 .countdown-sep{font-size:20px;font-weight:300;color:var(--gold);opacity:0.4;line-height:1;padding-bottom:12px;}
 
 /* ── SCRIPTURE CARD ── */
 .scripture-card{margin:12px 16px 0;background:var(--surface);border-radius:var(--r);padding:16px 18px;border:1px solid var(--border);box-shadow:var(--shadow);}
+.scripture-card *{color:#0F0E0C !important;text-decoration:none !important;}
 .scripture-ref{font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-dark);margin-bottom:7px;}
-.scripture-text{font-family:'Cormorant Garamond',serif;font-size:15px;color:var(--dark);line-height:1.7;font-style:italic;}
+.scripture-text{font-family:'DM Sans',sans-serif;font-size:15px;color:var(--dark);line-height:1.7;font-style:italic;}
 
 /* ── BROADCAST BANNER ── */
 .broadcast-banner{margin:12px 16px 0;background:var(--gold-light);border:1px solid var(--gold-mid);border-radius:var(--r);padding:13px 16px;display:none;}
@@ -300,12 +294,12 @@ html,body{background:#E8E6E1;min-height:100vh;font-family:'DM Sans',sans-serif;c
 .prof-hero{background:var(--dark);padding:48px 24px 28px;text-align:center;}
 .prof-av-ring{width:72px;height:72px;border-radius:50%;border:1.5px solid rgba(198,168,91,0.4);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;position:relative;cursor:pointer;}
 .prof-av{font-size:22px;font-weight:700;color:#FFFFFF;}
-.prof-name{font-family:'Cormorant Garamond',serif;font-size:22px;color:#FFFFFF;}
+.prof-name{font-family:'DM Sans',sans-serif;font-size:22px;color:#FFFFFF;}
 .prof-handle{font-size:11px;color:rgba(255,255,255,0.3);margin-top:4px;letter-spacing:0.04em;}
 .prof-stats{display:flex;justify-content:center;margin-top:22px;border-top:1px solid rgba(255,255,255,0.07);padding-top:18px;}
 .pstat{flex:1;text-align:center;}
 .pstat+.pstat{border-left:1px solid rgba(255,255,255,0.07);}
-.pstat-n{font-family:'Cormorant Garamond',serif;font-size:22px;color:#FFFFFF;}
+.pstat-n{font-family:'DM Sans',sans-serif;font-size:22px;color:#FFFFFF;}
 .pstat-l{font-size:9px;color:rgba(255,255,255,0.3);margin-top:2px;text-transform:uppercase;letter-spacing:0.07em;}
 .prof-body{padding:20px;flex:1;background:var(--bg);}
 .sec-head{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:10px;margin-top:4px;}
@@ -346,7 +340,7 @@ html,body{background:#E8E6E1;min-height:100vh;font-family:'DM Sans',sans-serif;c
 
 /* ── GENESIAH / SHOP ── */
 .gen-hero{background:var(--dark);padding:44px 24px 36px;text-align:center;}
-.gen-wordmark{font-family:'Cormorant Garamond',serif;font-size:36px;color:#FFFFFF;letter-spacing:0.02em;}
+.gen-wordmark{font-family:'DM Sans',sans-serif;font-size:36px;color:#FFFFFF;letter-spacing:0.02em;}
 .gen-rule{width:28px;height:1px;background:var(--gold);margin:14px auto;}
 .gen-tagline{font-size:10px;color:rgba(255,255,255,0.3);letter-spacing:0.1em;text-transform:uppercase;}
 
@@ -357,7 +351,7 @@ html,body{background:#E8E6E1;min-height:100vh;font-family:'DM Sans',sans-serif;c
 .admin-badge{margin-left:auto;background:var(--gold);color:var(--dark);font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;white-space:nowrap;}
 .stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:14px 20px 8px;}
 .stat-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--rsm);padding:12px;text-align:center;box-shadow:var(--shadow);}
-.stat-n{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--dark);}
+.stat-n{font-family:'DM Sans',sans-serif;font-size:24px;color:var(--dark);}
 .stat-l{font-size:9px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.07em;margin-top:2px;}
 .mod-head{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);padding:8px 20px 10px;}
 .mod-card{margin:0 20px 8px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;animation:fu 0.25s ease;box-shadow:var(--shadow);}
@@ -378,7 +372,7 @@ html,body{background:#E8E6E1;min-height:100vh;font-family:'DM Sans',sans-serif;c
 .share-overlay.show{display:flex;}
 .share-sheet{background:var(--surface);border-radius:20px 20px 0 0;padding:28px 24px 44px;width:100%;}
 .share-day-complete{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold-dark);margin-bottom:6px;}
-.share-title{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--dark);margin-bottom:4px;}
+.share-title{font-family:'DM Sans',sans-serif;font-size:22px;color:var(--dark);margin-bottom:4px;}
 .share-sub{font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.5;}
 .share-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
 .share-platform{display:flex;align-items:center;gap:10px;padding:13px 16px;background:var(--bg);border:1px solid var(--border-mid);border-radius:12px;font-size:14px;font-weight:600;color:var(--dark);cursor:pointer;transition:all 0.15s;}
@@ -393,7 +387,7 @@ html,body{background:#E8E6E1;min-height:100vh;font-family:'DM Sans',sans-serif;c
 .milestone-card{background:var(--dark);border-radius:20px;padding:36px 28px;text-align:center;width:calc(100% - 48px);animation:popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);}
 @keyframes popIn{from{transform:scale(0.75);opacity:0;}to{transform:scale(1);opacity:1;}}
 .milestone-badge-svg{margin:0 auto 20px;display:block;}
-.milestone-title{font-family:'Cormorant Garamond',serif;font-size:26px;color:#FFFFFF;margin-bottom:8px;}
+.milestone-title{font-family:'DM Sans',sans-serif;font-size:26px;color:#FFFFFF;margin-bottom:8px;}
 .milestone-msg{font-size:14px;color:rgba(255,255,255,0.45);line-height:1.65;margin-bottom:24px;}
 .milestone-close{width:100%;padding:14px;background:var(--gold);color:var(--dark);border:none;border-radius:10px;font-size:14px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;}
 
@@ -526,10 +520,10 @@ html,body{background:#E8E6E1;min-height:100vh;font-family:'DM Sans',sans-serif;c
 .wrapup-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:996;display:none;align-items:center;justify-content:center;max-width:420px;margin:0 auto;backdrop-filter:blur(8px);}
 .wrapup-overlay.show{display:flex;}
 .wrapup-card{background:var(--dark);border-radius:20px;padding:28px;width:calc(100% - 40px);max-height:85vh;overflow-y:auto;animation:popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);}
-.wrapup-title{font-family:'Cormorant Garamond',serif;font-size:24px;color:#FFFFFF;margin-bottom:6px;text-align:center;}
+.wrapup-title{font-family:'DM Sans',sans-serif;font-size:24px;color:#FFFFFF;margin-bottom:6px;text-align:center;}
 .wrapup-sub{font-size:13px;color:rgba(255,255,255,0.4);text-align:center;margin-bottom:20px;line-height:1.5;}
 .wrapup-stat{text-align:center;margin-bottom:20px;}
-.wrapup-stat-n{font-family:'Cormorant Garamond',serif;font-size:52px;color:var(--gold);line-height:1;}
+.wrapup-stat-n{font-family:'DM Sans',sans-serif;font-size:52px;color:var(--gold);line-height:1;}
 .wrapup-stat-l{font-size:12px;color:rgba(255,255,255,0.35);margin-top:4px;text-transform:uppercase;letter-spacing:0.07em;}
 .wrapup-share{width:100%;padding:14px;background:var(--gold);color:var(--dark);border:none;border-radius:10px;font-size:14px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:16px;}
 .wrapup-close{display:block;text-align:center;margin-top:12px;font-size:13px;color:rgba(255,255,255,0.3);cursor:pointer;}
@@ -546,7 +540,7 @@ html,body{background:#E8E6E1;min-height:100vh;font-family:'DM Sans',sans-serif;c
 .ob-slide.active{opacity:1;transform:translateX(0);pointer-events:all;}
 .ob-slide.exit{opacity:0;transform:translateX(-30px);}
 .ob-num{font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;}
-.ob-title{font-family:'Cormorant Garamond',serif;font-size:30px;color:#FFFFFF;line-height:1.15;margin-bottom:16px;}
+.ob-title{font-family:'DM Sans',sans-serif;font-size:30px;color:#FFFFFF;line-height:1.15;margin-bottom:16px;}
 .ob-text{font-size:15px;color:rgba(255,255,255,0.45);line-height:1.8;}
 .ob-footer{padding:24px 32px 40px;display:flex;align-items:center;justify-content:space-between;background:var(--dark2);}
 .ob-dots{display:flex;gap:6px;align-items:center;}
@@ -559,13 +553,6 @@ html,body{background:#E8E6E1;min-height:100vh;font-family:'DM Sans',sans-serif;c
 </head>
 <body>
 <div class="shell">
-
-<!-- MARQUEE -->
-<div class="marquee-strip" id="marquee-strip" onclick="window.open('https://genesiah.com/products/be-grateful-tee-acid-black','_blank')">
-  <div class="marquee-track">
-    <span class="marquee-item">BE GRATEFUL.</span><span class="marquee-dot">✦</span><span class="marquee-item">Tee available now</span><span class="marquee-dot">✦</span><span class="marquee-item">genesiah.com</span><span class="marquee-dot">✦</span><span class="marquee-item">Limited run</span><span class="marquee-dot">✦</span><span class="marquee-item">BE GRATEFUL.</span><span class="marquee-dot">✦</span><span class="marquee-item">Tee available now</span><span class="marquee-dot">✦</span><span class="marquee-item">genesiah.com</span><span class="marquee-dot">✦</span><span class="marquee-item">Limited run</span><span class="marquee-dot">✦</span><span class="marquee-item">BE GRATEFUL.</span><span class="marquee-dot">✦</span><span class="marquee-item">Tee available now</span><span class="marquee-dot">✦</span><span class="marquee-item">genesiah.com</span><span class="marquee-dot">✦</span><span class="marquee-item">Limited run</span><span class="marquee-dot">✦</span><span class="marquee-item">BE GRATEFUL.</span><span class="marquee-dot">✦</span><span class="marquee-item">Tee available now</span><span class="marquee-dot">✦</span><span class="marquee-item">genesiah.com</span><span class="marquee-dot">✦</span><span class="marquee-item">Limited run</span><span class="marquee-dot">✦</span>
-  </div>
-</div>
 
 <!-- FLOATING PILL NAV -->
 <nav class="pill-nav" id="pill-nav">
@@ -769,6 +756,16 @@ html,body{background:#E8E6E1;min-height:100vh;font-family:'DM Sans',sans-serif;c
     <div class="scripture-text" id="scripture-text"></div>
   </div>
 
+  <!-- BE GRATEFUL TEE -->
+  <a href="https://genesiah.com/products/be-grateful-tee-acid-black" target="_blank" style="margin:12px 16px 0;background:#0F0E0C;border-radius:var(--r);padding:15px 18px;display:flex;align-items:center;justify-content:space-between;text-decoration:none;border:1px solid rgba(198,168,91,0.18);">
+    <div>
+      <div style="font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:5px;opacity:0.8;">Genesiah — Limited run</div>
+      <div style="font-size:15px;font-weight:700;color:#FFFFFF;letter-spacing:0.06em;">BE GRATEFUL. Tee</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.35);margin-top:3px;">Acid Black · genesiah.com</div>
+    </div>
+    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+  </a>
+
   <div class="community-milestone" id="community-milestone">
     <div class="cm-icon"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#0A0A0A" stroke-width="2.5"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div>
     <div><div class="cm-title" id="cm-title">Community milestone!</div><div class="cm-sub" id="cm-sub">You are part of something special</div></div>
@@ -860,9 +857,8 @@ html,body{background:#E8E6E1;min-height:100vh;font-family:'DM Sans',sans-serif;c
       <div class="setting-row" onclick="showScreen('screen-notif-prefs')">Notification preferences <span style="color:var(--muted);">›</span></div>
       <div class="setting-row" onclick="showScreen('screen-privacy')">Privacy and safety <span style="color:var(--muted);">›</span></div>
     </div>
-    <div class="sec-head">My journey</div>
+    <div class="sec-head">My account</div>
     <div class="settings-card">
-      <div class="setting-row" onclick="openJournal()">My journal <span style="color:var(--muted);">›</span></div>
       <div class="setting-row" onclick="openUserMessages()">Messages <span id="msg-badge-profile" style="background:var(--gold);color:var(--dark);font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;display:none;margin-left:6px;"></span><span style="color:var(--muted);margin-left:auto;">›</span></div>
       <div class="setting-row" id="invite-row" onclick="copyInviteLink()">Copy invite link <span style="color:var(--muted);">›</span></div>
     </div>
@@ -926,7 +922,7 @@ html,body{background:#E8E6E1;min-height:100vh;font-family:'DM Sans',sans-serif;c
     <img src="https://genesiah.com/cdn/shop/files/9EC412BF-6D46-45D6-8FF2-984793B9CDCD.png?v=1773979206&width=800" alt="Be Grateful Tee" style="width:100%;display:block;"/>
     <div style="padding:18px 20px 20px;">
       <div style="font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:7px;opacity:0.8;">Part of the 30-Day Gratitude Challenge</div>
-      <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:#FFFFFF;margin-bottom:6px;line-height:1.15;">Be Grateful Tee — Acid Black</div>
+      <div style="font-family:'DM Sans',sans-serif;font-size:22px;color:#FFFFFF;margin-bottom:6px;line-height:1.15;">Be Grateful Tee — Acid Black</div>
       <div style="width:20px;height:1px;background:var(--gold);margin:10px 0 12px;"></div>
       <div style="font-size:13px;color:rgba(255,255,255,0.45);line-height:1.7;margin-bottom:6px;font-style:italic;">"Let the peace of God rule in your hearts — and be thankful." — Colossians 3:15</div>
       <div style="font-size:13px;color:rgba(255,255,255,0.38);line-height:1.65;margin-bottom:18px;">280 GSM heavyweight oversized tee. BE GRATEFUL. on the chest. Built for those who choose gratitude every single day. Limited run.</div>
@@ -960,7 +956,7 @@ html,body{background:#E8E6E1;min-height:100vh;font-family:'DM Sans',sans-serif;c
   <div class="content-body">
     <div style="background:var(--dark);border-radius:var(--r);padding:24px;margin-bottom:12px;text-align:center;box-shadow:var(--shadow-lg);">
       <div style="font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;opacity:0.8;">GOW</div>
-      <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:#FFFFFF;line-height:1.3;margin-bottom:8px;">Generation Of The Word</div>
+      <div style="font-family:'DM Sans',sans-serif;font-size:22px;color:#FFFFFF;line-height:1.3;margin-bottom:8px;">Generation Of The Word</div>
       <div style="width:20px;height:1px;background:var(--gold);margin:0 auto 12px;"></div>
       <div style="font-size:12px;color:rgba(255,255,255,0.35);line-height:1.7;">A generation living by the Word of God</div>
     </div>
@@ -1129,11 +1125,11 @@ html,body{background:#E8E6E1;min-height:100vh;font-family:'DM Sans',sans-serif;c
   <div class="inner-bar"><button class="back-btn" onclick="navTo('screen-home','pn-home')">←</button><div class="inner-title" id="user-prof-title">Profile</div></div>
   <div class="user-prof-hero">
     <div style="width:60px;height:60px;border-radius:50%;border:1.5px solid rgba(198,168,91,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;" id="user-prof-av-ring"><div style="font-size:20px;font-weight:700;color:#FFFFFF;" id="user-prof-av">?</div></div>
-    <div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:#FFFFFF;" id="user-prof-name">...</div>
+    <div style="font-family:'DM Sans',sans-serif;font-size:20px;color:#FFFFFF;" id="user-prof-name">...</div>
     <div style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:4px;" id="user-prof-handle">GOW Community</div>
     <div style="display:flex;justify-content:center;margin-top:18px;border-top:1px solid rgba(255,255,255,0.07);padding-top:16px;">
-      <div style="flex:1;text-align:center;"><div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:#FFFFFF;" id="user-prof-posts">0</div><div style="font-size:9px;color:rgba(255,255,255,0.3);margin-top:2px;text-transform:uppercase;letter-spacing:0.07em;">Posts</div></div>
-      <div style="flex:1;text-align:center;border-left:1px solid rgba(255,255,255,0.07);"><div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:#FFFFFF;" id="user-prof-streak">0</div><div style="font-size:9px;color:rgba(255,255,255,0.3);margin-top:2px;text-transform:uppercase;letter-spacing:0.07em;">Streak</div></div>
+      <div style="flex:1;text-align:center;"><div style="font-family:'DM Sans',sans-serif;font-size:20px;color:#FFFFFF;" id="user-prof-posts">0</div><div style="font-size:9px;color:rgba(255,255,255,0.3);margin-top:2px;text-transform:uppercase;letter-spacing:0.07em;">Posts</div></div>
+      <div style="flex:1;text-align:center;border-left:1px solid rgba(255,255,255,0.07);"><div style="font-family:'DM Sans',sans-serif;font-size:20px;color:#FFFFFF;" id="user-prof-streak">0</div><div style="font-size:9px;color:rgba(255,255,255,0.3);margin-top:2px;text-transform:uppercase;letter-spacing:0.07em;">Streak</div></div>
     </div>
   </div>
   <div class="user-prof-posts"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:10px;">Posts</div><div id="user-prof-feed"></div></div>
@@ -2329,9 +2325,7 @@ async function doResetPassword(){
 // ── PILL NAV ─────────────────────────────────────────
 function showPillNav(show){
   const nav=document.getElementById('pill-nav');
-  const mq=document.getElementById('marquee-strip');
   if(nav){nav.classList[show?'add':'remove']('show');}
-  if(mq){mq.classList[show?'add':'remove']('show');}
 }
 
 function navTo(screenId, btnId){
