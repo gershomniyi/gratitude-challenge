@@ -85,7 +85,6 @@ html,body{background:#E8E6E1;min-height:100vh;font-family:'DM Sans',sans-serif;c
 .pn-item.admin-pill.active{background:var(--gold);border-color:var(--gold);}
 .pn-item.admin-pill.active .pn-icon svg{stroke:#0F0E0C;opacity:1;}
 .pn-item.admin-pill.active .pn-label{color:#0F0E0C;opacity:1;}
-100%{transform:translateX(-50%);}}
 
 /* ── TOAST ── */
 .toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%) translateY(8px);background:var(--dark);color:#fff;font-size:13px;font-weight:500;padding:11px 22px;border-radius:24px;opacity:0;transition:all 0.25s cubic-bezier(0.34,1.56,0.64,1);pointer-events:none;white-space:nowrap;z-index:998;box-shadow:0 8px 24px rgba(0,0,0,0.2);}
@@ -1867,12 +1866,23 @@ function showScreen(id){
   window.scrollTo(0,0);
 }
 function switchTab(t){
-  document.getElementById('login-form').style.display=t==='login'?'block':'none';
-  document.getElementById('signup-form').style.display=t==='signup'?'block':'none';
-  document.getElementById('tab-login').classList.toggle('active',t==='login');
-  document.getElementById('tab-signup').classList.toggle('active',t==='signup');
-  document.getElementById('login-error').textContent='';
-  document.getElementById('signup-error').textContent='';
+  const forms={
+    login:document.getElementById('login-form'),
+    signup:document.getElementById('signup-form')
+  };
+  const tabs={
+    login:document.getElementById('tab-login'),
+    signup:document.getElementById('tab-signup')
+  };
+  ['login','signup'].forEach(key=>{
+    const isActive=key===t;
+    if(forms[key])forms[key].style.display=isActive?'block':'none';
+    if(tabs[key])tabs[key].classList.toggle('active',isActive);
+  });
+  const loginError=document.getElementById('login-error');
+  const signupError=document.getElementById('signup-error');
+  if(loginError)loginError.textContent='';
+  if(signupError)signupError.textContent='';
 }
 async function doLogin(){
   const e=document.getElementById('login-email').value.trim();const p=document.getElementById('login-pass').value.trim();
@@ -2132,12 +2142,20 @@ function finishOnboarding(){
   showScreen('screen-home');
 }
 function switchAdminTab(tab){
+  const panelMap={
+    posts:{id:'admin-posts-tab',display:'block'},
+    team:{id:'admin-team-tab',display:'flex'},
+    broadcast:{id:'admin-broadcast-tab',display:'block'},
+    messages:{id:'admin-messages-tab',display:'flex'}
+  };
   const isPosts=tab==='posts',isTeam=tab==='team',isBroadcast=tab==='broadcast',isMessages=tab==='messages';
-  document.getElementById('admin-posts-tab').style.display=isPosts?'block':'none';
-  document.getElementById('admin-team-tab').style.display=isTeam?'flex':'none';
-  document.getElementById('admin-team-tab').style.flexDirection='column';
-  document.getElementById('admin-broadcast-tab').style.display=isBroadcast?'block':'none';
-  document.getElementById('admin-messages-tab').style.display=isMessages?'flex':'none';
+  Object.keys(panelMap).forEach(key=>{
+    const panelCfg=panelMap[key];
+    const panel=document.getElementById(panelCfg.id);
+    if(!panel)return;
+    panel.style.display=key===tab?panelCfg.display:'none';
+    if(panelCfg.display==='flex')panel.style.flexDirection='column';
+  });
   ['posts','team','broadcast','messages'].forEach(t=>{
     const btn=document.getElementById('atab-'+t);if(!btn)return;
     const active=t===tab;
@@ -2686,11 +2704,16 @@ async function loadMorePosts(offset){
 
 // ── JOURNAL TAB SWITCHING ─────────────────────────────
 function switchJournalTab(tab){
+  const sections={
+    posts:document.getElementById('journal-posts-section'),
+    prayers:document.getElementById('journal-prayers-section')
+  };
   ['posts','prayers'].forEach(t=>{
     const btn=document.getElementById('jtab-'+t);
-    const sec=document.getElementById('journal-'+t+'-section');
-    if(btn)btn.classList.toggle('active',t===tab);
-    if(sec)sec.style.display=t===tab?'block':'none';
+    const sec=sections[t];
+    const isActive=t===tab;
+    if(btn)btn.classList.toggle('active',isActive);
+    if(sec)sec.style.display=isActive?'block':'none';
   });
   if(tab==='posts') openJournal();
   if(tab==='prayers') loadMyPrayers();
