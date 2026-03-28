@@ -1851,38 +1851,55 @@ function showToast(msg){
   setTimeout(()=>t.classList.remove('show'),3000);
 }
 function showScreen(id){
-  document.querySelectorAll('.screen,.ob-screen,.wt-screen').forEach(s=>s.classList.remove('active'));
+  const allScreens=document.querySelectorAll('.screen,.ob-screen,.wt-screen');
+  allScreens.forEach(s=>{s.classList.remove('active');s.style.display='none';});
+
   const el=document.getElementById(id);
-  if(el){el.classList.add('active');}
+  if(!el){
+    console.error('showScreen: missing screen', id);
+    return;
+  }
+
+  el.classList.add('active');
+  el.style.display='flex';
+
   const authScreens=['screen-auth','screen-forgot','screen-reset-password'];
-  if(authScreens.includes(id)){showPillNav(false);}
-  else if(currentUser){showPillNav(true);}
-  if(id==='screen-admin')loadModQueue();
-  if(id==='screen-home'){loadFeed();buildDayFilter();updatePostedTodayState();}
-  if(id==='screen-messages')openUserMessages();
-  if(id==='screen-notifs'){const dot2=document.getElementById('ndot');if(dot2)dot2.style.display='none';const nb=document.getElementById('pn-notif-badge');if(nb)nb.style.display='none';loadNotifications();}
-  if(id==='screen-leaderboard')loadLeaderboard();
-  if(id==='screen-prayer')loadPrayers();
+  if(authScreens.includes(id)){
+    showPillNav(false);
+  } else if(currentUser){
+    showPillNav(true);
+  }
+
+  try{
+    if(id==='screen-admin') loadModQueue();
+    if(id==='screen-home'){
+      loadFeed();
+      buildDayFilter();
+      updatePostedTodayState();
+    }
+    if(id==='screen-messages') openUserMessages();
+    if(id==='screen-notifs'){
+      const dot2=document.getElementById('ndot');if(dot2)dot2.style.display='none';
+      const nb=document.getElementById('pn-notif-badge');if(nb)nb.style.display='none';
+      loadNotifications();
+    }
+    if(id==='screen-leaderboard') loadLeaderboard();
+    if(id==='screen-prayer') loadPrayers();
+    if(id==='screen-journal') switchJournalTab(document.getElementById('jtab-prayers')?.classList.contains('active')?'prayers':'posts');
+    if(id==='screen-profile') refreshProfileTab();
+  }catch(err){
+    console.error('showScreen loader error:', id, err);
+  }
+
   window.scrollTo(0,0);
 }
 function switchTab(t){
-  const forms={
-    login:document.getElementById('login-form'),
-    signup:document.getElementById('signup-form')
-  };
-  const tabs={
-    login:document.getElementById('tab-login'),
-    signup:document.getElementById('tab-signup')
-  };
-  ['login','signup'].forEach(key=>{
-    const isActive=key===t;
-    if(forms[key])forms[key].style.display=isActive?'block':'none';
-    if(tabs[key])tabs[key].classList.toggle('active',isActive);
-  });
-  const loginError=document.getElementById('login-error');
-  const signupError=document.getElementById('signup-error');
-  if(loginError)loginError.textContent='';
-  if(signupError)signupError.textContent='';
+  document.getElementById('login-form').style.display=t==='login'?'block':'none';
+  document.getElementById('signup-form').style.display=t==='signup'?'block':'none';
+  document.getElementById('tab-login').classList.toggle('active',t==='login');
+  document.getElementById('tab-signup').classList.toggle('active',t==='signup');
+  document.getElementById('login-error').textContent='';
+  document.getElementById('signup-error').textContent='';
 }
 async function doLogin(){
   const e=document.getElementById('login-email').value.trim();const p=document.getElementById('login-pass').value.trim();
@@ -1904,39 +1921,86 @@ async function doGoogleLogin(){
 }
 
 async function doSignup(){
-  const n=document.getElementById('signup-name').value.trim();const e=document.getElementById('signup-email').value.trim();const p=document.getElementById('signup-pass').value.trim();
-  if(!n||!e||!p){document.getElementById('signup-error').textContent='Please fill in all fields';return;}
-  if(p.length<6){document.getElementById('signup-error').textContent='Password must be at least 6 characters';return;}
+  const n=document.getElementById('signup-name').value.trim();
+  const e=document.getElementById('signup-email').value.trim();
+  const p=document.getElementById('signup-pass').value.trim();
+  const errEl=document.getElementById('signup-error');
+
+  if(!n||!e||!p){errEl.textContent='Please fill in all fields';return;}
+  if(p.length<6){errEl.textContent='Password must be at least 6 characters';return;}
+
   setLoading(true,'Creating account...');
-  const{data,error}=await sb.auth.signUp({email:e,password:p,options:{data:{name:n}}});
-  setLoading(false);
-  if(error){document.getElementById('signup-error').textContent=error.message;return;}
-  if(data.user){
-    await sb.from('profiles').upsert({id:data.user.id,name:n,email:e,role:'member',streak:0,days_in:0});
-    sendWelcomeEmail(n,e);notifyAdminNewUser(n,e);isFirstTime=true;await enterApp(data.user);
+  try{
+    const {data,error}=await sb.auth.signUp({email:e,password:p,options:{data:{name:n}}});
+    setLoading(false);
+
+    if(error){errEl.textContent=error.message;return;}
+    if(!data?.user){errEl.textContent='Account could not be created';return;}
+
+    if(!data.session){
+      errEl.style.color='var(--gold-dark)';
+      errEl.textContent='Check your email to confirm your account, then sign in.';
+      return;
+    }
+
+    const {error:profileError}=await sb.from('profiles').upsert({id:data.user.id,name:n,email:e,role:'member',streak:0,days_in:0});
+    if(profileError){console.error(profileError);showToast('Profile creation failed');return;}
+
+    sendWelcomeEmail(n,e);
+    notifyAdminNewUser(n,e);
+    isFirstTime=true;
+    await enterApp(data.user);
+  }catch(err){
+    setLoading(false);
+    console.error('Signup failed:', err);
+    errEl.textContent='Something went wrong. Please try again.';
   }
 }
 async function doLogout(){await sb.auth.signOut();currentUser=null;currentProfile=null;showScreen('screen-auth');}
 async function enterApp(user){
-  currentUser=user;setLoading(true,'Loading your profile...');
+  currentUser=user;
+  setLoading(true,'Loading your profile...');
   try{
-    let{data:profile}=await sb.from('profiles').select('*').eq('id',user.id).single();
+    let {data:profile,error:profileError}=await sb.from('profiles').select('*').eq('id',user.id).maybeSingle();
+    if(profileError) throw profileError;
+
     if(!profile){
       const name=user.user_metadata?.name||user.email.split('@')[0];
-      await sb.from('profiles').insert({id:user.id,name,email:user.email,role:'member',streak:0,days_in:0});
-      profile={id:user.id,name,email:user.email,role:'member',streak:0,days_in:0};
+      const insertPayload={id:user.id,name,email:user.email,role:'member',streak:0,days_in:0};
+      const {error:insertError}=await sb.from('profiles').insert(insertPayload);
+      if(insertError) throw insertError;
+      profile=insertPayload;
     }
-    currentProfile=profile;updateProfileUI();setLoading(false);
+
+    currentProfile=profile;
+    updateProfileUI();
+    refreshProfileTab();
+    subscribeToNotifications();
+    if(typeof checkAdminUnreadMessages==='function') checkAdminUnreadMessages();
+    if(typeof maybeShowReward==='function') maybeShowReward();
+    updateFreezeBtn();
+    startCountdownTimer();
+
+    setLoading(false);
     if(isFirstTime){
       wtStep=0;
       document.querySelectorAll('.wt-slide').forEach((s,i)=>{s.classList.remove('active','exit');if(i===0)s.classList.add('active');});
       document.querySelectorAll('.wt-dot').forEach((d,i)=>{d.classList.remove('active');if(i===0)d.classList.add('active');});
       const wtbtn=document.getElementById('wt-btn');if(wtbtn)wtbtn.textContent='Next';
-      document.querySelectorAll('.screen,.wt-screen,.ob-screen').forEach(s=>{s.classList.remove('active');s.style.display='none';});
+      const all=document.querySelectorAll('.screen,.wt-screen,.ob-screen');
+      all.forEach(s=>{s.classList.remove('active');s.style.display='none';});
       const obScreen=document.getElementById('screen-onboarding');
       if(obScreen){obScreen.style.display='flex';obScreen.classList.add('active');}
-    } else {showScreen('screen-home');}
-  }catch(err){setLoading(false);showScreen('screen-home');}
+      showPillNav(false);
+    } else {
+      showScreen('screen-home');
+    }
+  }catch(err){
+    console.error('enterApp failed:', err);
+    setLoading(false);
+    showToast('Could not load your profile');
+    showScreen('screen-auth');
+  }
 }
 function updateProfileUI(){
   if(!currentProfile)return;
@@ -2142,20 +2206,12 @@ function finishOnboarding(){
   showScreen('screen-home');
 }
 function switchAdminTab(tab){
-  const panelMap={
-    posts:{id:'admin-posts-tab',display:'block'},
-    team:{id:'admin-team-tab',display:'flex'},
-    broadcast:{id:'admin-broadcast-tab',display:'block'},
-    messages:{id:'admin-messages-tab',display:'flex'}
-  };
   const isPosts=tab==='posts',isTeam=tab==='team',isBroadcast=tab==='broadcast',isMessages=tab==='messages';
-  Object.keys(panelMap).forEach(key=>{
-    const panelCfg=panelMap[key];
-    const panel=document.getElementById(panelCfg.id);
-    if(!panel)return;
-    panel.style.display=key===tab?panelCfg.display:'none';
-    if(panelCfg.display==='flex')panel.style.flexDirection='column';
-  });
+  document.getElementById('admin-posts-tab').style.display=isPosts?'block':'none';
+  document.getElementById('admin-team-tab').style.display=isTeam?'flex':'none';
+  document.getElementById('admin-team-tab').style.flexDirection='column';
+  document.getElementById('admin-broadcast-tab').style.display=isBroadcast?'block':'none';
+  document.getElementById('admin-messages-tab').style.display=isMessages?'flex':'none';
   ['posts','team','broadcast','messages'].forEach(t=>{
     const btn=document.getElementById('atab-'+t);if(!btn)return;
     const active=t===tab;
@@ -2381,13 +2437,15 @@ async function togglePraying(prayerId,btn){
 }
 async function openJournal(){
   const feed=document.getElementById('journal-feed');
+  if(!feed||!currentUser)return;
   feed.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:14px;">Loading...</div>';
-  const{data:posts}=await sb.from('posts').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:true});
+  const {data:posts,error}=await sb.from('posts').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:true});
+  if(error){console.error('openJournal failed:', error);feed.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:14px;">Could not load your journal.</div>';return;}
   if(!posts||posts.length===0){
     feed.innerHTML=`<div style="text-align:center;padding:48px 24px;">
       <div style="font-size:32px;margin-bottom:16px;">📖</div>
       <div style="font-size:16px;font-weight:700;color:#0F0E0C;margin-bottom:8px;">Your journal starts today</div>
-      <div style="font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:8px;">Every post you share becomes a personal record of God\'s faithfulness in your life.</div>
+      <div style="font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:8px;">Every post you share becomes a personal record of God's faithfulness in your life.</div>
       <div style="background:var(--gold-light);border:1px solid rgba(198,168,91,0.2);border-radius:var(--r);padding:14px;margin-bottom:20px;text-align:left;">
         <div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold-dark);margin-bottom:6px;">🏆 Complete all 30 days</div>
         <div style="font-size:13px;color:#0F0E0C;line-height:1.6;">Finish the challenge and get featured on the GOW Instagram. Your story matters.</div>
@@ -2651,29 +2709,46 @@ function renderRewardCard(){
 
 
 function refreshProfileTab(){
-  if(!currentProfile)return;
-  // Update post count from feed
+  if(!currentProfile||!currentUser)return;
+  updateProfileUI();
+
   const posts=document.getElementById('p-posts');
   if(posts){
-    sb.from('posts').select('id',{count:'exact',head:true}).eq('user_id',currentUser.id).then(({count})=>{
-      if(posts)posts.textContent=count||0;
+    sb.from('posts').select('id',{count:'exact',head:true}).eq('user_id',currentUser.id).then(({count,error})=>{
+      if(error){console.error('Profile post count failed:', error);return;}
+      posts.textContent=count||0;
     });
   }
+
   renderProfileBadges(currentProfile.streak||0);
 }
 
-async function loadMorePosts(offset){
+async function loadMorePosts(offset=0){
   const c=document.getElementById('feed-container');
-  const old=document.getElementById('view-more-btn');if(old)old.remove();
-  let q=sb.from('posts').select('*').eq('status','approved').order('created_at',{ascending:false}).range(offset,offset+5);
+  if(!c)return;
+
+  const old=document.getElementById('view-more-btn');
+  if(old)old.remove();
+
+  let q=sb.from('posts').select('*').eq('status','approved').order('created_at',{ascending:false}).range(offset,offset+6);
   if(activeDayFilter>0)q=q.eq('day',activeDayFilter);
-  const{data:posts}=await q;
-  if(!posts||posts.length===0)return;
+
+  const {data:rows,error}=await q;
+  if(error){console.error('loadMorePosts failed:', error);showToast('Failed to load posts');return;}
+  if(!rows||rows.length===0)return;
+
+  const posts=rows.slice(0,6);
+  const hasMore=rows.length>6;
+
   let myLikes=[];
-  if(currentUser){const r=await sb.from('likes').select('post_id,type').eq('user_id',currentUser.id);myLikes=r.data||[];}
+  if(currentUser){
+    const r=await sb.from('likes').select('post_id,type').eq('user_id',currentUser.id);
+    myLikes=r.data||[];
+  }
   const likedSet=new Set((myLikes||[]).filter(l=>l.type==='like').map(l=>l.post_id));
   const amenSet=new Set((myLikes||[]).filter(l=>l.type==='amen').map(l=>l.post_id));
   const isAdm=currentProfile?.email===ADMIN_EMAIL;
+
   posts.forEach(p=>{
     const wrap=document.createElement('div');
     wrap.className='post-card-wrap';
@@ -2692,7 +2767,8 @@ async function loadMorePosts(offset){
     wrap.appendChild(d);
     c.appendChild(wrap);
   });
-  if(posts.length===6){
+
+  if(hasMore){
     const vmBtn=document.createElement('div');
     vmBtn.id='view-more-btn';
     vmBtn.style.cssText='margin:4px 16px 8px;padding:14px;background:var(--surface);border:1px solid var(--border-mid);border-radius:var(--r);text-align:center;cursor:pointer;font-size:13px;font-weight:600;color:var(--muted);';
@@ -2704,16 +2780,11 @@ async function loadMorePosts(offset){
 
 // ── JOURNAL TAB SWITCHING ─────────────────────────────
 function switchJournalTab(tab){
-  const sections={
-    posts:document.getElementById('journal-posts-section'),
-    prayers:document.getElementById('journal-prayers-section')
-  };
   ['posts','prayers'].forEach(t=>{
     const btn=document.getElementById('jtab-'+t);
-    const sec=sections[t];
-    const isActive=t===tab;
-    if(btn)btn.classList.toggle('active',isActive);
-    if(sec)sec.style.display=isActive?'block':'none';
+    const sec=document.getElementById('journal-'+t+'-section');
+    if(btn)btn.classList.toggle('active',t===tab);
+    if(sec)sec.style.display=t===tab?'block':'none';
   });
   if(tab==='posts') openJournal();
   if(tab==='prayers') loadMyPrayers();
@@ -2736,6 +2807,8 @@ async function loadMyPrayers(){
     feed.appendChild(div);
   });
 }
+window.addEventListener('error',e=>{console.error('GLOBAL ERROR:',e.message,e.error);});
+window.addEventListener('unhandledrejection',e=>{console.error('PROMISE ERROR:',e.reason);});
 </script>
 </body>
 </html>
