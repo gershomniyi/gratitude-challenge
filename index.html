@@ -810,7 +810,7 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
   <div class="feed-header">
     <div class="feed-title">Community</div>
     <div style="display:flex;align-items:center;gap:10px;">
-      <span onclick="showScreen('screen-prayer')" style="font-size:11px;font-weight:600;color:var(--gold-dark);cursor:pointer;background:var(--gold-light);padding:4px 10px;border-radius:20px;">🙏 Prayer wall</span>
+      <span onclick="showScreen('screen-prayer')" style="font-size:12px;font-weight:700;color:var(--gold-dark);cursor:pointer;background:var(--gold-light);padding:6px 14px;border-radius:20px;border:1px solid rgba(198,168,91,0.3);display:inline-flex;align-items:center;gap:5px;">🙏 Prayer wall</span>
       <div class="feed-count" id="feed-count"></div>
     </div>
   </div>
@@ -1291,6 +1291,22 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
     <div class="avatar-sheet-sub">Pick one that represents you in the community</div>
     <div class="avatar-grid" id="avatar-grid"></div>
     <button class="avatar-save" onclick="saveAvatar()">Save avatar</button>
+  </div>
+</div>
+
+
+<!-- ADMIN MESSAGE COMPOSE SHEET -->
+<div class="edit-overlay" id="admin-msg-compose-overlay" onclick="handleAdminMsgOverlay(event)">
+  <div class="edit-sheet">
+    <div class="edit-sheet-title" id="admin-msg-compose-title">Send message</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.6;" id="admin-msg-compose-sub">This will appear in their messages inbox.</div>
+    <textarea class="edit-field" id="admin-msg-compose-field" maxlength="500" placeholder="Type your message..." oninput="document.getElementById('admin-msg-compose-char').textContent=500-this.value.length"></textarea>
+    <div style="font-size:11px;color:var(--muted);margin-top:6px;text-align:right;" id="admin-msg-compose-char">500</div>
+    <div class="edit-actions">
+      <button class="edit-cancel" onclick="closeAdminMsgCompose()">Cancel</button>
+      <button class="edit-save" id="admin-msg-compose-send" onclick="submitAdminMsgCompose()">Send</button>
+    </div>
+    <div id="admin-msg-compose-status" style="font-size:13px;text-align:center;margin-top:10px;"></div>
   </div>
 </div>
 
@@ -3460,24 +3476,63 @@ async function viewAdminUserProfile(userId, name, email, e){
   });
 }
 
-async function sendAdminMessageTo(userId, name, email, e){
-  if(e)e.stopPropagation();
-  // Open admin thread or create new message to this user
-  const msg=prompt('Send a message to '+name+':');
-  if(!msg||!msg.trim())return;
+// Current target for admin message compose
+var _adminMsgTarget={userId:null,name:null,email:null};
+
+function sendAdminMessageTo(userId, name, email){
+  _adminMsgTarget={userId:userId,name:name,email:email};
+  const title=document.getElementById('admin-msg-compose-title');
+  const sub=document.getElementById('admin-msg-compose-sub');
+  const field=document.getElementById('admin-msg-compose-field');
+  const status=document.getElementById('admin-msg-compose-status');
+  const charEl=document.getElementById('admin-msg-compose-char');
+  if(title)title.textContent='Message to '+name;
+  if(sub)sub.textContent='This will go directly to their messages inbox.';
+  if(field)field.value='';
+  if(status)status.textContent='';
+  if(charEl)charEl.textContent='500';
+  document.getElementById('admin-msg-compose-overlay').classList.add('show');
+}
+
+function closeAdminMsgCompose(){
+  document.getElementById('admin-msg-compose-overlay').classList.remove('show');
+  _adminMsgTarget={userId:null,name:null,email:null};
+}
+
+function handleAdminMsgOverlay(e){
+  if(e.target===document.getElementById('admin-msg-compose-overlay'))closeAdminMsgCompose();
+}
+
+async function submitAdminMsgCompose(){
+  const field=document.getElementById('admin-msg-compose-field');
+  const status=document.getElementById('admin-msg-compose-status');
+  const sendBtn=document.getElementById('admin-msg-compose-send');
+  const text=field?field.value.trim():'';
+  if(!text){status.style.color='#CC3333';status.textContent='Please enter a message';return;}
+  if(!_adminMsgTarget.userId){status.style.color='#CC3333';status.textContent='No recipient selected';return;}
+  sendBtn.disabled=true;sendBtn.textContent='Sending...';
+  status.textContent='';
   const{error}=await sb.from('messages').insert({
-    user_id:userId,
-    name:name,
-    email:email,
-    text:'[From GOW Admin] '+msg.trim(),
+    user_id:_adminMsgTarget.userId,
+    name:_adminMsgTarget.name||'User',
+    email:_adminMsgTarget.email||'',
+    text:text,
     read:false,
-    thread:[{from:'admin',text:msg.trim(),at:new Date().toISOString()}],
+    thread:[{from:'admin',text:text,at:new Date().toISOString()}],
     user_read:false
   });
-  if(error){showToast('Could not send message');return;}
-  // Notify user
-  await sb.from('notifications').insert({user_id:userId,type:'message',message:'GOW sent you a message',read:false}).catch(()=>{});
-  showToast('Message sent to '+name);
+  sendBtn.disabled=false;sendBtn.textContent='Send';
+  if(error){status.style.color='#CC3333';status.textContent='Could not send — try again';return;}
+  await sb.from('notifications').insert({
+    user_id:_adminMsgTarget.userId,
+    type:'message',
+    message:'GOW sent you a message',
+    read:false
+  }).catch(()=>{});
+  status.style.color='var(--gold-dark)';
+  status.textContent='Message sent to '+(_adminMsgTarget.name||'user');
+  if(field)field.value='';
+  setTimeout(()=>closeAdminMsgCompose(),1500);
 }
 
 </script>
