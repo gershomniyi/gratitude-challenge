@@ -1378,15 +1378,6 @@ function renderCountdown_OLD(){
       </div>
     </div>`;
 }
-function startCountdownTimer(){
-  renderCountdownBanner();
-  if(!challengeStarted()){
-    setInterval(()=>{
-      renderCountdownBanner();
-      if(challengeStarted()){updatePostedTodayState();loadFeed();}
-    },1000);
-  }
-}
 async function loadBroadcast(){
   try{
     const{data}=await sb.from('broadcasts').select('*').eq('active',true).order('created_at',{ascending:false}).limit(1);
@@ -1520,11 +1511,11 @@ async function toggleCommentReact(commentId,type,btn){
 }
 const DAILY_PROMPTS=[
   'What is one thing God did for you that you did not deserve?',                          // Day 1  - Salvation & Foundation
-  'How has God's righteousness changed the way you see yourself?',                        // Day 2  - Righteousness
+  'How has God\'s righteousness changed the way you see yourself?',                        // Day 2  - Righteousness
   'Where in your life can you say God IS — present tense — right now?',                   // Day 3  - Yahweh I AM
   'Who in your family are you most grateful for today and why?',                           // Day 4  - Family
   'What does the cross mean to you personally — not in general, but to YOU?',             // Day 5  - Easter / The Cross
-  'Write about a moment when God's goodness showed up unexpectedly.',                     // Day 6  - His Goodness
+  'Write about a moment when God\'s goodness showed up unexpectedly.',                     // Day 6  - His Goodness
   'Describe a time God guided you when you had no idea where to go.',                      // Day 7  - His Guidance
   'Are you grateful for healing — physical, emotional, or spiritual? Write about it.',    // Day 8  - Healing / Yahweh Rapha
   'Step outside. What does creation tell you about God today?',                            // Day 9  - Creation (outside day)
@@ -1533,53 +1524,53 @@ const DAILY_PROMPTS=[
   'What has marriage or your closest relationship taught you about gratitude?',            // Day 12 - Relationships
   'When you worship, what are you most grateful for in that moment?',                     // Day 13 - Worship
   'Look back two weeks. What has God done that you almost missed?',                        // Day 14 - Reflecting on Provision
-  'God's love never fails. Write about a time you experienced that firsthand.',           // Day 15 - Unfailing Love
+  'God\'s love never fails. Write about a time you experienced that firsthand.',           // Day 15 - Unfailing Love
   'What hope do you have today that you did not have a year ago?',                         // Day 16 - Hope
   'What battle has God fought for you that you could not have won alone?',                 // Day 17 - Yahweh Nissi / Victory
-  'Where in your life do you feel God's peace most right now?',                           // Day 18 - Yahweh Shalom / Peace
+  'Where in your life do you feel God\'s peace most right now?',                           // Day 18 - Yahweh Shalom / Peace
   'What is one verse that has carried you through a hard season?',                         // Day 19 - His Word
   'Write a song of remembrance — what has God done for you in these 20 days?',            // Day 20 - Song of Remembrance
   'You are still here. What does that tell you about God?',                                // Day 21 - Reflecting on Healing (outside)
-  'What do you want your children or the next generation to know about God's faithfulness?', // Day 22 - Legacy / Family
+  'What do you want your children or the next generation to know about God\'s faithfulness?', // Day 22 - Legacy / Family
   'What strength has God given you recently that surprised even you?',                     // Day 23 - His Strength
   'What does it mean to you that God has declared you righteous?',                         // Day 24 - Yahweh-Tsidkenu
-  'Write about a moment you experienced God's mercy when you expected judgment.',         // Day 25 - Mercy
+  'Write about a moment you experienced God\'s mercy when you expected judgment.',         // Day 25 - Mercy
   'How has the Holy Spirit shown up in your life this month?',                             // Day 26 - The Holy Spirit
   'Go somewhere and just worship. What flows out of you in that moment?',                  // Day 27 - Rejoicing (outside)
-  'Where do you feel God's presence most strongly right now?',                            // Day 28 - His Presence
+  'Where do you feel God\'s presence most strongly right now?',                            // Day 28 - His Presence
   'Heaven is real. How does that change how you live today?',                              // Day 29 - Promise of Heaven
   'You made it 30 days. Write your vow of gratitude to God going forward.',               // Day 30 - The Vow / Finale
 ];
 
 const PROMPT_CHIPS=[
-  ['I am grateful for salvation because...','God showed His grace when...','One thing I know I don't deserve is...'],
-  ['God's righteousness has changed me by...','I used to see myself as... but now I see...','I am grateful I no longer have to...'],
+  ['I am grateful for salvation because...','God showed His grace when...','One thing I know I don\'t deserve is...'],
+  ['God\'s righteousness has changed me by...','I used to see myself as... but now I see...','I am grateful I no longer have to...'],
   ['God IS my ___ right now because...','I felt His presence today when...','A present-tense miracle in my life is...'],
   ['The family member I am most grateful for is...','God placed them in my life to...','One thing I learned about love from my family is...'],
   ['The cross means to me personally...','I am grateful Jesus chose to go because...','Because of the cross I no longer have to carry...'],
-  ['An unexpected moment of God's goodness was...','I almost missed this blessing but...','God surprised me with...'],
+  ['An unexpected moment of God\'s goodness was...','I almost missed this blessing but...','God surprised me with...'],
   ['A time God guided me with no clear path was...','I am grateful for the direction that came through...','Looking back, God was leading me when...'],
   ['I am grateful for healing in the area of...','God restored what I thought was gone when...','A scar I am now grateful for is...'],
-  ['Looking at creation today I see...','God's power shows up in nature through...','One thing outdoors that points me to God is...'],
+  ['Looking at creation today I see...','God\'s power shows up in nature through...','One thing outdoors that points me to God is...'],
   ['Something that felt impossible before God provided it was...','El Shaddai — God Almighty — showed up when...','I am grateful for supernatural provision in...'],
   ['A specific provision I can trace back to God is...','I was running low on ___ and God...','Jehovah Jireh provided for me through...'],
-  ['A relationship I am grateful for today is...','This person has shown me God's love through...','Something I learned about gratitude in relationships is...'],
+  ['A relationship I am grateful for today is...','This person has shown me God\'s love through...','Something I learned about gratitude in relationships is...'],
   ['When I worship I feel most grateful for...','A worship moment that changed something in me was...','I am grateful that God inhabits our praise because...'],
   ['In the last two weeks God has...','A blessing I almost missed was...','God has been faithful to me in ___ and I want to declare...'],
-  ['God's love never failed me when...','I felt His unfailing love most when...','Even in my worst season His love showed up as...'],
-  ['A hope I have now that I didn't have before is...','God restored my hope when...','I am walking toward ___ because I know God has...'],
-  ['A battle God fought for me that I couldn't win alone was...','Victory showed up in my situation when...','I used to be afraid of ___ and now I am grateful that...'],
-  ['I feel God's peace most when...','A situation that could have destroyed me but God gave me peace in...','Yahweh Shalom — the peace of God — looks like ___ in my life'],
+  ['God\'s love never failed me when...','I felt His unfailing love most when...','Even in my worst season His love showed up as...'],
+  ['A hope I have now that I didn\'t have before is...','God restored my hope when...','I am walking toward ___ because I know God has...'],
+  ['A battle God fought for me that I couldn\'t win alone was...','Victory showed up in my situation when...','I used to be afraid of ___ and now I am grateful that...'],
+  ['I feel God\'s peace most when...','A situation that could have destroyed me but God gave me peace in...','Yahweh Shalom — the peace of God — looks like ___ in my life'],
   ['A Bible verse that carried me through a hard season is...','God spoke to me through His Word when...','I am grateful for scripture because...'],
   ['Looking back at 20 days of gratitude I can see...','God has been consistent in the area of...','A pattern of His faithfulness I notice is...'],
   ['I am still here because...','God kept me when...','The fact that I made it through ___ tells me God is...'],
   ['I want the next generation to know that God...','A legacy of faith I want to leave is...','What I am building now for my family is...'],
   ['A strength God gave me recently that surprised me was...','I can do ___ because of who God is in me...','God made me strong in ___ when I thought I was weak'],
-  ['God has declared me righteous and that means...','I am grateful I don't have to earn my standing with God because...','Yahweh-Tsidkenu — my righteousness is God's and that changes...'],
-  ['A moment I expected judgment but received mercy was...','God's mercy looked like ___ in my life...','I am grateful for second chances because...'],
+  ['God has declared me righteous and that means...','I am grateful I don\'t have to earn my standing with God because...','Yahweh-Tsidkenu — my righteousness is God\'s and that changes...'],
+  ['A moment I expected judgment but received mercy was...','God\'s mercy looked like ___ in my life...','I am grateful for second chances because...'],
   ['The Holy Spirit has been showing up in my life through...','A moment I felt the Spirit guide me was...','I am grateful the Spirit intercedes for me because...'],
   ['If I could worship anywhere right now it would be...','What flows out of me when I truly worship is...','A breakthrough that came through praise was...'],
-  ['I feel God's presence strongest when...','A place or moment where heaven feels close is...','In His presence I find ___ which I can't find anywhere else'],
+  ['I feel God\'s presence strongest when...','A place or moment where heaven feels close is...','In His presence I find ___ which I can\'t find anywhere else'],
   ['Knowing heaven is real changes how I live by...','I am grateful for the promise of eternity because...','Someone I look forward to seeing in heaven is...'],
   ['My vow of gratitude to God going forward is...','30 days ago I started this challenge because ___ and now I...','What gratitude has done in me this month is...'],
 ];
@@ -2087,7 +2078,7 @@ function wtNext(){
     const next=document.getElementById('wt-slide-'+wtStep);const nextDot=document.getElementById('wd-'+wtStep);
     if(next)next.classList.add('active');if(nextDot)nextDot.classList.add('active');
     setTimeout(()=>document.querySelectorAll('.wt-slide.exit').forEach(s=>s.classList.remove('exit')),400);
-    const btn=document.getElementById('wt-btn');if(btn)btn.textContent=wtStep===3?"Let's go":'Next';
+    const btn=document.getElementById('wt-btn');if(btn)btn.textContent=wtStep===3?"Let\'s go":'Next';
   } else {finishOnboarding();}
 }
 function obNext(){wtNext();}
@@ -2343,7 +2334,7 @@ async function openJournal(){
     feed.innerHTML=`<div style="text-align:center;padding:48px 24px;">
       <div style="font-size:32px;margin-bottom:16px;">📖</div>
       <div style="font-size:16px;font-weight:700;color:#0F0E0C;margin-bottom:8px;">Your journal starts today</div>
-      <div style="font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:8px;">Every post you share becomes a personal record of God's faithfulness in your life.</div>
+      <div style="font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:8px;">Every post you share becomes a personal record of God\'s faithfulness in your life.</div>
       <div style="background:var(--gold-light);border:1px solid rgba(198,168,91,0.2);border-radius:var(--r);padding:14px;margin-bottom:20px;text-align:left;">
         <div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold-dark);margin-bottom:6px;">🏆 Complete all 30 days</div>
         <div style="font-size:13px;color:#0F0E0C;line-height:1.6;">Finish the challenge and get featured on the GOW Instagram. Your story matters.</div>
@@ -2539,7 +2530,7 @@ async function loadInviteProgress(){
     if(bar)bar.style.width=pct+'%';
     if(label){
       if(invited>=goal){
-        label.textContent='✅ Goal reached! You're entered to win';
+        label.textContent='✅ Goal reached! You are entered to win';
         label.style.color='var(--gold)';
       } else {
         label.textContent=invited+' of '+goal+' friends invited';
@@ -2555,14 +2546,14 @@ async function loadInviteProgress(){
 // ── SEEDED POSTS (shown when real feed is empty) ───────
 const SEEDED_POSTS=[
   {name:'Marcus J.',avatar_id:1,text:'Grateful for another morning. I know that sounds simple but I lost a friend last year and I never take waking up for granted anymore. God is good.',day:1,likes:34,amens:21},
-  {name:'Amara O.',avatar_id:4,text:'I am grateful for the grace that carried me through a really hard week. I didn't deserve the peace I felt but He gave it anyway.',day:1,likes:22,amens:16},
-  {name:'Sarah T.',avatar_id:7,text:'Thankful for my husband today. He showed up for me in a way I needed and didn't even ask for. God knew.',day:1,likes:28,amens:19},
+  {name:'Amara O.',avatar_id:4,text:'I am grateful for the grace that carried me through a really hard week. I didn\'t deserve the peace I felt but He gave it anyway.',day:1,likes:22,amens:16},
+  {name:'Sarah T.',avatar_id:7,text:'Thankful for my husband today. He showed up for me in a way I needed and didn\'t even ask for. God knew.',day:1,likes:28,amens:19},
   {name:'Devon C.',avatar_id:9,text:'God provided for me in a way I cannot explain. Was stressed about money and by end of day it was handled. He is Jehovah Jireh fr.',day:1,likes:41,amens:29},
   {name:'Priya S.',avatar_id:2,text:'Coming from a Hindu background and finding Christ — every single day I am grateful that He found me first. His love is unlike anything I have ever known.',day:1,likes:37,amens:31},
   {name:'James W.',avatar_id:5,text:'Grateful for this challenge. It is forcing me to slow down and actually notice what God is doing around me. I miss so much when I am moving too fast.',day:1,likes:18,amens:14},
   {name:'Kezia M.',avatar_id:3,text:'My daughter laughed today — full belly laugh — and I realised joy is right in front of me if I choose to see it. Grateful for small holy moments.',day:1,likes:45,amens:33},
   {name:'Tyler R.',avatar_id:8,text:'I am grateful for the Word of God. Every time I open my Bible something speaks directly to what I am walking through. It never gets old.',day:1,likes:19,amens:15},
-  {name:'Daniela V.',avatar_id:6,text:'Moved to Canada 2 years ago with nothing. Today I have a job, a church family, and peace in my heart. Gratitude doesn't even cover it.',day:1,likes:52,amens:38},
+  {name:'Daniela V.',avatar_id:6,text:'Moved to Canada 2 years ago with nothing. Today I have a job, a church family, and peace in my heart. Gratitude doesn\'t even cover it.',day:1,likes:52,amens:38},
   {name:'Aaron B.',avatar_id:1,text:'Grateful for a father who prayed over me. He is with the Lord now but his prayers are still working in my life. I feel them.',day:1,likes:61,amens:44},
   {name:'Mei L.',avatar_id:7,text:'First time doing this challenge. Already on day 1 I am realising how much I take for granted. God has been so faithful and I barely even noticed.',day:1,likes:24,amens:18},
   {name:'Jordan F.',avatar_id:9,text:'Grateful for sobriety. 18 months clean. God did what I could not do for myself and every day I wake up sober is a miracle I do not take lightly.',day:1,likes:77,amens:58},
@@ -2605,7 +2596,7 @@ function checkStreakWarning(){
 
 // ── REWARD SYSTEM INFO ────────────────────────────────
 function renderRewardCard(){
-  // Only show if challenge has started and user hasn't seen it
+  // Only show if challenge has started and user hasn\'t seen it
   if(!challengeStarted())return;
   let seen=false;try{seen=localStorage.getItem('gow_reward_seen')==='1';}catch(e){}
   if(seen)return;
