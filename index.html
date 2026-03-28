@@ -115,7 +115,7 @@ html,body{background:#E8E6E1;min-height:100vh;font-family:'DM Sans',sans-serif;c
 .auth-top::before{content:'';position:absolute;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(198,168,91,0.08) 0%,transparent 70%);top:-120px;right:-100px;pointer-events:none;}
 .auth-eyebrow{font-size:10px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;opacity:0.8;}
 .auth-headline{font-family:'DM Sans',sans-serif;font-size:44px;color:#FFFFFF;line-height:1.0;margin-bottom:12px;}
-.auth-sub{font-size:14px;color:rgba(255,255,255,0.35);line-height:1.8;}
+.auth-sub{font-size:14px;color:rgba(15,14,12,0.45);line-height:1.8;}
 .auth-body{background:var(--bg);flex:1;padding:36px 24px 40px;}
 .auth-tabs{display:flex;border-bottom:1px solid var(--border-mid);margin-bottom:28px;gap:4px;}
 .auth-tab{flex:1;padding:12px 0;font-size:13px;font-weight:600;color:var(--muted);border:none;background:transparent;cursor:pointer;font-family:'DM Sans',sans-serif;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;letter-spacing:0.02em;}
@@ -670,29 +670,47 @@ html,body{background:#E8E6E1;min-height:100vh;font-family:'DM Sans',sans-serif;c
 </div>
 
 <!-- AUTH -->
-<div class="screen active" id="screen-auth">
-  <div class="auth-top">
-    <div class="auth-eyebrow">Generation Of The Word</div>
-    <div class="auth-headline">Gratitude<br>Challenge</div>
-    <div class="auth-sub">A community becoming more grateful —<br>one day at a time.</div>
+<div class="screen active no-nav-pad" id="screen-auth">
+  <!-- HERO -->
+  <div style="padding:64px 28px 36px;background:#0F0E0C;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:-80px;right:-60px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(198,168,91,0.1) 0%,transparent 70%);pointer-events:none;"></div>
+    <div style="font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);opacity:0.7;margin-bottom:20px;">Generation Of The Word</div>
+    <div style="font-size:42px;font-weight:700;color:#FFFFFF;line-height:1.05;margin-bottom:14px;letter-spacing:-0.02em;">Gratitude<br>Challenge</div>
+    <div style="font-size:14px;color:rgba(255,255,255,0.38);line-height:1.8;">A community becoming more grateful,<br>one day at a time.</div>
   </div>
-  <div class="auth-body">
+
+  <!-- FORM BODY -->
+  <div style="background:var(--bg);flex:1;padding:32px 24px 40px;">
+
+    <!-- Google login -->
+    <button onclick="doGoogleLogin()" style="display:flex;width:100%;align-items:center;justify-content:center;gap:10px;padding:14px;background:#FFFFFF;border:1px solid var(--border-mid);border-radius:var(--rsm);font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;color:#0F0E0C;cursor:pointer;margin-bottom:16px;box-shadow:var(--shadow);transition:border-color 0.2s;">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Continue with Google
+    </button>
+
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;"><div style="flex:1;height:1px;background:var(--border-mid);"></div><span style="font-size:12px;color:var(--muted);font-weight:500;">or</span><div style="flex:1;height:1px;background:var(--border-mid);"></div></div>
+
+    <!-- Tabs -->
     <div class="auth-tabs">
       <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">Sign in</button>
       <button class="auth-tab" id="tab-signup" onclick="switchTab('signup')">Create account</button>
     </div>
+
+    <!-- Login -->
     <div id="login-form">
       <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" placeholder="you@email.com" id="login-email"/></div>
       <div class="form-group">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;">
           <label class="form-label" style="margin-bottom:0;">Password</label>
-          <span onclick="showScreen('screen-forgot')" style="font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;">Forgot password?</span>
+          <span onclick="showScreen('screen-forgot')" style="font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;">Forgot?</span>
         </div>
         <input class="form-input" type="password" placeholder="••••••••" id="login-pass"/>
       </div>
       <button class="btn-primary" id="login-btn" onclick="doLogin()">Sign in</button>
       <div class="auth-error" id="login-error"></div>
     </div>
+
+    <!-- Signup -->
     <div id="signup-form" style="display:none">
       <div class="form-group"><label class="form-label">Full name</label><input class="form-input" type="text" placeholder="Your name" id="signup-name"/></div>
       <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" placeholder="you@email.com" id="signup-email"/></div>
@@ -700,6 +718,8 @@ html,body{background:#E8E6E1;min-height:100vh;font-family:'DM Sans',sans-serif;c
       <button class="btn-primary" id="signup-btn" onclick="doSignup()">Create account</button>
       <div class="auth-error" id="signup-error"></div>
     </div>
+
+    <div style="text-align:center;margin-top:20px;font-size:12px;color:var(--muted);line-height:1.6;">By continuing you agree to the GOW community guidelines.<br>This app is free forever.</div>
   </div>
 </div>
 
@@ -825,7 +845,7 @@ html,body{background:#E8E6E1;min-height:100vh;font-family:'DM Sans',sans-serif;c
 
 <!-- NOTIFICATIONS -->
 <div class="screen" id="screen-notifs">
-  <div class="inner-bar"><button class="back-btn" onclick="navTo('screen-home','pn-home')">←</button><div class="inner-title">Notifications</div></div>
+  <div class="inner-bar"><div class="inner-title">Notifications</div></div>
   <div class="notif-body" id="notif-list"><div style="text-align:center;padding:40px 20px;color:var(--muted);font-size:14px;">Loading...</div></div>
 </div>
 
@@ -853,14 +873,11 @@ html,body{background:#E8E6E1;min-height:100vh;font-family:'DM Sans',sans-serif;c
     </div>
     <div class="sec-head">Account</div>
     <div class="settings-card">
+      <div class="setting-row" onclick="openUserMessages()">Messages <span id="msg-badge-profile" style="background:var(--gold);color:var(--dark);font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;display:none;margin-left:6px;"></span><span style="color:var(--muted);margin-left:auto;">›</span></div>
+      <div class="setting-row" id="invite-row" onclick="copyInviteLink()">Copy invite link <span style="color:var(--muted);">›</span></div>
       <div class="setting-row" onclick="replayWalkthrough()">How the app works <span style="color:var(--muted);">›</span></div>
       <div class="setting-row" onclick="showScreen('screen-notif-prefs')">Notification preferences <span style="color:var(--muted);">›</span></div>
       <div class="setting-row" onclick="showScreen('screen-privacy')">Privacy and safety <span style="color:var(--muted);">›</span></div>
-    </div>
-    <div class="sec-head">My account</div>
-    <div class="settings-card">
-      <div class="setting-row" onclick="openUserMessages()">Messages <span id="msg-badge-profile" style="background:var(--gold);color:var(--dark);font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;display:none;margin-left:6px;"></span><span style="color:var(--muted);margin-left:auto;">›</span></div>
-      <div class="setting-row" id="invite-row" onclick="copyInviteLink()">Copy invite link <span style="color:var(--muted);">›</span></div>
     </div>
     <div class="sec-head">Explore</div>
     <div class="settings-card">
@@ -879,7 +896,7 @@ html,body{background:#E8E6E1;min-height:100vh;font-family:'DM Sans',sans-serif;c
 
 <!-- NOTIF PREFS -->
 <div class="screen" id="screen-notif-prefs">
-  <div class="inner-bar"><button class="back-btn" onclick="navTo('screen-profile','pn-profile')">←</button><div class="inner-title">Notifications</div></div>
+  <div class="inner-bar"><div class="inner-title">Notifications</div></div>
   <div class="content-body">
     <div class="sec-head">Push</div>
     <div class="settings-card">
@@ -1162,7 +1179,7 @@ html,body{background:#E8E6E1;min-height:100vh;font-family:'DM Sans',sans-serif;c
 
 <!-- JOURNAL -->
 <div class="screen" id="screen-journal">
-  <div class="inner-bar"><button class="back-btn" onclick="navTo('screen-profile','pn-profile')">←</button><div class="inner-title">My journal</div></div>
+  <div class="inner-bar"><div class="inner-title">My journal</div></div>
   <div style="padding:16px 20px;flex:1;background:var(--bg);">
     <div id="journal-feed"></div>
   </div>
@@ -1777,6 +1794,14 @@ async function doLogin(){
     isFirstTime=false;await enterApp(data.user);
   }catch(err){setLoading(false);document.getElementById('login-error').textContent='Something went wrong. Please try again.';}
 }
+async function doGoogleLogin(){
+  const{error}=await sb.auth.signInWithOAuth({
+    provider:'google',
+    options:{redirectTo:window.location.origin+window.location.pathname}
+  });
+  if(error)showToast('Google sign in failed — try again');
+}
+
 async function doSignup(){
   const n=document.getElementById('signup-name').value.trim();const e=document.getElementById('signup-email').value.trim();const p=document.getElementById('signup-pass').value.trim();
   if(!n||!e||!p){document.getElementById('signup-error').textContent='Please fill in all fields';return;}
@@ -1843,7 +1868,11 @@ async function loadFeed(){
   let query=sb.from('posts').select('*').eq('status','approved').order('created_at',{ascending:false}).limit(50);
   if(activeDayFilter>0)query=query.eq('day',activeDayFilter);
   const{data:posts,error}=await query;
-  if(error||!posts||posts.length===0){c.innerHTML='<div class="empty-feed">No posts yet.<br>Be the first to share your gratitude today.</div>';document.getElementById('feed-count').textContent='';return;}
+  if(error||!posts||posts.length===0){c.innerHTML=`<div style="text-align:center;padding:48px 24px;">
+      <div style="font-size:32px;margin-bottom:16px;">✨</div>
+      <div style="font-size:16px;font-weight:700;color:#0F0E0C;margin-bottom:8px;">No posts yet</div>
+      <div style="font-size:14px;color:var(--muted);line-height:1.7;">Be the first to share your gratitude today. The wall opens April 1st.</div>
+    </div>`;document.getElementById('feed-count').textContent='';return;}
   c.innerHTML='';
   document.getElementById('feed-count').textContent=posts.length+' post'+(posts.length!==1?'s':'');
   const pc=document.getElementById('people-count');if(pc&&posts.length>0)pc.textContent=posts.length+' people showed up today';
@@ -2183,7 +2212,11 @@ async function loadPrayers(){
   const feed=document.getElementById('prayer-feed');if(!feed)return;
   feed.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:14px;">Loading...</div>';
   const{data:prayers}=await sb.from('prayers').select('*').order('created_at',{ascending:false}).limit(40);
-  if(!prayers||prayers.length===0){feed.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:14px;line-height:1.7;">No prayer requests yet.<br>Be the first to share.</div>';return;}
+  if(!prayers||prayers.length===0){feed.innerHTML=`<div style="text-align:center;padding:48px 24px;">
+      <div style="font-size:32px;margin-bottom:16px;">🙏</div>
+      <div style="font-size:16px;font-weight:700;color:#0F0E0C;margin-bottom:8px;">No prayer requests yet</div>
+      <div style="font-size:14px;color:var(--muted);line-height:1.7;">Be the first to share a request. The community will stand with you.</div>
+    </div>`;return;}
   let myPrayingSet=new Set();
   if(currentUser){const{data:mine}=await sb.from('prayer_reactions').select('prayer_id').eq('user_id',currentUser.id);(mine||[]).forEach(r=>myPrayingSet.add(r.prayer_id));}
   feed.innerHTML='';
@@ -2219,7 +2252,15 @@ async function openJournal(){
   showScreen('screen-journal');const feed=document.getElementById('journal-feed');
   feed.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:14px;">Loading...</div>';
   const{data:posts}=await sb.from('posts').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:true});
-  if(!posts||posts.length===0){feed.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:14px;">You have not posted yet. Start today.</div>';return;}
+  if(!posts||posts.length===0){
+    feed.innerHTML=`<div style="text-align:center;padding:48px 24px;">
+      <div style="font-size:32px;margin-bottom:16px;">📖</div>
+      <div style="font-size:16px;font-weight:700;color:#0F0E0C;margin-bottom:8px;">No journal entries yet</div>
+      <div style="font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:20px;">Your gratitude posts will appear here as your personal journal. Start posting today.</div>
+      <button onclick="navTo('screen-home','pn-home')" style="background:#0F0E0C;color:#FFFFFF;border:none;border-radius:10px;padding:12px 24px;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;">Post today's gratitude →</button>
+    </div>`;
+    return;
+  }
   feed.innerHTML='';
   posts.forEach(p=>{
     const div=document.createElement('div');div.className='journal-card';
