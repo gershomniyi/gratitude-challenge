@@ -816,7 +816,7 @@ html,body{background:#E8E6E1;min-height:100vh;font-family:'DM Sans',sans-serif;c
   <a class="video-card" id="video-card" href="https://www.youtube.com/@gershomadeniyi" target="_blank">
     <div style="display:flex;align-items:center;gap:13px;">
       <div class="video-icon"><svg viewBox="0 0 24 24" width="15" height="15" fill="#0A0A0A"><path d="M23 7s-.3-2-1.2-2.8c-1.1-1.2-2.4-1.2-3-1.3C16.2 2.8 12 2.8 12 2.8s-4.2 0-6.8.1c-.6.1-1.9.1-3 1.3C1.3 5 1 7 1 7S.7 9.1.7 11.2v2c0 2.1.3 4.2.3 4.2s.3 2 1.2 2.8c1.1 1.2 2.6 1.1 3.3 1.2C7.2 21.6 12 21.6 12 21.6s4.2 0 6.8-.2c.6-.1 1.9-.1 3-1.3.9-.8 1.2-2.8 1.2-2.8s.3-2.1.3-4.2v-2C23.3 9.1 23 7 23 7zM9.7 15.5V8.4l8.1 3.6-8.1 3.5z"/></svg></div>
-      <div><div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:3px;opacity:0.8;" id="video-day-label">GOW Channel</div><div class="video-title" id="video-day-title">Watch on YouTube</div><div class="video-handle">@gershomadeniyi</div></div>
+      <div><div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:3px;opacity:0.8;" id="video-day-label">YouTube</div><div class="video-title" id="video-day-title">Watch on YouTube</div><div class="video-handle">@gershomadeniyi</div></div>
     </div>
     <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
   </a>
@@ -1701,7 +1701,7 @@ function updatePostedTodayState(){
 function updateVideoCard(){
   const day=getDay();const title=document.getElementById('video-day-title');const label=document.getElementById('video-day-label');
   if(challengeStarted()){if(title)title.textContent='Day '+day+' — Watch now';if(label)label.textContent='Today\'s video';}
-  else{if(title)title.textContent='Watch on YouTube';if(label)label.textContent='GOW Channel';}
+  else{if(title)title.textContent='Watch on YouTube';if(label)label.textContent='YouTube';}
 }
 function buildDayFilter(){
   const wrap=document.getElementById('day-filter-wrap');if(!wrap)return;
@@ -1770,7 +1770,7 @@ async function loadLeaderboard(){
     const div=document.createElement('div');div.className='lb-row'+(isYou?' lb-you':'');
     const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
     const avHtml=renderAvatarCircle(p.name,p.avatar_id,36,13);
-    div.innerHTML=`<div class="lb-rank${i<3?' top':''}">${medal||('#'+(i+1))}</div>${avHtml}<div class="lb-name">${esc(p.name)}${isYou?' <span style="font-size:10px;color:var(--gold-dark);font-weight:700;">YOU</span>':''}</div><div class="lb-streak">${p.streak||0}<span>day streak</span></div>`;
+    div.innerHTML=`<div class="lb-rank${i<3?' top':''}">${medal||('#'+(i+1))}</div>${avHtml}<div class="lb-name">${esc(p.name)}${isYou?' <span style="font-size:10px;color:var(--gold-dark);font-weight:700;">YOU</span>':''}</div><div class="lb-streak">${p.streak||0}<span>${(p.streak||0)===1?" day streak":" days streak"}</span></div>`;
     list.appendChild(div);
   });
 }
@@ -1854,10 +1854,11 @@ function showScreen(id){
   document.querySelectorAll('.screen,.ob-screen,.wt-screen').forEach(s=>s.classList.remove('active'));
   const el=document.getElementById(id);
   if(el){el.classList.add('active');}
-  // Hide pill nav on auth screens
-  if(id==='screen-auth'||id==='screen-forgot'||id==='screen-reset-password'){showPillNav(false);}
+  const authScreens=['screen-auth','screen-forgot','screen-reset-password'];
+  if(authScreens.includes(id)){showPillNav(false);}
+  else if(currentUser){showPillNav(true);}
   if(id==='screen-admin')loadModQueue();
-  if(id==='screen-home'){loadFeed();buildDayFilter();updatePostedTodayState();showPillNav(true);}
+  if(id==='screen-home'){loadFeed();buildDayFilter();updatePostedTodayState();}
   if(id==='screen-messages')openUserMessages();
   if(id==='screen-notifs'){const dot2=document.getElementById('ndot');if(dot2)dot2.style.display='none';const nb=document.getElementById('pn-notif-badge');if(nb)nb.style.display='none';loadNotifications();}
   if(id==='screen-leaderboard')loadLeaderboard();
@@ -1944,11 +1945,10 @@ function updateProfileUI(){
   document.getElementById('streak-count').textContent=(()=>{
     if(!challengeStarted()) return '\u2014';
     const s=currentProfile.streak||0;
-    if(s===0) return '0';
     return s;
   })();
   const _su=document.getElementById('streak-unit');
-  if(_su){const s2=challengeStarted()?(currentProfile.streak||0):0;_su.textContent=s2===1?' day':s2===0?'':' days';}
+  if(_su){if(!challengeStarted()){_su.textContent='';}else{const s2=currentProfile.streak||0;_su.textContent=s2===1?' day':' days';}}
   document.getElementById('streak-sub').textContent=challengeStarted()?(currentProfile.streak>0?'You are building consistency. Keep going.':'Post today to start your streak'):'Streaks begin April 1st — post now to warm up';
   document.getElementById('compose-hint').textContent='Day '+day+(typeof DAY_IDENTITIES!=='undefined'?': '+DAY_IDENTITIES[Math.min(day-1,29)]:'')+' — write it like you\'re talking to God.';
   const promptEl=document.getElementById('daily-prompt-text');if(promptEl)promptEl.textContent=getDailyPrompt();
@@ -2361,7 +2361,7 @@ async function togglePraying(prayerId,btn){
   }
 }
 async function openJournal(){
-  showScreen('screen-journal');const feed=document.getElementById('journal-feed');
+  const feed=document.getElementById('journal-feed');
   feed.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:14px;">Loading...</div>';
   const{data:posts}=await sb.from('posts').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:true});
   if(!posts||posts.length===0){
@@ -2486,9 +2486,8 @@ function showPillNav(show){
 }
 
 function navTo(screenId, btnId){
-  // Show target screen, hide others
   showScreen(screenId);
-  // Update pill active state
+  showPillNav(true);
   document.querySelectorAll('.pn-item').forEach(b=>b.classList.remove('active'));
   const btn=document.getElementById(btnId);
   if(btn)btn.classList.add('active');
