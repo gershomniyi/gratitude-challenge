@@ -3111,40 +3111,76 @@ const SEEDED_POSTS=[
   {name:'Tyler R.',avatar_id:8,ago:'11h ago',text:'I am grateful for the Word of God. Every time I open my Bible something speaks directly to what I am walking through. It never gets old.',day:1,likes:5,amens:7},
   {name:'Daniela V.',avatar_id:6,ago:'12h ago',text:'Moved to Canada 2 years ago with nothing. Today I have a job, a church family, and peace in my heart. Gratitude does not even cover it.',day:1,likes:21,amens:16},
   {name:'Aaron B.',avatar_id:1,ago:'13h ago',text:'Grateful for a father who prayed over me. He is with the Lord now but his prayers are still working in my life. I feel them.',day:1,likes:28,amens:19},
-  {name:'Mei L.',avatar_id:7,ago:'14h ago',text:'First time doing this challenge. Already on day 1 I am realising how much I take for granted. God has been so faithful and I barely even noticed.',day:1,likes:9,amens:6},
+  {name:'Mei L.',avatar_id:7,ago:'14h ago',text:'Joining this challenge early and I can already feel a shift happening in my heart. Decided to get ready before April 1st. God has been so faithful.',day:1,likes:9,amens:6},
   {name:'Jordan F.',avatar_id:9,ago:'1d ago',text:'Grateful for sobriety. 18 months clean. God did what I could not do for myself and every day I wake up sober is a miracle I do not take lightly.',day:1,likes:43,amens:31},
   {name:'Chioma E.',avatar_id:4,ago:'1d ago',text:'Grateful for my church community here in Toronto. Came not knowing anyone. Now I have a family. God places the lonely in families.',day:1,likes:15,amens:11},
   {name:'Nathan H.',avatar_id:5,ago:'1d ago',text:'Just grateful to be alive honestly. Went through a season that almost broke me. Standing on the other side of it is enough reason to praise Him.',day:1,likes:22,amens:17},
   {name:'Aaliyah G.',avatar_id:2,ago:'2d ago',text:'Grateful for second chances. I made choices I am not proud of but God did not give up on me. His mercies really are new every morning.',day:1,likes:31,amens:24},
 ];
 
+// Track seeded post reactions in memory
+const _seededLikes={};
+const _seededAmens={};
+
+function toggleSeededReact(idx,type){
+  if(!currentUser){showToast('Sign in to react');return;}
+  const store=type==='like'?_seededLikes:_seededAmens;
+  const countKey=type==='like'?'likes':'amens';
+  const btnId='seed-'+type+'-'+idx;
+  const btn=document.getElementById(btnId);
+  if(!btn)return;
+  if(store[idx]){
+    store[idx]=false;
+    SEEDED_POSTS[idx][countKey]=Math.max(0,(SEEDED_POSTS[idx][countKey]||0)-1);
+    btn.classList.remove(type==='like'?'liked':'amened');
+    btn.querySelector('svg').setAttribute('fill','none');
+  } else {
+    store[idx]=true;
+    SEEDED_POSTS[idx][countKey]=(SEEDED_POSTS[idx][countKey]||0)+1;
+    btn.classList.add(type==='like'?'liked':'amened');
+    btn.querySelector('svg').setAttribute('fill','currentColor');
+  }
+  const span=document.getElementById('seed-'+type+'-count-'+idx);
+  if(span)span.textContent=SEEDED_POSTS[idx][countKey];
+}
+
 function renderSeededFeed(c){
   c.innerHTML='';
-  SEEDED_POSTS.forEach(p=>{
-    const wrap=document.createElement('div');wrap.className='post-card-wrap';
-    const d=document.createElement('div');d.className='post-card';
-    const av=renderAvatarCircle(p.name,p.avatar_id,34,13);
-    d.innerHTML='<div class="post-top"><div style="display:flex;align-items:center;gap:9px;">'+av+'<div><span class="post-name">'+esc(p.name)+'</span><span class="post-meta">'+p.ago+'</span></div></div><span class="post-day">Day '+p.day+'</span></div><div class="post-text" style="margin-top:10px;">'+esc(p.text)+'</div><div class="post-actions"><button class="act-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> '+p.likes+'</button><button class="act-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg> Amen '+p.amens+'</button></div>';
+  SEEDED_POSTS.forEach(function(p,i){
+    var wrap=document.createElement('div');wrap.className='post-card-wrap';
+    var d=document.createElement('div');d.className='post-card';
+    var av=renderAvatarCircle(p.name,p.avatar_id,34,13);
+    var isLiked=!!_seededLikes[i];
+    var isAmened=!!_seededAmens[i];
+
+    // Build like button
+    var likeBtn=document.createElement('button');
+    likeBtn.className='act-btn'+(isLiked?' liked':'');
+    likeBtn.id='seed-like-'+i;
+    likeBtn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="'+(isLiked?'currentColor':'none')+'" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> <span id="seed-like-count-'+i+'">'+p.likes+'</span>';
+    likeBtn.onclick=(function(idx){return function(){toggleSeededReact(idx,'like');};})(i);
+
+    // Build amen button
+    var amenBtn=document.createElement('button');
+    amenBtn.className='act-btn'+(isAmened?' amened':'');
+    amenBtn.id='seed-amen-'+i;
+    amenBtn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="'+(isAmened?'currentColor':'none')+'" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg> Amen <span id="seed-amen-count-'+i+'">'+p.amens+'</span>';
+    amenBtn.onclick=(function(idx){return function(){toggleSeededReact(idx,'amen');};})(i);
+
+    var actions=document.createElement('div');
+    actions.className='post-actions';
+    actions.appendChild(likeBtn);
+    actions.appendChild(amenBtn);
+
+    d.innerHTML='<div class="post-top"><div style="display:flex;align-items:center;gap:9px;">'+av+'<div><span class="post-name">'+esc(p.name)+'</span><span class="post-meta">'+p.ago+'</span></div></div><span class="post-day">Day '+p.day+'</span></div><div class="post-text" style="margin-top:10px;">'+esc(p.text)+'</div>';
+    d.appendChild(actions);
     wrap.appendChild(d);c.appendChild(wrap);
   });
-  const fc=document.getElementById('feed-count');if(fc)fc.textContent=SEEDED_POSTS.length+' posts';
-  const pc=document.getElementById('people-count');if(pc)pc.innerHTML='🔥 '+SEEDED_POSTS.length+' people posted today';
+  var fc=document.getElementById('feed-count');if(fc)fc.textContent=SEEDED_POSTS.length+' posts';
+  var pc=document.getElementById('people-count');if(pc)pc.innerHTML='🔥 '+SEEDED_POSTS.length+' people posted today';
 }
 
-// ── PILL NAV FUNCTIONS ────────────────────────────────────
-function showPillNav(show){
-  const nav=document.getElementById('pill-nav');
-  if(nav)nav.classList[show?'add':'remove']('show');
-}
 
-function navPill(screenId, btnId){
-  showScreen(screenId);
-  document.querySelectorAll('.pn-item').forEach(b=>b.classList.remove('active'));
-  const btn=document.getElementById(btnId);
-  if(btn)btn.classList.add('active');
-}
-
-// ── POST CTA HERO ─────────────────────────────────────────
 function renderPostCTA(){
   const wrap=document.getElementById('post-cta-wrap');
   if(!wrap)return;
@@ -3314,20 +3350,120 @@ async function loadAdminUsers(){
   const countEl=document.getElementById('users-count');
   if(!list)return;
   list.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:14px;">Loading...</div>';
-  const{data:users,count}=await sb.from('profiles').select('*',{count:'exact'}).order('created_at',{ascending:false});
+  const{data:users}=await sb.from('profiles').select('*').order('created_at',{ascending:false});
   if(!users||users.length===0){list.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:14px;">No users yet.</div>';return;}
   if(countEl)countEl.textContent=users.length+' member'+(users.length!==1?'s':'');
   list.innerHTML='';
-  users.forEach((u,i)=>{
-    const div=document.createElement('div');
-    div.style.cssText='background:#FFFFFF;border:1px solid var(--border);border-radius:var(--r);padding:13px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px;';
+  users.forEach(function(u){
     const av=getAvatarById(u.avatar_id||1);
-    const initials=(u.name||'?').trim().split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    const initials=(u.name||'?').trim().split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
     const joinDate=u.created_at?new Date(u.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'';
-    const roleBadge=u.role==='admin'?'<span style="font-size:9px;font-weight:700;background:#0A0A0A;color:#FFFFFF;padding:2px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:0.06em;">Admin</span>':u.role==='moderator'?'<span style="font-size:9px;font-weight:700;background:var(--gold-light);color:var(--gold-dark);padding:2px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:0.06em;">Mod</span>':'';
-    div.innerHTML='<div style="width:38px;height:38px;border-radius:50%;background:'+av.bg+';display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:'+av.color+';flex-shrink:0;">'+esc(initials)+'</div><div style="flex:1;min-width:0;"><div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;"><span style="font-size:14px;font-weight:600;color:#0A0A0A;">'+esc(u.name||'Unknown')+'</span>'+roleBadge+'</div><div style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+esc(u.email||'')+'</div></div><div style="text-align:right;flex-shrink:0;"><div style="font-size:11px;font-weight:600;color:#0A0A0A;">'+( u.streak||0)+' day streak</div><div style="font-size:10px;color:var(--muted);margin-top:2px;">'+joinDate+'</div></div>';
-    list.appendChild(div);
+    const roleTxt=u.role==='admin'?'Admin':u.role==='moderator'?'Mod':'';
+    const roleBg=u.role==='admin'?'#0A0A0A':u.role==='moderator'?'var(--gold-light)':'';
+    const roleColor=u.role==='admin'?'#FFFFFF':u.role==='moderator'?'var(--gold-dark)':'';
+
+    const card=document.createElement('div');
+    card.style.cssText='background:#FFFFFF;border:1px solid var(--border);border-radius:var(--r);padding:13px 16px;margin-bottom:8px;';
+
+    const avDiv=document.createElement('div');
+    avDiv.style.cssText='width:38px;height:38px;border-radius:50%;background:'+av.bg+';display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:'+av.color+';flex-shrink:0;';
+    avDiv.textContent=initials;
+
+    const nameRow=document.createElement('div');
+    nameRow.style.cssText='font-size:14px;font-weight:600;color:#0A0A0A;display:flex;align-items:center;gap:6px;margin-bottom:2px;';
+    nameRow.textContent=u.name||'Unknown';
+    if(roleTxt){
+      const badge=document.createElement('span');
+      badge.style.cssText='font-size:9px;font-weight:700;background:'+roleBg+';color:'+roleColor+';padding:2px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:0.06em;';
+      badge.textContent=roleTxt;
+      nameRow.appendChild(badge);
+    }
+
+    const emailRow=document.createElement('div');
+    emailRow.style.cssText='font-size:11px;color:var(--muted);';
+    emailRow.textContent=u.email||'';
+
+    const streakRow=document.createElement('div');
+    streakRow.style.cssText='font-size:11px;font-weight:600;color:#0A0A0A;text-align:right;';
+    streakRow.textContent=(u.streak||0)+' day streak';
+
+    const dateRow=document.createElement('div');
+    dateRow.style.cssText='font-size:10px;color:var(--muted);margin-top:2px;text-align:right;';
+    dateRow.textContent=joinDate;
+
+    const info=document.createElement('div');info.style.cssText='flex:1;min-width:0;';
+    info.appendChild(nameRow);info.appendChild(emailRow);
+
+    const meta=document.createElement('div');meta.style.cssText='flex-shrink:0;';
+    meta.appendChild(streakRow);meta.appendChild(dateRow);
+
+    const topRow=document.createElement('div');
+    topRow.style.cssText='display:flex;align-items:center;gap:12px;';
+    topRow.appendChild(avDiv);topRow.appendChild(info);topRow.appendChild(meta);
+
+    const viewBtn=document.createElement('button');
+    viewBtn.style.cssText="flex:1;padding:8px;background:#F8F8F6;border:1px solid #e0e0e0;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;color:#0A0A0A;";
+    viewBtn.textContent='View profile';
+    viewBtn.onclick=(function(uid,uname,uavid){return function(e){e.stopPropagation();viewAdminUserProfile(uid,uname,uavid);};})(u.id,u.name||'',u.avatar_id||1);
+
+    const msgBtn=document.createElement('button');
+    msgBtn.style.cssText="flex:1;padding:8px;background:#0A0A0A;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;color:#FFFFFF;";
+    msgBtn.textContent='Send message';
+    msgBtn.onclick=(function(uid,uname,uemail){return function(e){e.stopPropagation();sendAdminMessageTo(uid,uname,uemail);};})(u.id,u.name||'',u.email||'');
+
+    const btnRow=document.createElement('div');
+    btnRow.style.cssText='display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);';
+    btnRow.appendChild(viewBtn);btnRow.appendChild(msgBtn);
+
+    card.appendChild(topRow);card.appendChild(btnRow);
+    list.appendChild(card);
   });
+}
+
+
+async function viewAdminUserProfile(userId, name, email, e){
+  if(e)e.stopPropagation();
+  showScreen('screen-user-profile');
+  document.getElementById('user-prof-title').textContent=name;
+  document.getElementById('user-prof-name').textContent=name;
+  const{data:profile}=await sb.from('profiles').select('streak,avatar_id').eq('id',userId).single();
+  const av=getAvatarById(profile?.avatar_id||1);
+  const ring=document.getElementById('user-prof-av-ring');
+  const avEl=document.getElementById('user-prof-av');
+  if(ring)ring.style.background=av.bg;
+  if(avEl){avEl.textContent=name.trim().split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);avEl.style.color=av.color;}
+  document.getElementById('user-prof-streak').textContent=profile?.streak||0;
+  const feed=document.getElementById('user-prof-feed');
+  feed.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);font-size:14px;">Loading...</div>';
+  const{data:posts}=await sb.from('posts').select('*').eq('user_id',userId).eq('status','approved').order('created_at',{ascending:false});
+  document.getElementById('user-prof-posts').textContent=posts?.length||0;
+  if(!posts||posts.length===0){feed.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);font-size:14px;">No posts yet.</div>';return;}
+  feed.innerHTML='';
+  posts.forEach(p=>{
+    const div=document.createElement('div');div.className='post-card';
+    div.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;"><span class="post-day">Day '+p.day+'</span><span style="font-size:12px;color:var(--muted);">'+timeAgo(new Date(p.created_at))+'</span></div><div style="font-size:15px;color:#0A0A0A;line-height:1.7;">'+esc(p.text)+'</div>';
+    feed.appendChild(div);
+  });
+}
+
+async function sendAdminMessageTo(userId, name, email, e){
+  if(e)e.stopPropagation();
+  // Open admin thread or create new message to this user
+  const msg=prompt('Send a message to '+name+':');
+  if(!msg||!msg.trim())return;
+  const{error}=await sb.from('messages').insert({
+    user_id:userId,
+    name:name,
+    email:email,
+    text:'[From GOW Admin] '+msg.trim(),
+    read:false,
+    thread:[{from:'admin',text:msg.trim(),at:new Date().toISOString()}],
+    user_read:false
+  });
+  if(error){showToast('Could not send message');return;}
+  // Notify user
+  await sb.from('notifications').insert({user_id:userId,type:'message',message:'GOW sent you a message',read:false}).catch(()=>{});
+  showToast('Message sent to '+name);
 }
 
 </script>
