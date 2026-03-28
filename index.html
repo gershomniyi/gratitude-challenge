@@ -716,7 +716,7 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
       <div class="streak-sub" id="streak-sub">Post today to start your streak</div>
       <div id="streak-risk" style="font-size:11px;color:rgba(255,100,100,0.65);margin-top:3px;display:none;">Miss today and your streak resets.</div>
       <div style="margin-top:10px;display:flex;align-items:center;gap:12px;">
-        <span onclick="showScreen('screen-leaderboard')" style="font-size:11px;font-weight:600;color:var(--gold);cursor:pointer;letter-spacing:0.04em;">View leaderboard →</span>
+        <span onclick="scrollToTodayFeed()" style="font-size:11px;font-weight:600;color:var(--gold);cursor:pointer;letter-spacing:0.04em;">See who showed up today →</span>
         <button class="freeze-btn" id="freeze-btn" onclick="useStreakFreeze()" style="margin-top:0;">❄ Freeze streak</button>
       </div>
     </div>
@@ -1001,6 +1001,7 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
     <button class="admin-tab" id="atab-broadcast" onclick="switchAdminTab('broadcast')" style="flex:1;padding:12px;font-size:12px;font-weight:700;font-family:'DM Sans',sans-serif;color:rgba(255,255,255,0.35);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;letter-spacing:0.04em;text-transform:uppercase;">Broadcast</button>
     <button class="admin-tab" id="atab-users" onclick="switchAdminTab('users')" style="flex:1;padding:12px;font-size:12px;font-weight:700;font-family:'DM Sans',sans-serif;color:rgba(255,255,255,0.35);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;letter-spacing:0.04em;text-transform:uppercase;">Users</button>
     <button class="admin-tab" id="atab-messages" onclick="switchAdminTab('messages')" style="flex:1;padding:12px;font-size:12px;font-weight:700;font-family:'DM Sans',sans-serif;color:rgba(255,255,255,0.35);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;letter-spacing:0.04em;text-transform:uppercase;">Messages <span id="admin-msg-count" style="display:none;background:var(--gold);color:#0A0A0A;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:4px;"></span></button>
+    <button class="admin-tab" id="atab-leaders" onclick="switchAdminTab('leaders')" style="flex:1;padding:12px;font-size:12px;font-weight:700;font-family:'DM Sans',sans-serif;color:rgba(255,255,255,0.35);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;letter-spacing:0.04em;text-transform:uppercase;">Top</button>
   </div>
 
   <div id="admin-posts-tab">
@@ -1050,6 +1051,14 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
       <div style="font-size:11px;color:var(--muted);" id="users-count"></div>
     </div>
     <div id="admin-users-list" style="padding:0 20px;"></div>
+  </div>
+
+  <div id="admin-leaders-tab" style="display:none;flex:1;flex-direction:column;background:#F8F8F6;">
+    <div style="padding:14px 20px 8px;">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:4px;">Top streaks</div>
+      <div style="font-size:12px;color:var(--muted);">Who is showing up the most — visible to you only.</div>
+    </div>
+    <div id="lb-list" style="padding-top:8px;"></div>
   </div>
 
   <div class="spacer"></div>
@@ -1141,18 +1150,6 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
 
 
 <!-- LEADERBOARD SCREEN -->
-<div class="screen" id="screen-leaderboard">
-  <div class="inner-bar"><button class="back-btn" onclick="showScreen('screen-home')">←</button><div class="inner-title">Leaderboard</div></div>
-  <div style="padding:14px 20px 8px;background:#F8F8F6;">
-    <div style="background:#0A0A0A;border-radius:var(--r);padding:16px 18px;margin-bottom:4px;">
-      <div style="font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:4px;">Top streaks</div>
-      <div style="font-size:13px;color:rgba(255,255,255,0.45);line-height:1.5;">The community showing up every single day.</div>
-    </div>
-  </div>
-  <div id="lb-list" style="padding-top:8px;flex:1;background:#F8F8F6;"></div>
-  <div class="spacer"></div>
-</div>
-
 <!-- USER PROFILE SCREEN -->
 <div class="screen" id="screen-user-profile">
   <div class="inner-bar"><button class="back-btn" onclick="showScreen('screen-home')">←</button><div class="inner-title" id="user-prof-title">Profile</div></div>
@@ -1891,12 +1888,23 @@ async function loadNotifications(){
   await sb.from('notifications').update({read:true}).eq('user_id',currentUser.id).eq('read',false);
 }
 
-// LEADERBOARD
+// LEADERBOARD — admin only
+function scrollToTodayFeed(){
+  const day=getDay();
+  activeDayFilter=day;
+  buildDayFilter();
+  loadFeed();
+  setTimeout(()=>{
+    const feed=document.getElementById('feed-container');
+    if(feed)feed.scrollIntoView({behavior:'smooth'});
+  },400);
+}
+
 async function loadLeaderboard(){
   const list=document.getElementById('lb-list');
   if(!list)return;
   list.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:14px;">Loading...</div>';
-  const{data}=await sb.from('profiles').select('name,streak,avatar_id').order('streak',{ascending:false}).limit(10);
+  const{data}=await sb.from('profiles').select('name,streak,avatar_id').order('streak',{ascending:false}).limit(20);
   if(!data||data.length===0){list.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:14px;">No entries yet.</div>';return;}
   list.innerHTML='';
   data.forEach((p,i)=>{
@@ -1909,7 +1917,7 @@ async function loadLeaderboard(){
       <div class="lb-rank${i<3?' top':''}">${medal||('#'+(i+1))}</div>
       ${avHtml}
       <div class="lb-name">${esc(p.name)}${isYou?' <span style="font-size:10px;color:var(--gold-dark);font-weight:700;">YOU</span>':''}</div>
-      <div class="lb-streak">${p.streak||0}<span>day streak</span></div>`;
+      <div class="lb-streak">${p.streak||0}<span> day streak</span></div>`;
     list.appendChild(div);
   });
 }
@@ -2020,7 +2028,6 @@ function showScreen(id){
   if(id==='screen-home'){loadFeed();buildDayFilter();updatePostedTodayState();renderPostCTA();renderSlimCountdown();}
   if(id==='screen-messages')openUserMessages();
   if(id==='screen-notifs'){const d=document.getElementById('ndot');if(d)d.style.display='none';const nb=document.getElementById('pn-notif-dot');if(nb)nb.style.display='none';loadNotifications();}
-  if(id==='screen-leaderboard')loadLeaderboard();
   if(id==='screen-prayer')loadPrayers();
   if(id==='screen-journal'){switchJournalTab('posts');}
   window.scrollTo(0,0);
@@ -2415,13 +2422,15 @@ function switchAdminTab(tab){
   const isBroadcast=tab==='broadcast';
   const isMessages=tab==='messages';
   const isUsers=tab==='users';
+  const isLeaders=tab==='leaders';
   document.getElementById('admin-posts-tab').style.display=isPosts?'block':'none';
   document.getElementById('admin-team-tab').style.display=isTeam?'flex':'none';
   document.getElementById('admin-team-tab').style.flexDirection='column';
   document.getElementById('admin-broadcast-tab').style.display=isBroadcast?'block':'none';
   document.getElementById('admin-messages-tab').style.display=isMessages?'flex':'none';
   const usersTab=document.getElementById('admin-users-tab');if(usersTab)usersTab.style.display=isUsers?'flex':'none';
-  ['posts','team','broadcast','messages','users'].forEach(t=>{
+  const leadersTab=document.getElementById('admin-leaders-tab');if(leadersTab)leadersTab.style.display=isLeaders?'flex':'none';
+  ['posts','team','broadcast','users','messages','leaders'].forEach(t=>{
     const btn=document.getElementById('atab-'+t);
     if(!btn)return;
     const active=t===tab;
@@ -2432,6 +2441,7 @@ function switchAdminTab(tab){
   if(isBroadcast)loadActiveBroadcast();
   if(isMessages){loadAdminMessages();const badge=document.getElementById('admin-msg-count');if(badge)badge.style.display='none';}
   if(isUsers)loadAdminUsers();
+  if(isLeaders)loadLeaderboard();
 }
 
 async function addModerator(){
