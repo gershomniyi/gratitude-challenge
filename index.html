@@ -41,8 +41,9 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;color:#0A0A0A;-webkit-font-smoothing:antialiased;}
 .shell{max-width:420px;margin:0 auto;background:#F8F8F6;min-height:100vh;box-shadow:0 0 60px rgba(0,0,0,0.18);}
-.screen{display:none;flex-direction:column;min-height:100vh;}
+.screen{display:none;flex-direction:column;min-height:100vh;padding-bottom:88px;}
 .screen.active{display:flex;}
+.screen.no-pad{padding-bottom:0 !important;}
 
 /* LOADING */
 .loading-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(248,248,246,0.92);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;gap:14px;}
@@ -507,6 +508,33 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
 .msg-reply-input:focus{border-color:#0A0A0A;background:#FFFFFF;}
 .msg-reply-send{background:#0A0A0A;color:#FFFFFF;border:none;border-radius:20px;padding:9px 18px;font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;white-space:nowrap;}
 .msg-unread-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;}
+
+/* ── PILL NAV ── */
+.pill-nav{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);height:68px;background:#0A0A0A;border-radius:34px;display:none;align-items:center;padding:0 6px;z-index:90;box-shadow:0 8px 32px rgba(0,0,0,0.28),0 2px 8px rgba(0,0,0,0.18);border:1px solid rgba(255,255,255,0.06);gap:0;white-space:nowrap;}
+.pill-nav.show{display:flex;}
+.pn-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;width:54px;height:52px;border-radius:26px;cursor:pointer;border:none;background:transparent;font-family:'DM Sans',sans-serif;transition:all 0.18s;position:relative;flex-shrink:0;}
+.pn-item:active{transform:scale(0.88);}
+.pn-item.active{background:var(--gold);}
+.pn-icon{display:flex;align-items:center;justify-content:center;}
+.pn-icon svg{width:18px;height:18px;stroke:rgba(255,255,255,0.32);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;transition:stroke 0.18s;}
+.pn-item.active .pn-icon svg{stroke:#0A0A0A;}
+.pn-label{font-size:8px;font-weight:700;color:rgba(255,255,255,0.25);letter-spacing:0.06em;text-transform:uppercase;line-height:1;transition:color 0.18s;}
+.pn-item.active .pn-label{color:#0A0A0A;}
+.pn-badge{position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;background:var(--gold);border:1.5px solid #0A0A0A;}
+.pn-item.admin-pn{background:rgba(198,168,91,0.07);border:1px solid rgba(198,168,91,0.18);}
+.pn-item.admin-pn .pn-icon svg{stroke:var(--gold);opacity:0.65;}
+.pn-item.admin-pn .pn-label{color:var(--gold);opacity:0.65;}
+.pn-item.admin-pn.active{background:var(--gold);border-color:var(--gold);}
+.pn-item.admin-pn.active .pn-icon svg{stroke:#0A0A0A;opacity:1;}
+.pn-item.admin-pn.active .pn-label{color:#0A0A0A;opacity:1;}
+.screen{padding-bottom:88px;}
+.screen.no-pad{padding-bottom:0 !important;}
+/* JOURNAL SUBTABS */
+.jtab-bar{display:flex;padding:12px 16px 0;gap:8px;background:#FFFFFF;border-bottom:1px solid var(--border);}
+/* INVITE PROGRESS */
+.invite-progress-card{margin:12px 20px 0;background:#0A0A0A;border-radius:var(--r);padding:18px 20px;border:1px solid rgba(198,168,91,0.15);}
+.invite-prog-bar-track{background:rgba(255,255,255,0.08);border-radius:20px;height:5px;overflow:hidden;margin:12px 0 8px;}
+.invite-prog-bar-fill{height:100%;background:var(--gold);border-radius:20px;width:0%;transition:width 0.6s;}
 </style>
 </head>
 <body>
@@ -713,7 +741,6 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
     <button class="broadcast-dismiss" onclick="dismissBroadcast()">×</button>
   </div>
 
-  <div id="countdown-wrap"></div>
 
   <div class="scripture-card" id="scripture-card">
     <div class="scripture-ref" id="scripture-ref">Loading...</div>
@@ -1342,32 +1369,7 @@ function challengeStarted(){
   return new Date()>=CHALLENGE_START;
 }
 
-function renderCountdown(){
-  const wrap=document.getElementById('countdown-wrap');
-  if(!wrap)return;
-  if(challengeStarted()){wrap.innerHTML='';return;}
-  const now=new Date();
-  const diff=CHALLENGE_START-now;
-  const days=Math.floor(diff/(1000*60*60*24));
-  const hours=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
-  const mins=Math.floor((diff%(1000*60*60))/(1000*60));
-  const secs=Math.floor((diff%(1000*60))/1000);
-  wrap.innerHTML=`
-    <div class="countdown-wrap">
-      <div class="countdown-eyebrow">Coming April 1</div>
-      <div class="countdown-title">The challenge is almost here</div>
-      <div class="countdown-sub">Get ready. The wall opens and posting unlocks<br>the moment the challenge begins.</div>
-      <div class="countdown-units">
-        <div class="countdown-unit"><span class="countdown-num">${String(days).padStart(2,'0')}</span><span class="countdown-label">Days</span></div>
-        <div class="countdown-sep">:</div>
-        <div class="countdown-unit"><span class="countdown-num">${String(hours).padStart(2,'0')}</span><span class="countdown-label">Hours</span></div>
-        <div class="countdown-sep">:</div>
-        <div class="countdown-unit"><span class="countdown-num">${String(mins).padStart(2,'0')}</span><span class="countdown-label">Mins</span></div>
-        <div class="countdown-sep">:</div>
-        <div class="countdown-unit"><span class="countdown-num">${String(secs).padStart(2,'0')}</span><span class="countdown-label">Secs</span></div>
-      </div>
-    </div>`;
-}
+function renderCountdown(){/* replaced by renderSlimCountdown */}
 
 function startCountdownTimer(){
   renderCountdown();
@@ -2982,6 +2984,8 @@ async function featurePost(postId){
   if(session?.user){
     isFirstTime=false;
     await enterApp(session.user);
+  } else {
+    showPillNav(false);
   }
   sb.auth.onAuthStateChange(async(event,session)=>{
     if(event==='PASSWORD_RECOVERY'){
