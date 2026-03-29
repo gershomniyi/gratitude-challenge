@@ -1559,7 +1559,7 @@ async function submitComment(){
   if(activePostId){
     const{data:post}=await sb.from('posts').select('user_id').eq('id',activePostId).single();
     if(post&&post.user_id!==currentUser.id){
-      await sb.from('notifications').insert({user_id:post.user_id,type:'comment',message:currentProfile.name+' commented on your post',read:false}).catch(()=>{});
+      await sb.from('notifications').insert({user_id:post.user_id,type:'comment',message:currentProfile.name+' commented on your post',read:false}).then(()=>{}).catch(()=>{});
     }
   }
 }
@@ -2322,7 +2322,7 @@ async function notifyAdminNewUser(name, email){
 }
 
 async function notifyAdmin(name,text,day){
-  await sb.from('notifications').insert({user_id:null,type:'new_post',message:name+' posted on Day '+day+': "'+text.slice(0,80)+'"',read:false}).catch(()=>{});
+  await sb.from('notifications').insert({user_id:null,type:'new_post',message:name+' posted on Day '+day+': "'+text.slice(0,80)+'"',read:false}).then(()=>{}).catch(()=>{});
 }
 
 async function notifyPostOwner(postId,type){
@@ -2332,7 +2332,7 @@ async function notifyPostOwner(postId,type){
   const msg=type==='like'
     ?currentProfile.name+' liked your post'
     :currentProfile.name+' said Amen on your post';
-  await sb.from('notifications').insert({user_id:post.user_id,type,message:msg,read:false}).catch(()=>{});
+  await sb.from('notifications').insert({user_id:post.user_id,type,message:msg,read:false}).then(()=>{}).catch(()=>{});
 }
 async function deletePost(id){
   if(!confirm('Delete this post?'))return;
@@ -3172,7 +3172,7 @@ async function ensureSeededPosts(){
     user_id:null,
     created_at:new Date(now-p.hoursAgo*3600*1000).toISOString()
   }));
-  await sb.from('posts').insert(rows).catch(()=>{});
+  await sb.from('posts').insert(rows).then(()=>{}).catch(()=>{});
   _seededInserted=true;
 }
 
@@ -3551,24 +3551,32 @@ async function submitAdminMsgCompose(){
   if(!_adminMsgTarget.userId){status.style.color='#CC3333';status.textContent='No recipient selected';return;}
   sendBtn.disabled=true;sendBtn.textContent='Sending...';
   status.textContent='';
-  const{error}=await sb.from('messages').insert({
-    user_id:_adminMsgTarget.userId,
-    name:_adminMsgTarget.name||'User',
-    email:_adminMsgTarget.email||'',
-    text:text,
-    read:false,
-    thread:[{from:'admin',text:text,at:new Date().toISOString()}],
-    user_read:false
-  });
+  const{data:existing}=await sb.from('messages').select('*').eq('user_id',_adminMsgTarget.userId).order('created_at',{ascending:false}).limit(1);
+  let error;
+  if(existing&&existing.length>0){
+    const thread=[...(existing[0].thread||[]),{from:'admin',text,at:new Date().toISOString()}];
+    const r=await sb.from('messages').update({thread,user_read:false,read:true}).eq('id',existing[0].id);
+    error=r.error;
+  } else {
+    const r=await sb.from('messages').insert({
+      user_id:_adminMsgTarget.userId,
+      name:_adminMsgTarget.name||'User',
+      email:_adminMsgTarget.email||'',
+      text:text,
+      read:false,
+      thread:[{from:'admin',text:text,at:new Date().toISOString()}],
+      user_read:false
+    });
+    error=r.error;
+  }
   sendBtn.disabled=false;sendBtn.textContent='Send';
   if(error){status.style.color='#CC3333';status.textContent='Could not send — try again';return;}
-  await sb.from('notifications').insert
-  ({
+  await sb.from('notifications').insert({
     user_id:_adminMsgTarget.userId,
     type:'message',
     message:'You have a new message from GOW',
     read:false
-  }).catch(()=>{});
+  }).then(()=>{}).catch(()=>{});
   status.style.color='var(--gold-dark)';
   status.style.fontWeight='600';
   status.textContent='✓ Message sent to '+(_adminMsgTarget.name||'user');
