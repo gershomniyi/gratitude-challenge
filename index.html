@@ -716,7 +716,7 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
       <div class="streak-sub" id="streak-sub">Post today to start your streak</div>
       <div id="streak-risk" style="font-size:11px;color:rgba(255,100,100,0.65);margin-top:3px;display:none;">Miss today and your streak resets.</div>
       <div style="margin-top:10px;display:flex;align-items:center;gap:12px;">
-        <span onclick="showScreen('screen-leaderboard')" style="font-size:11px;font-weight:600;color:var(--gold);cursor:pointer;letter-spacing:0.04em;">View leaderboard →</span>
+        <span onclick="scrollToTodayFeed()" style="font-size:11px;font-weight:600;color:var(--gold);cursor:pointer;letter-spacing:0.04em;">See who showed up today →</span>
         <button class="freeze-btn" id="freeze-btn" onclick="useStreakFreeze()" style="margin-top:0;">❄ Freeze streak</button>
       </div>
     </div>
@@ -756,7 +756,7 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
     </div>
     <div id="invite-claim-note" style="display:none;margin-top:12px;background:rgba(198,168,91,0.12);border:1px solid rgba(198,168,91,0.25);border-radius:10px;padding:12px 14px;">
       <div style="font-size:13px;font-weight:700;color:var(--gold);margin-bottom:4px;">You qualify for a free hoodie!</div>
-      <div style="font-size:12px;color:rgba(255,255,255,0.55);line-height:1.6;">Email <span style="color:var(--gold);">info@genesiah.com</span> with your full name and the email you used to sign up. We will verify your referrals and get back to you.</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.55);line-height:1.6;">Email <span style="color:var(--gold);"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2940474f46694e4c474c5a404841074a4644">[email&#160;protected]</a></span> with your full name and the email you used to sign up. We will verify your referrals and get back to you.</div>
     </div>
   </div>
 
@@ -774,13 +774,6 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
     <div class="cm-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#0A0A0A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div>
     <div><div class="cm-title" id="cm-title">Community milestone!</div><div class="cm-sub" id="cm-sub">You are part of something special</div></div>
     <button class="cm-dismiss" onclick="dismissMilestone()">×</button>
-  </div>
-
-  <div class="invite-card" id="invite-card-home" style="display:none;">
-    <div class="invite-title">Bring someone with you</div>
-    <div class="invite-sub">Share your personal invite link and bring one person into the challenge.</div>
-    <div class="invite-link-box" id="invite-link-home">gowchallenge.com/?ref=...</div>
-    <button class="invite-copy" onclick="copyInviteLink()">Copy invite link</button>
   </div>
 
   <div class="posted-today" id="posted-today">
@@ -1327,7 +1320,7 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
       <div style="margin-bottom:10px;">• Deadline is April 30, 2026</div>
       <div style="margin-bottom:10px;">• One hoodie per person regardless of how many you invite</div>
       <div style="margin-bottom:10px;">• All referrals are verified manually before shipping</div>
-      <div style="margin-bottom:16px;">• To claim, email <span style="font-weight:700;color:#0A0A0A;">info@genesiah.com</span> with your full name and the email you used to sign up. We will verify your referrals and get back to you.</div>
+      <div style="margin-bottom:16px;">• To claim, email <span style="font-weight:700;color:#0A0A0A;"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="97fef9f1f8d7f0f2f9f2e4fef6ffb9f4f8fa">[email&#160;protected]</a></span> with your full name and the email you used to sign up. We will verify your referrals and get back to you.</div>
     </div>
     <button onclick="closeInviteTerms()" style="width:100%;padding:13px;background:#0A0A0A;color:#FFFFFF;border:none;border-radius:10px;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;">Got it</button>
   </div>
@@ -1335,7 +1328,7 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
 
 </div><!-- shell -->
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // GOW AVATARS — 10 options with gold/dark/warm tones
 const GOW_AVATARS=[
   {id:1,bg:'#0A0A0A',color:'#C6A85B',label:'Dark Gold'},
@@ -2192,7 +2185,7 @@ async function loadFeed(){
   if(activeDayFilter>0)query=query.eq('day',activeDayFilter);
   const{data:posts,error}=await query;
   if(error||!posts||posts.length===0){
-    renderSeededFeed(c);
+    await renderSeededFeed(c);
     return;
   }
   c.innerHTML='';
@@ -3140,84 +3133,79 @@ const PROMPT_CHIPS_V2=[
 ];
 
 // ── 15 SEEDED POSTS ───────────────────────────────────────
-const SEEDED_POSTS=[
-  {name:'Marcus J.',avatar_id:1,ago:'3h ago',text:'Grateful for another morning. I know that sounds simple but I lost a friend last year and I never take waking up for granted anymore. God is good.',day:1,likes:7,amens:4},
-  {name:'Amara O.',avatar_id:4,ago:'5h ago',text:'I am grateful for the grace that carried me through a really hard week. I did not deserve the peace I felt but He gave it anyway.',day:1,likes:3,amens:5},
-  {name:'Sarah T.',avatar_id:7,ago:'6h ago',text:'Thankful for my husband today. He showed up for me in a way I needed and did not even ask for. God knew.',day:1,likes:11,amens:8},
-  {name:'Devon C.',avatar_id:9,ago:'7h ago',text:'God provided for me in a way I cannot explain. Was stressed about money and by end of day it was handled. He is Jehovah Jireh.',day:1,likes:6,amens:9},
-  {name:'Priya S.',avatar_id:2,ago:'8h ago',text:'Coming from a Hindu background and finding Christ — every single day I am grateful that He found me first. His love is unlike anything I have ever known.',day:1,likes:14,amens:12},
-  {name:'James W.',avatar_id:5,ago:'9h ago',text:'Grateful for this challenge. It is forcing me to slow down and notice what God is doing around me. I miss so much when I am moving too fast.',day:1,likes:4,amens:3},
-  {name:'Kezia M.',avatar_id:3,ago:'10h ago',text:'My daughter laughed today — full belly laugh — and I realised joy is right in front of me if I choose to see it. Grateful for small holy moments.',day:1,likes:18,amens:14},
-  {name:'Tyler R.',avatar_id:8,ago:'11h ago',text:'I am grateful for the Word of God. Every time I open my Bible something speaks directly to what I am walking through. It never gets old.',day:1,likes:5,amens:7},
-  {name:'Daniela V.',avatar_id:6,ago:'12h ago',text:'Moved to Canada 2 years ago with nothing. Today I have a job, a church family, and peace in my heart. Gratitude does not even cover it.',day:1,likes:21,amens:16},
-  {name:'Aaron B.',avatar_id:1,ago:'13h ago',text:'Grateful for a father who prayed over me. He is with the Lord now but his prayers are still working in my life. I feel them.',day:1,likes:28,amens:19},
-  {name:'Mei L.',avatar_id:7,ago:'14h ago',text:'Joining this challenge early and I can already feel a shift happening in my heart. Decided to get ready before April 1st. God has been so faithful.',day:1,likes:9,amens:6},
-  {name:'Jordan F.',avatar_id:9,ago:'1d ago',text:'Grateful for sobriety. 18 months clean. God did what I could not do for myself and every day I wake up sober is a miracle I do not take lightly.',day:1,likes:43,amens:31},
-  {name:'Chioma E.',avatar_id:4,ago:'1d ago',text:'Grateful for my church community here in Toronto. Came not knowing anyone. Now I have a family. God places the lonely in families.',day:1,likes:15,amens:11},
-  {name:'Nathan H.',avatar_id:5,ago:'1d ago',text:'Just grateful to be alive honestly. Went through a season that almost broke me. Standing on the other side of it is enough reason to praise Him.',day:1,likes:22,amens:17},
-  {name:'Aaliyah G.',avatar_id:2,ago:'2d ago',text:'Grateful for second chances. I made choices I am not proud of but God did not give up on me. His mercies really are new every morning.',day:1,likes:31,amens:24},
+// ── SEEDED POSTS — inserted into Supabase once, then live forever ──
+const SEEDED_DEFS=[
+  {name:'Marcus J.',avatar_id:1,hoursAgo:3,text:'Grateful for another morning. I know that sounds simple but I lost a friend last year and I never take waking up for granted anymore. God is good.',likes:7,amens:4},
+  {name:'Amara O.',avatar_id:4,hoursAgo:5,text:'I am grateful for the grace that carried me through a really hard week. I did not deserve the peace I felt but He gave it anyway.',likes:3,amens:5},
+  {name:'Sarah T.',avatar_id:7,hoursAgo:6,text:'Thankful for my husband today. He showed up for me in a way I needed and did not even ask for. God knew.',likes:11,amens:8},
+  {name:'Devon C.',avatar_id:9,hoursAgo:7,text:'God provided for me in a way I cannot explain. Was stressed about money and by end of day it was handled. He is Jehovah Jireh.',likes:6,amens:9},
+  {name:'Priya S.',avatar_id:2,hoursAgo:8,text:'Coming from a Hindu background and finding Christ — every single day I am grateful that He found me first. His love is unlike anything I have ever known.',likes:14,amens:12},
+  {name:'James W.',avatar_id:5,hoursAgo:9,text:'Grateful for this challenge. It is forcing me to slow down and notice what God is doing around me. I miss so much when I am moving too fast.',likes:4,amens:3},
+  {name:'Kezia M.',avatar_id:3,hoursAgo:10,text:'My daughter laughed today — full belly laugh — and I realised joy is right in front of me if I choose to see it. Grateful for small holy moments.',likes:18,amens:14},
+  {name:'Tyler R.',avatar_id:8,hoursAgo:11,text:'I am grateful for the Word of God. Every time I open my Bible something speaks directly to what I am walking through. It never gets old.',likes:5,amens:7},
+  {name:'Daniela V.',avatar_id:6,hoursAgo:12,text:'Moved to Canada 2 years ago with nothing. Today I have a job, a church family, and peace in my heart. Gratitude does not even cover it.',likes:21,amens:16},
+  {name:'Aaron B.',avatar_id:1,hoursAgo:13,text:'Grateful for a father who prayed over me. He is with the Lord now but his prayers are still working in my life. I feel them.',likes:28,amens:19},
+  {name:'Mei L.',avatar_id:7,hoursAgo:14,text:'Joining this challenge early and I can already feel a shift happening in my heart. Decided to get ready before April 1st. God has been so faithful.',likes:9,amens:6},
+  {name:'Jordan F.',avatar_id:9,hoursAgo:26,text:'Grateful for sobriety. 18 months clean. God did what I could not do for myself and every day I wake up sober is a miracle I do not take lightly.',likes:43,amens:31},
+  {name:'Chioma E.',avatar_id:4,hoursAgo:28,text:'Grateful for my church community here in Toronto. Came not knowing anyone. Now I have a family. God places the lonely in families.',likes:15,amens:11},
+  {name:'Nathan H.',avatar_id:5,hoursAgo:30,text:'Just grateful to be alive honestly. Went through a season that almost broke me. Standing on the other side of it is enough reason to praise Him.',likes:22,amens:17},
+  {name:'Aaliyah G.',avatar_id:2,hoursAgo:48,text:'Grateful for second chances. I made choices I am not proud of but God did not give up on me. His mercies really are new every morning.',likes:31,amens:24},
 ];
 
-// Track seeded post reactions in memory
-const _seededLikes={};
-const _seededAmens={};
+let _seededInserted=false;
 
-function toggleSeededReact(idx,type){
-  if(!currentUser){showToast('Sign in to react');return;}
-  const store=type==='like'?_seededLikes:_seededAmens;
-  const countKey=type==='like'?'likes':'amens';
-  const btnId='seed-'+type+'-'+idx;
-  const btn=document.getElementById(btnId);
-  if(!btn)return;
-  if(store[idx]){
-    store[idx]=false;
-    SEEDED_POSTS[idx][countKey]=Math.max(0,(SEEDED_POSTS[idx][countKey]||0)-1);
-    btn.classList.remove(type==='like'?'liked':'amened');
-    btn.querySelector('svg').setAttribute('fill','none');
-  } else {
-    store[idx]=true;
-    SEEDED_POSTS[idx][countKey]=(SEEDED_POSTS[idx][countKey]||0)+1;
-    btn.classList.add(type==='like'?'liked':'amened');
-    btn.querySelector('svg').setAttribute('fill','currentColor');
-  }
-  const span=document.getElementById('seed-'+type+'-count-'+idx);
-  if(span)span.textContent=SEEDED_POSTS[idx][countKey];
+async function ensureSeededPosts(){
+  if(_seededInserted)return;
+  // Check if already inserted by looking for one known post
+  const{data:existing}=await sb.from('posts').select('id').eq('name','Marcus J.').eq('status','approved').limit(1);
+  if(existing&&existing.length>0){_seededInserted=true;return;}
+  // Insert all with real timestamps
+  const now=Date.now();
+  const rows=SEEDED_DEFS.map(p=>({
+    name:p.name,
+    avatar_id:p.avatar_id,
+    text:p.text,
+    day:1,
+    status:'approved',
+    likes:p.likes,
+    amens:p.amens,
+    user_id:null,
+    created_at:new Date(now-p.hoursAgo*3600*1000).toISOString()
+  }));
+  await sb.from('posts').insert(rows).catch(()=>{});
+  _seededInserted=true;
 }
 
-function renderSeededFeed(c){
+async function renderSeededFeed(c){
+  c.innerHTML='<div class="empty-feed">Loading...</div>';
+  await ensureSeededPosts();
+  // Now load them as real posts — likes/amens persist, time is live
+  const{data:posts}=await sb.from('posts')
+    .select('*').eq('status','approved')
+    .in('name',SEEDED_DEFS.map(p=>p.name))
+    .order('created_at',{ascending:false})
+    .limit(15);
+  if(!posts||posts.length===0){
+    c.innerHTML='<div class="empty-feed">Be the first to post your gratitude today.</div>';
+    return;
+  }
   c.innerHTML='';
-  SEEDED_POSTS.forEach(function(p,i){
-    var wrap=document.createElement('div');wrap.className='post-card-wrap';
-    var d=document.createElement('div');d.className='post-card';
-    var av=renderAvatarCircle(p.name,p.avatar_id,34,13);
-    var isLiked=!!_seededLikes[i];
-    var isAmened=!!_seededAmens[i];
-
-    // Build like button
-    var likeBtn=document.createElement('button');
-    likeBtn.className='act-btn'+(isLiked?' liked':'');
-    likeBtn.id='seed-like-'+i;
-    likeBtn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="'+(isLiked?'currentColor':'none')+'" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> <span id="seed-like-count-'+i+'">'+p.likes+'</span>';
-    likeBtn.onclick=(function(idx){return function(){toggleSeededReact(idx,'like');};})(i);
-
-    // Build amen button
-    var amenBtn=document.createElement('button');
-    amenBtn.className='act-btn'+(isAmened?' amened':'');
-    amenBtn.id='seed-amen-'+i;
-    amenBtn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="'+(isAmened?'currentColor':'none')+'" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg> Amen <span id="seed-amen-count-'+i+'">'+p.amens+'</span>';
-    amenBtn.onclick=(function(idx){return function(){toggleSeededReact(idx,'amen');};})(i);
-
-    var actions=document.createElement('div');
-    actions.className='post-actions';
-    actions.appendChild(likeBtn);
-    actions.appendChild(amenBtn);
-
-    d.innerHTML='<div class="post-top"><div style="display:flex;align-items:center;gap:9px;">'+av+'<div><span class="post-name">'+esc(p.name)+'</span><span class="post-meta">'+p.ago+'</span></div></div><span class="post-day">Day '+p.day+'</span></div><div class="post-text" style="margin-top:10px;">'+esc(p.text)+'</div>';
-    d.appendChild(actions);
+  let myLikes=[];
+  if(currentUser){const r=await sb.from('likes').select('post_id,type').eq('user_id',currentUser.id);myLikes=r.data||[];}
+  const likedSet=new Set((myLikes||[]).filter(l=>l.type==='like').map(l=>l.post_id));
+  const amenSet=new Set((myLikes||[]).filter(l=>l.type==='amen').map(l=>l.post_id));
+  posts.forEach(p=>{
+    const wrap=document.createElement('div');wrap.className='post-card-wrap';wrap.dataset.postId=p.id;
+    const d=document.createElement('div');d.className='post-card';
+    const liked=likedSet.has(p.id),amened=amenSet.has(p.id);
+    const av=renderAvatarCircle(p.name,p.avatar_id,34,13);
+    const ago=timeAgo(new Date(p.created_at));
+    const sid=p.id;
+    d.innerHTML=`<div class="post-top"><div style="display:flex;align-items:center;gap:9px;">${av}<div><span class="post-name">${esc(p.name)}</span><span class="post-meta">${ago}</span></div></div><span class="post-day">Day ${p.day}</span></div><div class="post-text" style="margin-top:10px;">${esc(p.text)}</div><div class="post-actions"><button class="act-btn${liked?' liked':''}" onclick="toggleReact('${sid}','like',this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="${liked?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> ${p.likes||0}</button><button class="act-btn${amened?' amened':''}" onclick="toggleReact('${sid}','amen',this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg> Amen ${p.amens||0}</button><button class="act-btn" onclick="openComments('${sid}','')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button></div>`;
     wrap.appendChild(d);c.appendChild(wrap);
   });
-  var fc=document.getElementById('feed-count');if(fc)fc.textContent=SEEDED_POSTS.length+' posts';
-  var pc=document.getElementById('people-count');if(pc)pc.innerHTML='🔥 '+SEEDED_POSTS.length+' people posted today';
+  const fc=document.getElementById('feed-count');if(fc)fc.textContent=posts.length+' posts';
+  const pc=document.getElementById('people-count');if(pc)pc.innerHTML='🔥 '+posts.length+' people posted today';
 }
 
 
@@ -3574,18 +3562,4 @@ async function submitAdminMsgCompose(){
   });
   sendBtn.disabled=false;sendBtn.textContent='Send';
   if(error){status.style.color='#CC3333';status.textContent='Could not send — try again';return;}
-  await sb.from('notifications').insert({
-    user_id:_adminMsgTarget.userId,
-    type:'message',
-    message:'GOW sent you a message',
-    read:false
-  }).catch(()=>{});
-  status.style.color='var(--gold-dark)';
-  status.textContent='Message sent to '+(_adminMsgTarget.name||'user');
-  if(field)field.value='';
-  setTimeout(()=>closeAdminMsgCompose(),1500);
-}
-
-</script>
-</body>
-</html>
+  await sb.from('notifications').insert
