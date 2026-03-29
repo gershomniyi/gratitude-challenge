@@ -3563,4 +3563,19 @@ async function submitAdminMsgCompose(){
   sendBtn.disabled=false;sendBtn.textContent='Send';
   if(error){status.style.color='#CC3333';status.textContent='Could not send — try again';return;}
   await sb.from('notifications').insert
-
+  ({
+    user_id:_adminMsgTarget.userId,
+    type:'message',
+    message:'You have a new message from GOW',
+    read:false
+  }).catch(()=>{});
+  status.style.color='var(--gold-dark)';
+  status.style.fontWeight='600';
+  status.textContent='✓ Message sent to '+(_adminMsgTarget.name||'user');
+  showToast('Message delivered to '+(_adminMsgTarget.name||'user'));
+  if(field)field.value='';
+  setTimeout(()=>closeAdminMsgCompose(),3000);
+}
+</script>
+</body>
+</html>
