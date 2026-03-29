@@ -1772,7 +1772,7 @@ const ADMIN_EMAIL='gershomadeniyi@gmail.com';
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
 let currentUser=null, currentProfile=null, obStep=0, isFirstTime=false;
-let activeDayFilter=0, editingPostId=null, notifSubscription=null;
+let activeDayFilter=0, editingPostId=null, notifSubscription=null, activePostId=null;
 
 function hasPostedToday(){
   try{
@@ -2081,7 +2081,7 @@ async function doSignup(){
   if(error){document.getElementById('signup-error').textContent=error.message;return;}
   if(data.user){
     const refParam=new URLSearchParams(window.location.search).get('ref')||null;
-    await sb.from('profiles').upsert({id:data.user.id,name:n,email:e,role:'member',streak:0,days_in:0,invited_by_ref:refParam});
+    await sb.from('profiles').upsert({id:data.user.id,name:n,email:e,role:'member',streak:0,days_in:0});
     sendWelcomeEmail(n,e);
     notifyAdminNewUser(n,e);
     isFirstTime=true;
