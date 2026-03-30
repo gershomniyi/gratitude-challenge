@@ -1555,6 +1555,16 @@ async function submitComment(){
   if(error){showToast('Could not post comment');return;}
   input.value='';
   loadComments(activePostId);
+  // Update comment count button live on the post card
+  const postCard=document.querySelector(`[data-post-id="${activePostId}"]`);
+  if(postCard){
+    const commentBtn=postCard.querySelector('.act-btn:last-child');
+    if(commentBtn){
+      const cur=parseInt(commentBtn.textContent.trim())||0;
+      const newCount=cur+1;
+      commentBtn.innerHTML=commentBtn.innerHTML.replace(/<\/svg>.*/,'</svg> '+newCount);
+    }
+  }
   // notify post owner
   if(activePostId){
     const{data:post}=await sb.from('posts').select('user_id').eq('id',activePostId).single();
@@ -2188,6 +2198,12 @@ async function loadFeed(){
     await renderSeededFeed(c);
     return;
   }
+  // Fetch comment counts for all posts
+  const postIds=posts.map(p=>p.id);
+  const{data:commentCounts}=await sb.from('comments').select('post_id').in('post_id',postIds);
+  const countMap={};
+  (commentCounts||[]).forEach(r=>{countMap[r.post_id]=(countMap[r.post_id]||0)+1;});
+  posts.forEach(p=>{p.comment_count=countMap[p.id]||0;});
   c.innerHTML='';
   document.getElementById('feed-count').textContent=posts.length+' post'+(posts.length!==1?'s':'')+' today';
   const pc=document.getElementById('people-count');
@@ -2212,7 +2228,7 @@ async function loadFeed(){
       <div class="post-top">
         <div style="display:flex;align-items:center;gap:9px;cursor:pointer;" onclick="openUserProfile('${safeId}',${p.avatar_id||1})">
           ${avHtml}
-          <div><span class="post-name">${esc(p.name)}</span><span class="post-meta">${ago}</span></div>
+          <div><span class="post-name">${esc(p.name)}</span><span class="post-meta" data-ts="${p.created_at}">${ago}</span></div>
         </div>
         <div style="display:flex;align-items:center;gap:4px;"><span class="post-day">Day ${p.day}</span>${optionsBtn}${deleteBtn}</div>
       </div>
@@ -2516,10 +2532,19 @@ async function doForgotPassword(){
 function timeAgo(date){
   const s=Math.floor((new Date()-date)/1000);
   if(s<60)return 'Just now';
-  if(s<3600)return Math.floor(s/60)+' min ago';
-  if(s<86400)return Math.floor(s/3600)+' hr ago';
-  return Math.floor(s/86400)+' days ago';
+  if(s<3600)return Math.floor(s/60)+'m ago';
+  if(s<86400)return Math.floor(s/3600)+'h ago';
+  if(s<604800)return Math.floor(s/86400)+'d ago';
+  return date.toLocaleDateString('en-US',{month:'short',day:'numeric'});
 }
+
+// Live timestamp ticker — updates every 30 seconds across the whole app
+setInterval(()=>{
+  document.querySelectorAll('[data-ts]').forEach(el=>{
+    const ts=el.getAttribute('data-ts');
+    if(ts)el.textContent=timeAgo(new Date(ts));
+  });
+},30000);
 
 function esc(str){
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -3201,6 +3226,17 @@ async function renderSeededFeed(c){
   if(currentUser){const r=await sb.from('likes').select('post_id,type').eq('user_id',currentUser.id);myLikes=r.data||[];}
   const likedSet=new Set((myLikes||[]).filter(l=>l.type==='like').map(l=>l.post_id));
   const amenSet=new Set((myLikes||[]).filter(l=>l.type==='amen').map(l=>l.post_id));
+  // Fetch comment counts for seeded posts
+  const sPostIds=posts.map(p=>p.id);
+  const{data:sCounts}=await sb.from('comments').select('post_id').in('post_id',sPostIds);
+  const sCountMap={};
+  (sCounts||[]).forEach(r=>{sCountMap[r.post_id]=(sCountMap[r.post_id]||0)+1;});
+  posts.forEach(p=>{p.comment_count=sCountMap[p.id]||0;});
+  c.innerHTML='';
+  let myLikes=[];
+  if(currentUser){const r=await sb.from('likes').select('post_id,type').eq('user_id',currentUser.id);myLikes=r.data||[];}
+  const likedSet=new Set((myLikes||[]).filter(l=>l.type==='like').map(l=>l.post_id));
+  const amenSet=new Set((myLikes||[]).filter(l=>l.type==='amen').map(l=>l.post_id));
   posts.forEach(p=>{
     const wrap=document.createElement('div');wrap.className='post-card-wrap';wrap.dataset.postId=p.id;
     const d=document.createElement('div');d.className='post-card';
@@ -3208,7 +3244,8 @@ async function renderSeededFeed(c){
     const av=renderAvatarCircle(p.name,p.avatar_id,34,13);
     const ago=timeAgo(new Date(p.created_at));
     const sid=p.id;
-    d.innerHTML=`<div class="post-top"><div style="display:flex;align-items:center;gap:9px;">${av}<div><span class="post-name">${esc(p.name)}</span><span class="post-meta">${ago}</span></div></div><span class="post-day">Day ${p.day}</span></div><div class="post-text" style="margin-top:10px;">${esc(p.text)}</div><div class="post-actions"><button class="act-btn${liked?' liked':''}" onclick="toggleReact('${sid}','like',this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="${liked?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> ${p.likes||0}</button><button class="act-btn${amened?' amened':''}" onclick="toggleReact('${sid}','amen',this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg> Amen ${p.amens||0}</button><button class="act-btn" onclick="openComments('${sid}','')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button></div>`;
+    const cc=p.comment_count||0;
+    d.innerHTML=`<div class="post-top"><div style="display:flex;align-items:center;gap:9px;">${av}<div><span class="post-name">${esc(p.name)}</span><span class="post-meta" data-ts="${p.created_at}">${ago}</span></div></div><span class="post-day">Day ${p.day}</span></div><div class="post-text" style="margin-top:10px;">${esc(p.text)}</div><div class="post-actions"><button class="act-btn${liked?' liked':''}" onclick="toggleReact('${sid}','like',this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="${liked?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> ${p.likes||0}</button><button class="act-btn${amened?' amened':''}" onclick="toggleReact('${sid}','amen',this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg> Amen ${p.amens||0}</button><button class="act-btn" onclick="openComments('${sid}','')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>${cc>0?' '+cc:''}</button></div>`;
     wrap.appendChild(d);c.appendChild(wrap);
   });
   const fc=document.getElementById('feed-count');if(fc)fc.textContent=posts.length+' posts';
@@ -3427,7 +3464,7 @@ async function loadMorePosts(offset){
     const ago=timeAgo(new Date(p.created_at));const sid=p.id;
     const optBtn=isOwn?`<button onclick="togglePostMenu('${sid}',this)" style="margin-left:auto;background:none;border:none;cursor:pointer;padding:4px 8px;color:var(--muted);font-size:18px;line-height:1;font-weight:700;">···</button>`:'';
     const delBtn=isAdm&&!isOwn?`<button onclick="deletePost('${sid}')" style="margin-left:auto;background:none;border:none;cursor:pointer;padding:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(10,10,10,0.3)" stroke-width="1.75"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>`:'';
-    d.innerHTML=`<div class="post-top"><div style="display:flex;align-items:center;gap:9px;cursor:pointer;" onclick="openUserProfile('${sid}',${p.avatar_id||1})">${av}<div><span class="post-name">${esc(p.name)}</span><span class="post-meta">${ago}</span></div></div><div style="display:flex;align-items:center;gap:4px;"><span class="post-day">Day ${p.day}</span>${optBtn}${delBtn}</div></div><div class="post-text" style="margin-top:10px;">${esc(p.text)}${p.shoutout_name?'<div class="shoutout-badge" style="margin-top:6px;">🤝 Grateful for '+esc(p.shoutout_name)+'</div>':''}</div><div class="post-actions"><button class="act-btn${liked?' liked':''}" onclick="toggleReact('${sid}','like',this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="${liked?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> ${p.likes||0}</button><button class="act-btn${amened?' amened':''}" onclick="toggleReact('${sid}','amen',this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg> Amen ${p.amens||0}</button><button class="act-btn" onclick="openComments('${sid}','')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button></div>`;
+    d.innerHTML=`<div class="post-top"><div style="display:flex;align-items:center;gap:9px;cursor:pointer;" onclick="openUserProfile('${sid}',${p.avatar_id||1})">${av}<div><span class="post-name">${esc(p.name)}</span><span class="post-meta" data-ts="${p.created_at}">${ago}</span></div></div><div style="display:flex;align-items:center;gap:4px;"><span class="post-day">Day ${p.day}</span>${optBtn}${delBtn}</div></div><div class="post-text" style="margin-top:10px;">${esc(p.text)}${p.shoutout_name?'<div class="shoutout-badge" style="margin-top:6px;">🤝 Grateful for '+esc(p.shoutout_name)+'</div>':''}</div><div class="post-actions"><button class="act-btn${liked?' liked':''}" onclick="toggleReact('${sid}','like',this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="${liked?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> ${p.likes||0}</button><button class="act-btn${amened?' amened':''}" onclick="toggleReact('${sid}','amen',this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg> Amen ${p.amens||0}</button><button class="act-btn" onclick="openComments('${sid}','')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button></div>`;
     wrap.appendChild(d);c.appendChild(wrap);
   });
   if(posts.length===6){
