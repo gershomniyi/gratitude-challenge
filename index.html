@@ -3507,19 +3507,23 @@ async function loadAdminUsers(){
     topRow.style.cssText='display:flex;align-items:center;gap:12px;';
     topRow.appendChild(avDiv);topRow.appendChild(info);topRow.appendChild(meta);
 
-    const viewBtn=document.createElement('button');
-    viewBtn.style.cssText="flex:1;padding:8px;background:#F8F8F6;border:1px solid #e0e0e0;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;color:#0A0A0A;";
-    viewBtn.textContent='View profile';
-    viewBtn.onclick=(function(uid,uname,uavid){return function(e){e.stopPropagation();viewAdminUserProfile(uid,uname,uavid);};})(u.id,u.name||'',u.avatar_id||1);
-
-    const msgBtn=document.createElement('button');
-    msgBtn.style.cssText="flex:1;padding:8px;background:#0A0A0A;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;color:#FFFFFF;";
-    msgBtn.textContent='Send message';
-    msgBtn.onclick=(function(uid,uname,uemail){return function(e){e.stopPropagation();sendAdminMessageTo(uid,uname,uemail);};})(u.id,u.name||'',u.email||'');
-
     const btnRow=document.createElement('div');
     btnRow.style.cssText='display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);';
-    btnRow.appendChild(viewBtn);btnRow.appendChild(msgBtn);
+
+    const isMainAdmin=currentProfile&&currentProfile.email===ADMIN_EMAIL;
+    if(isMainAdmin){
+      const viewBtn=document.createElement('button');
+      viewBtn.style.cssText="flex:1;padding:8px;background:#F8F8F6;border:1px solid #e0e0e0;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;color:#0A0A0A;";
+      viewBtn.textContent='View profile';
+      viewBtn.onclick=(function(uid,uname,uavid){return function(e){e.stopPropagation();viewAdminUserProfile(uid,uname,uavid);};})(u.id,u.name||'',u.avatar_id||1);
+      btnRow.appendChild(viewBtn);
+    }
+
+    const msgBtn=document.createElement('button');
+    msgBtn.style.cssText=(isMainAdmin?"flex:1":"width:100%")+";padding:8px;background:#0A0A0A;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;color:#FFFFFF;";
+    msgBtn.textContent='Send message';
+    msgBtn.onclick=(function(uid,uname,uemail){return function(e){e.stopPropagation();sendAdminMessageTo(uid,uname,uemail);};})(u.id,u.name||'',u.email||'');
+    btnRow.appendChild(msgBtn);
 
     card.appendChild(topRow);card.appendChild(btnRow);
     list.appendChild(card);
