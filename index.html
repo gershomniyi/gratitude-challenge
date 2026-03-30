@@ -1320,7 +1320,7 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
       <div style="margin-bottom:10px;">• Deadline is April 30, 2026</div>
       <div style="margin-bottom:10px;">• One hoodie per person regardless of how many you invite</div>
       <div style="margin-bottom:10px;">• All referrals are verified manually before shipping</div>
-      <div style="margin-bottom:16px;">• To claim, email <a href="/cdn-cgi/l/email-protection#9bf2f5fdf4dbfcfef5fee8f2faf3b5f8f4f6a4e8eef9f1fef8efa6d3f4f4fff2febea9abd8f7faf2f6bea9abbedea9bea3abbea2afbea9abdcd4ccbea9abdce9faeff2efeefffebea9abd8f3faf7f7fef5fcfebdf9f4ffe2a6d3f2bea9abdcfef5fee8f2faf3bea9abeffefaf6bea9d8beabdabeabdad6e2bea9abfdeef7f7bea9abf5faf6febea8dabea9abbeaed9c2f4eee9bea9abfdeef7f7bea9abf5faf6febeaedfbeabdad6e2bea9abe8f2fcf5b6eeebbea9abfef6faf2f7bea8dabea9abbeaed9cff3febea9abfef6faf2f7bea9abe2f4eebea9abeee8feffbea9abeff4bea9abe8f2fcf5bea9abeeebbeaedfbeabdabeabdad2bea9abf3faedfebea9abe9fefaf8f3feffbea9abaebea9abeaeefaf7f2fdf2feffbea9abe9fefdfee9e9faf7e8bea9abfaf5ffbea9abecf4eef7ffbea9abf7f2f0febea9abeff4bea9abf8f7faf2f6bea9abf6e2bea9abfde9fefebea9abdcfef5fee8f2faf3bea9abd3f4f4fff2feb5beabdabeabdacff3faf5f0bea9abe2f4eeba" style="font-weight:700;color:var(--gold-dark);"><span class="__cf_email__" data-cfemail="731a1d151c3314161d16001a121b5d101c1e">[email&#160;protected]</span></a> with your full name and the email you used to sign up. We will verify your referrals and get back to you.</div>
+      <div style="margin-bottom:16px;">• To claim, email <a id="terms-claim-email" style="font-weight:700;color:var(--gold-dark);cursor:pointer;"></a> with your full name and the email you used to sign up. We will verify your referrals and get back to you.</div>
     </div>
     <button onclick="closeInviteTerms()" style="width:100%;padding:13px;background:#0A0A0A;color:#FFFFFF;border:none;border-radius:10px;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;">Got it</button>
   </div>
@@ -3361,17 +3361,17 @@ function handleInviteTermsOverlay(e){
   if(e.target===document.getElementById('invite-terms-overlay'))closeInviteTerms();
 }
 
-// Build mailto links via JS so Cloudflare can't obfuscate them
+// Build mailto links via JS — encoded to prevent Cloudflare obfuscation
 (function(){
-  const em='info'+'@'+'genesiah.com';
-  const sub=encodeURIComponent('Hoodie Claim — GOW Gratitude Challenge');
+  const parts=['info','genesiah','com'];
+  const em=parts[0]+'@'+parts[1]+'.'+parts[2];
+  const sub=encodeURIComponent('Hoodie Claim \u2014 GOW Gratitude Challenge');
   const body=encodeURIComponent('Hi Genesiah team,\n\nMy full name: [Your full name]\nMy sign-up email: [The email you used to sign up]\n\nI have reached 5 qualified referrals and would like to claim my free Genesiah Hoodie.\n\nThank you!');
-  const href='mailto:'+em+'?subject='+sub+'&body='+body;
+  const href='mai'+'lto:'+em+'?subject='+sub+'&body='+body;
   const el=document.getElementById('claim-mailto');
   if(el){el.href=href;el.textContent=em;}
-  // Also fix terms sheet link
-  const termsLinks=document.querySelectorAll('#invite-terms-overlay a[href*="mailto"]');
-  termsLinks.forEach(l=>{l.href=href;l.textContent=em;});
+  const termsEl=document.getElementById('terms-claim-email');
+  if(termsEl){termsEl.href=href;termsEl.textContent=em;}
 })();
 
 // ── SCROLL TO TODAY FEED ──────────────────────────────────
