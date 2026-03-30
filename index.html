@@ -1320,7 +1320,7 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
       <div style="margin-bottom:10px;">• Deadline is April 30, 2026</div>
       <div style="margin-bottom:10px;">• One hoodie per person regardless of how many you invite</div>
       <div style="margin-bottom:10px;">• All referrals are verified manually before shipping</div>
-      <div style="margin-bottom:16px;">• To claim, email <a href="mailto:info@genesiah.com?subject=Hoodie%20Claim%20%E2%80%94%20GOW%20Gratitude%20Challenge&body=Hi%20Genesiah%20team%2C%0A%0AMy%20full%20name%3A%20%5BYour%20full%20name%5D%0AMy%20sign-up%20email%3A%20%5BThe%20email%20you%20used%20to%20sign%20up%5D%0A%0AI%20have%20reached%205%20qualified%20referrals%20and%20would%20like%20to%20claim%20my%20free%20Genesiah%20Hoodie.%0A%0AThank%20you!" style="font-weight:700;color:var(--gold-dark);">info@genesiah.com</a> with your full name and the email you used to sign up. We will verify your referrals and get back to you.</div>
+      <div style="margin-bottom:16px;">• To claim, email <a href="/cdn-cgi/l/email-protection#9bf2f5fdf4dbfcfef5fee8f2faf3b5f8f4f6a4e8eef9f1fef8efa6d3f4f4fff2febea9abd8f7faf2f6bea9abbedea9bea3abbea2afbea9abdcd4ccbea9abdce9faeff2efeefffebea9abd8f3faf7f7fef5fcfebdf9f4ffe2a6d3f2bea9abdcfef5fee8f2faf3bea9abeffefaf6bea9d8beabdabeabdad6e2bea9abfdeef7f7bea9abf5faf6febea8dabea9abbeaed9c2f4eee9bea9abfdeef7f7bea9abf5faf6febeaedfbeabdad6e2bea9abe8f2fcf5b6eeebbea9abfef6faf2f7bea8dabea9abbeaed9cff3febea9abfef6faf2f7bea9abe2f4eebea9abeee8feffbea9abeff4bea9abe8f2fcf5bea9abeeebbeaedfbeabdabeabdad2bea9abf3faedfebea9abe9fefaf8f3feffbea9abaebea9abeaeefaf7f2fdf2feffbea9abe9fefdfee9e9faf7e8bea9abfaf5ffbea9abecf4eef7ffbea9abf7f2f0febea9abeff4bea9abf8f7faf2f6bea9abf6e2bea9abfde9fefebea9abdcfef5fee8f2faf3bea9abd3f4f4fff2feb5beabdabeabdacff3faf5f0bea9abe2f4eeba" style="font-weight:700;color:var(--gold-dark);"><span class="__cf_email__" data-cfemail="731a1d151c3314161d16001a121b5d101c1e">[email&#160;protected]</span></a> with your full name and the email you used to sign up. We will verify your referrals and get back to you.</div>
     </div>
     <button onclick="closeInviteTerms()" style="width:100%;padding:13px;background:#0A0A0A;color:#FFFFFF;border:none;border-radius:10px;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;">Got it</button>
   </div>
@@ -1328,7 +1328,7 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
 
 </div><!-- shell -->
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // GOW AVATARS — 10 options with gold/dark/warm tones
 const GOW_AVATARS=[
   {id:1,bg:'#0A0A0A',color:'#C6A85B',label:'Dark Gold'},
@@ -2181,7 +2181,7 @@ function updateProfileUI(){
 async function loadFeed(){
   const c=document.getElementById('feed-container');
   c.innerHTML='<div class="empty-feed">Loading posts...</div>';
-  let query=sb.from('posts').select('*').eq('status','approved').order('created_at',{ascending:false}).limit(6);
+  let query=sb.from('posts').select('*').eq('status','approved').lte('created_at',new Date().toISOString()).order('created_at',{ascending:false}).limit(50);
   if(activeDayFilter>0)query=query.eq('day',activeDayFilter);
   const{data:posts,error}=await query;
   if(error||!posts||posts.length===0){
@@ -3188,9 +3188,10 @@ async function renderSeededFeed(c){
   // Now load them as real posts — likes/amens persist, time is live
   const{data:posts}=await sb.from('posts')
     .select('*').eq('status','approved')
+    .lte('created_at',new Date().toISOString())
     .in('name',SEEDED_DEFS.map(p=>p.name))
     .order('created_at',{ascending:false})
-    .limit(15);
+    .limit(20);
   if(!posts||posts.length===0){
     c.innerHTML='<div class="empty-feed">Be the first to post your gratitude today.</div>';
     return;
