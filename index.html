@@ -3222,10 +3222,6 @@ async function renderSeededFeed(c){
     return;
   }
   c.innerHTML='';
-  let myLikes=[];
-  if(currentUser){const r=await sb.from('likes').select('post_id,type').eq('user_id',currentUser.id);myLikes=r.data||[];}
-  const likedSet=new Set((myLikes||[]).filter(l=>l.type==='like').map(l=>l.post_id));
-  const amenSet=new Set((myLikes||[]).filter(l=>l.type==='amen').map(l=>l.post_id));
   // Fetch comment counts for seeded posts
   const sPostIds=posts.map(p=>p.id);
   const{data:sCounts}=await sb.from('comments').select('post_id').in('post_id',sPostIds);
