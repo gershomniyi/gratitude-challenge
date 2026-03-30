@@ -4,10 +4,6 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Gratitude Challenge — GOW</title>
-  <meta property="og:title" content="GOW Gratitude Challenge 2026"/>
-<meta property="og:description" content="30 days. One post a day. A community doing it together. Join free at gowchallenge.com — starts April 1."/>
-<meta property="og:image" content="https://gowchallenge.com/preview.png"/>
-<meta property="og:url" content="https://gowchallenge.com"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <script>
@@ -760,7 +756,7 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
     </div>
     <div id="invite-claim-note" style="display:none;margin-top:12px;background:rgba(198,168,91,0.12);border:1px solid rgba(198,168,91,0.25);border-radius:10px;padding:12px 14px;">
       <div style="font-size:13px;font-weight:700;color:var(--gold);margin-bottom:4px;">You qualify for a free hoodie!</div>
-      <div style="font-size:12px;color:rgba(255,255,255,0.55);line-height:1.6;">Email <span style="color:var(--gold);"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2940474f46694e4c474c5a404841074a4644">[email&#160;protected]</a></span> with your full name and the email you used to sign up. We will verify your referrals and get back to you.</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.55);line-height:1.6;">Email <a id="claim-mailto" style="color:var(--gold);font-weight:700;"></a> with your full name and the email you used to sign up. We will verify your referrals and get back to you.</div>
     </div>
   </div>
 
@@ -1324,7 +1320,7 @@ html,body{background:#DCDCDC;min-height:100vh;font-family:'DM Sans',sans-serif;c
       <div style="margin-bottom:10px;">• Deadline is April 30, 2026</div>
       <div style="margin-bottom:10px;">• One hoodie per person regardless of how many you invite</div>
       <div style="margin-bottom:10px;">• All referrals are verified manually before shipping</div>
-      <div style="margin-bottom:16px;">• To claim, email <span style="font-weight:700;color:#0A0A0A;"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="97fef9f1f8d7f0f2f9f2e4fef6ffb9f4f8fa">[email&#160;protected]</a></span> with your full name and the email you used to sign up. We will verify your referrals and get back to you.</div>
+      <div style="margin-bottom:16px;">• To claim, email <a href="mailto:info@genesiah.com?subject=Hoodie%20Claim%20%E2%80%94%20GOW%20Gratitude%20Challenge&body=Hi%20Genesiah%20team%2C%0A%0AMy%20full%20name%3A%20%5BYour%20full%20name%5D%0AMy%20sign-up%20email%3A%20%5BThe%20email%20you%20used%20to%20sign%20up%5D%0A%0AI%20have%20reached%205%20qualified%20referrals%20and%20would%20like%20to%20claim%20my%20free%20Genesiah%20Hoodie.%0A%0AThank%20you!" style="font-weight:700;color:var(--gold-dark);">info@genesiah.com</a> with your full name and the email you used to sign up. We will verify your referrals and get back to you.</div>
     </div>
     <button onclick="closeInviteTerms()" style="width:100%;padding:13px;background:#0A0A0A;color:#FFFFFF;border:none;border-radius:10px;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;">Got it</button>
   </div>
@@ -3160,24 +3156,30 @@ let _seededInserted=false;
 
 async function ensureSeededPosts(){
   if(_seededInserted)return;
-  // Check if already inserted by looking for one known post
-  const{data:existing}=await sb.from('posts').select('id').eq('name','Marcus J.').eq('status','approved').limit(1);
-  if(existing&&existing.length>0){_seededInserted=true;return;}
-  // Insert all with real timestamps
-  const now=Date.now();
-  const rows=SEEDED_DEFS.map(p=>({
-    name:p.name,
-    avatar_id:p.avatar_id,
-    text:p.text,
-    day:1,
-    status:'approved',
-    likes:p.likes,
-    amens:p.amens,
-    user_id:null,
-    created_at:new Date(now-p.hoursAgo*3600*1000).toISOString()
-  }));
-  await sb.from('posts').insert(rows).then(()=>{}).catch(()=>{});
-  _seededInserted=true;
+  try{
+    // Check if already inserted
+    const{data:existing,error:checkErr}=await sb.from('posts').select('id').eq('name','Marcus J.').eq('status','approved').limit(1);
+    if(!checkErr&&existing&&existing.length>0){_seededInserted=true;return;}
+    // Insert all with real timestamps
+    const now=Date.now();
+    const rows=SEEDED_DEFS.map(p=>({
+      name:p.name,
+      avatar_id:p.avatar_id,
+      text:p.text,
+      day:1,
+      status:'approved',
+      likes:p.likes,
+      amens:p.amens,
+      user_id:null,
+      created_at:new Date(now-p.hoursAgo*3600*1000).toISOString()
+    }));
+    const{error:insertErr}=await sb.from('posts').insert(rows);
+    if(insertErr){console.warn('Seeded posts insert error:',insertErr.message);}
+    _seededInserted=true;
+  }catch(e){
+    console.warn('ensureSeededPosts error:',e);
+    _seededInserted=true;// don't keep retrying
+  }
 }
 
 async function renderSeededFeed(c){
@@ -3356,6 +3358,36 @@ function closeInviteTerms(){
 }
 function handleInviteTermsOverlay(e){
   if(e.target===document.getElementById('invite-terms-overlay'))closeInviteTerms();
+}
+
+// Build mailto links via JS so Cloudflare can't obfuscate them
+(function(){
+  const em='info'+'@'+'genesiah.com';
+  const sub=encodeURIComponent('Hoodie Claim — GOW Gratitude Challenge');
+  const body=encodeURIComponent('Hi Genesiah team,\n\nMy full name: [Your full name]\nMy sign-up email: [The email you used to sign up]\n\nI have reached 5 qualified referrals and would like to claim my free Genesiah Hoodie.\n\nThank you!');
+  const href='mailto:'+em+'?subject='+sub+'&body='+body;
+  const el=document.getElementById('claim-mailto');
+  if(el){el.href=href;el.textContent=em;}
+  // Also fix terms sheet link
+  const termsLinks=document.querySelectorAll('#invite-terms-overlay a[href*="mailto"]');
+  termsLinks.forEach(l=>{l.href=href;l.textContent=em;});
+})();
+
+// ── SCROLL TO TODAY FEED ──────────────────────────────────
+function scrollToTodayFeed(){
+  if(!challengeStarted()){
+    showToast('Challenge starts April 1st');
+    return;
+  }
+  const day=getDay();
+  activeDayFilter=day;
+  buildDayFilter();
+  loadFeed();
+  showScreen('screen-home');
+  setTimeout(()=>{
+    const feed=document.getElementById('feed-container');
+    if(feed)feed.scrollIntoView({behavior:'smooth',block:'start'});
+  },500);
 }
 
 // ── STREAK GRAMMAR ────────────────────────────────────────
