@@ -2291,7 +2291,7 @@ async function submitPost(){
   const day=getDay();
   const flagged=isFlagged(text);
   const status=flagged?'pending':'approved';
-  const postData={user_id:currentUser.id,name:currentProfile.name,avatar_id:currentProfile.avatar_id||1,text,day,status,likes:0,amens:0};
+  const postData={user_id:currentUser.id,name:currentProfile.name,avatar_id:currentProfile.avatar_id||1,text,day,status,likes:0,amens:0,created_at:new Date().toISOString()};
   if(selectedShoutout)postData.shoutout_name=selectedShoutout.name;
   const{error}=await sb.from('posts').insert(postData);
   btn.disabled=false;btn.textContent='Share';
