@@ -2339,7 +2339,10 @@ async function notifyAdminNewUser(name, email){
 }
 
 async function notifyAdmin(name,text,day){
-  await sb.from('notifications').insert({user_id:null,type:'new_post',message:name+' posted on Day '+day+': "'+text.slice(0,80)+'"',read:false}).then(()=>{}).catch(()=>{});
+  const{data:admin}=await sb.from('profiles').select('id').eq('email',ADMIN_EMAIL).single();
+  if(admin){
+    await sb.from('notifications').insert({user_id:admin.id,type:'new_post',message:name+' posted on Day '+day+': "'+text.slice(0,80)+'"',read:false}).then(()=>{}).catch(()=>{});
+  }
 }
 
 async function notifyPostOwner(postId,type){
