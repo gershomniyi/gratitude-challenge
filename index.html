@@ -2866,9 +2866,12 @@ async function loadPrayers(){
         <div style="display:flex;align-items:center;gap:9px;">${avHtml}<div><span style="font-size:14px;font-weight:700;color:#0A0A0A;">${esc(p.name)}</span><span style="font-size:12px;color:var(--muted);margin-left:6px;">${timeAgo(new Date(p.created_at))}</span></div></div>
       </div>
       <div class="prayer-text">${esc(p.text)}</div>
-      <button class="pray-btn${praying?' praying':''}" onclick="togglePraying('${p.id}',this)">
-        🙏 Praying ${p.praying_count||0}
-      </button>`;
+      <div style="display:flex;align-items:center;gap:8px;margin-top:12px;">
+        <button class="pray-btn${praying?' praying':''}" onclick="togglePraying('${p.id}',this)">
+          🙏 Praying ${p.praying_count||0}
+        </button>
+        <button onclick="openComments('${p.id}','')" style="background:none;border:1px solid var(--border);border-radius:20px;padding:7px 14px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:5px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Reply</button>
+      </div>`;
     feed.appendChild(div);
   });
 }
