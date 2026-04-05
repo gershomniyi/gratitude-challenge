@@ -1730,6 +1730,14 @@ function checkMilestone(streak){
     const overlay=document.getElementById('milestone-overlay');
     if(overlay)overlay.classList.add('show');
   },1200);
+  // Send milestone email
+  if([7,14,21,30].includes(streak)&&currentProfile?.email){
+    fetch('https://iifahicnurctwvdzocgb.supabase.co/functions/v1/send-email',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({type:'milestone',name:currentProfile.name,email:currentProfile.email,streak})
+    }).catch(()=>{});
+  }
 }
 
 function closeMilestone(){
