@@ -403,6 +403,12 @@ html,body{background:#D0D5E8;min-height:100vh;font-family:'DM Sans',sans-serif;c
 .av-option{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;cursor:pointer;border:2.5px solid transparent;transition:all 0.15s;margin:0 auto;}
 .av-option.selected{border-color:var(--navy);}
 .avatar-save{width:100%;padding:13px;background:var(--navy);color:#FFFFFF;border:none;border-radius:10px;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;}
+.avatar-upload-btn{width:100%;padding:12px;background:transparent;color:var(--navy);border:1.5px solid var(--navy);border-radius:10px;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px;}
+.avatar-photo-preview{width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);margin:0 auto 10px;display:block;}
+.avatar-section-label{font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+#ios-banner{position:fixed;bottom:60px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:388px;background:var(--navy);color:#fff;border-radius:10px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;z-index:900;font-size:13px;line-height:1.4;}
+#ios-banner span{flex:1;}
+#ios-banner button{background:none;border:none;color:rgba(255,255,255,0.6);font-size:18px;cursor:pointer;padding:0 4px;line-height:1;}
 
 /* WALKTHROUGH */
 .wt-screen{display:none;flex-direction:column;min-height:100vh;background:var(--navy);}
@@ -1289,9 +1295,21 @@ html,body{background:#D0D5E8;min-height:100vh;font-family:'DM Sans',sans-serif;c
 <div class="avatar-overlay" id="avatar-overlay" onclick="handleAvatarOverlayClick(event)">
   <div class="avatar-sheet" id="avatar-sheet">
     <div class="avatar-sheet-title">Choose your avatar</div>
-    <div class="avatar-sheet-sub">Pick one that represents you in the community</div>
+    <div class="avatar-sheet-sub">Upload a photo or pick a colour style</div>
+    <div class="avatar-section-label">Photo</div>
+    <div id="avatar-photo-preview-wrap" style="display:none;text-align:center;margin-bottom:12px;">
+      <img id="avatar-photo-preview" class="avatar-photo-preview" src="" alt="Your photo"/>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:6px;">Looking good!</div>
+      <button onclick="removeAvatarPhoto()" style="font-size:12px;color:#c0392b;background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;">Remove photo</button>
+    </div>
+    <input type="file" id="avatar-file-input" accept="image/jpeg,image/png,image/webp" style="display:none;" onchange="handleAvatarFileChange(event)"/>
+    <button class="avatar-upload-btn" onclick="document.getElementById('avatar-file-input').click()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      Upload a photo
+    </button>
+    <div class="avatar-section-label">Colour style</div>
     <div class="avatar-grid" id="avatar-grid"></div>
-    <button class="avatar-save" onclick="saveAvatar()">Save avatar</button>
+    <button class="avatar-save" onclick="saveAvatar()">Save</button>
   </div>
 </div>
 
@@ -1329,6 +1347,34 @@ html,body{background:#D0D5E8;min-height:100vh;font-family:'DM Sans',sans-serif;c
   </div>
 </div>
 
+<div id="ios-banner" style="display:none;" onclick="openInstallSheet()">
+  <span>📲 Add to Home Screen for daily notifications</span>
+  <button onclick="event.stopPropagation();document.getElementById('ios-banner').style.display='none';localStorage.setItem('iosBannerDismissed','1')" style="background:none;border:none;color:rgba(255,255,255,0.6);font-size:18px;cursor:pointer;padding:0 4px;line-height:1;">✕</button>
+</div>
+
+<!-- INSTALL INSTRUCTION SHEET -->
+<div class="edit-overlay" id="install-sheet-overlay" onclick="handleInstallOverlay(event)">
+  <div class="edit-sheet" style="padding-bottom:40px;">
+    <div style="font-size:16px;font-weight:700;color:var(--navy);margin-bottom:4px;">Get daily notifications</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:20px;">Add this app to your home screen in 3 steps</div>
+    <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:24px;">
+      <div style="display:flex;align-items:flex-start;gap:14px;">
+        <div style="width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
+        <div style="font-size:14px;color:var(--navy);line-height:1.6;">Tap the <strong>Share</strong> button at the bottom of your browser <span style="font-size:16px;">⎋</span></div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:14px;">
+        <div style="width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
+        <div style="font-size:14px;color:var(--navy);line-height:1.6;">Scroll down and tap <strong>"Add to Home Screen"</strong></div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:14px;">
+        <div style="width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
+        <div style="font-size:14px;color:var(--navy);line-height:1.6;">Open the app from your home screen and <strong>allow notifications</strong> when prompted</div>
+      </div>
+    </div>
+    <button onclick="closeInstallSheet()" style="width:100%;padding:13px;background:var(--navy);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;">Got it</button>
+  </div>
+</div>
+
 </div><!-- shell -->
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
@@ -1350,17 +1396,30 @@ let selectedAvatarId=null;
 
 function getAvatarById(id){return GOW_AVATARS.find(a=>a.id===id)||GOW_AVATARS[0];}
 
-function renderAvatarCircle(name,avatarId,size=34,fontSize=13){
+function renderAvatarCircle(name,avatarId,size=34,fontSize=13,avatarUrl=null){
+  if(avatarUrl){
+    const img=document.createElement('img');
+    img.src=avatarUrl;
+    img.style.cssText='width:'+size+'px;height:'+size+'px;border-radius:50%;object-fit:cover;flex-shrink:0;';
+    return img.outerHTML;
+  }
   const av=getAvatarById(avatarId||1);
   const initials=name?name.trim().split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2):'?';
-  return `<div style="width:${size}px;height:${size}px;border-radius:50%;background:${av.bg};display:flex;align-items:center;justify-content:center;font-size:${fontSize}px;font-weight:700;color:${av.color};flex-shrink:0;">${esc(initials)}</div>`;
+  return '<div style="width:'+size+'px;height:'+size+'px;border-radius:50%;background:'+av.bg+';display:flex;align-items:center;justify-content:center;font-size:'+fontSize+'px;font-weight:700;color:'+av.color+';flex-shrink:0;">'+esc(initials)+'</div>';
 }
 
 function openAvatarPicker(){
+  pendingPhotoFile=null;pendingPhotoUrl=null;removingPhoto=false;
+  const wrap=document.getElementById('avatar-photo-preview-wrap');
+  const preview=document.getElementById('avatar-photo-preview');
+  if(currentProfile?.avatar_url&&wrap&&preview){
+    preview.src=currentProfile.avatar_url;wrap.style.display='block';
+  } else if(wrap){wrap.style.display='none';}
+  document.getElementById('avatar-file-input').value='';
   const grid=document.getElementById('avatar-grid');
   grid.innerHTML='';
   const currentId=currentProfile?.avatar_id||1;
-  selectedAvatarId=currentId;
+  selectedAvatarId=currentProfile?.avatar_url?null:currentId;
   GOW_AVATARS.forEach(av=>{
     const initials=currentProfile?.name?currentProfile.name.trim().split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2):'ME';
     const div=document.createElement('div');
@@ -1386,11 +1445,73 @@ function closeAvatarPicker(){
   document.getElementById('avatar-overlay').classList.remove('show');
 }
 
+let pendingPhotoFile=null,pendingPhotoUrl=null,removingPhoto=false;
+
+function handleAvatarFileChange(e){
+  const file=e.target.files[0];
+  if(!file)return;
+  if(file.size>2*1024*1024){showToast('Photo must be under 2MB');return;}
+  pendingPhotoFile=file;removingPhoto=false;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    pendingPhotoUrl=ev.target.result;
+    const preview=document.getElementById('avatar-photo-preview');
+    const wrap=document.getElementById('avatar-photo-preview-wrap');
+    if(preview)preview.src=pendingPhotoUrl;
+    if(wrap)wrap.style.display='block';
+    document.querySelectorAll('.av-option').forEach(o=>o.classList.remove('selected'));
+    selectedAvatarId=null;
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeAvatarPhoto(){
+  pendingPhotoFile=null;pendingPhotoUrl=null;removingPhoto=true;
+  document.getElementById('avatar-photo-preview-wrap').style.display='none';
+  document.getElementById('avatar-file-input').value='';
+  const currentId=currentProfile?.avatar_id||1;
+  selectedAvatarId=currentId;
+  document.querySelectorAll('.av-option').forEach(o=>{
+    if(parseInt(o.dataset.id)===currentId)o.classList.add('selected');
+  });
+}
+
+async function uploadAvatarPhoto(){
+  if(!pendingPhotoFile||!currentUser)return null;
+  const ext=pendingPhotoFile.name.split('.').pop()||'jpg';
+  const path=currentUser.id+'/avatar.'+ext;
+  const{error}=await sb.storage.from('Avatars').upload(path,pendingPhotoFile,{upsert:true,contentType:pendingPhotoFile.type});
+  if(error){showToast('Upload failed. Try again.');return null;}
+  const{data}=sb.storage.from('Avatars').getPublicUrl(path);
+  return data.publicUrl+'?t='+Date.now();
+}
+
 async function saveAvatar(){
-  if(!selectedAvatarId||!currentUser)return;
+  if(!currentUser)return;
+  const btn=document.querySelector('.avatar-save');
+  if(btn){btn.disabled=true;btn.textContent='Saving...';}
+  if(pendingPhotoFile){
+    const url=await uploadAvatarPhoto();
+    if(url){
+      await sb.from('profiles').update({avatar_url:url,avatar_id:currentProfile.avatar_id||1}).eq('id',currentUser.id);
+      currentProfile.avatar_url=url;
+      const profAv=document.getElementById('prof-av');
+      if(profAv){const img=document.createElement('img');img.src=url;img.style.cssText='width:100%;height:100%;border-radius:50%;object-fit:cover;';profAv.innerHTML='';profAv.appendChild(img);}
+      pendingPhotoFile=null;pendingPhotoUrl=null;
+      closeAvatarPicker();
+      if(btn){btn.disabled=false;btn.textContent='Save';}
+      showToast('Photo updated');loadFeed();return;
+    }
+    if(btn){btn.disabled=false;btn.textContent='Save';}
+    return;
+  }
+  if(removingPhoto){
+    await sb.from('profiles').update({avatar_url:null,avatar_id:selectedAvatarId||1}).eq('id',currentUser.id);
+    currentProfile.avatar_url=null;removingPhoto=false;
+  }
+  if(!selectedAvatarId){if(btn){btn.disabled=false;btn.textContent='Save';}return;}
   await sb.from('profiles').update({avatar_id:selectedAvatarId}).eq('id',currentUser.id);
   currentProfile.avatar_id=selectedAvatarId;
-  // Update profile circle
   const av=getAvatarById(selectedAvatarId);
   const initials=currentProfile.name.trim().split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
   const profAv=document.getElementById('prof-av');
@@ -1398,8 +1519,38 @@ async function saveAvatar(){
   const ring=document.querySelector('.prof-av-ring');
   if(ring)ring.style.borderColor=av.bg==='#C6A85B'?av.bg:'var(--gold)';
   closeAvatarPicker();
-  showToast('Avatar updated');
-  loadFeed();
+  if(btn){btn.disabled=false;btn.textContent='Save';}
+  showToast('Avatar updated');loadFeed();
+}
+
+// IOS HOME SCREEN BANNER
+function showIosBannerIfNeeded(){
+  const isIos=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isStandalone=window.navigator.standalone===true;
+  const dismissed=localStorage.getItem('iosBannerDismissed');
+  if(isIos&&!isStandalone&&!dismissed){
+    setTimeout(()=>{
+      const b=document.getElementById('ios-banner');
+      if(b)b.style.display='flex';
+    },3000);
+  }
+}
+
+function openInstallSheet(){
+  const o=document.getElementById('install-sheet-overlay');
+  if(o)o.classList.add('show');
+  localStorage.setItem('iosBannerDismissed','1');
+  const b=document.getElementById('ios-banner');
+  if(b)b.style.display='none';
+}
+
+function closeInstallSheet(){
+  const o=document.getElementById('install-sheet-overlay');
+  if(o)o.classList.remove('show');
+}
+
+function handleInstallOverlay(e){
+  if(e.target===document.getElementById('install-sheet-overlay'))closeInstallSheet();
 }
 
 // COUNTDOWN — locks posting before April 1 2026
@@ -2154,6 +2305,10 @@ async function enterApp(user){
 function updateProfileUI(){
   if(!currentProfile)return;
   const day=getDay();
+  if(currentProfile.avatar_url){
+    const profAv=document.getElementById('prof-av');
+    if(profAv){const img=document.createElement('img');img.src=currentProfile.avatar_url;img.style.cssText='width:100%;height:100%;border-radius:50%;object-fit:cover;';profAv.innerHTML='';profAv.appendChild(img);}
+  }
   const av=getAvatarById(currentProfile.avatar_id||1);
   const initials=currentProfile.name.trim().split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
   const profAv=document.getElementById('prof-av');
@@ -2231,7 +2386,7 @@ async function loadFeed(){
     const liked=likedSet.has(p.id),amened=amenSet.has(p.id);
     const isAdmin=currentProfile?.email===ADMIN_EMAIL;
     const isOwn=p.user_id===currentUser?.id;
-    const avHtml=renderAvatarCircle(p.name,p.avatar_id,34,13);
+    const avHtml=renderAvatarCircle(p.name,p.avatar_id,34,13,p.avatar_url||null);
     const commentCount=p.comment_count||0;
     const safeId=p.id;
     const optionsBtn=isOwn?`<button onclick="togglePostMenu('${safeId}',this)" style="margin-left:auto;background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:6px;color:var(--muted);font-size:18px;line-height:1;font-weight:700;">···</button>`:'';
@@ -2302,7 +2457,7 @@ async function submitPost(){
   const day=getDay();
   const flagged=isFlagged(text);
   const status=flagged?'pending':'approved';
-  const postData={user_id:currentUser.id,name:currentProfile.name,avatar_id:currentProfile.avatar_id||1,text,day,status,likes:0,amens:0,created_at:new Date().toISOString()};
+  const postData={user_id:currentUser.id,name:currentProfile.name,avatar_id:currentProfile.avatar_id||1,avatar_url:currentProfile.avatar_url||null,text,day,status,likes:0,amens:0,created_at:new Date().toISOString()};
   if(selectedShoutout)postData.shoutout_name=selectedShoutout.name;
   const{error}=await sb.from('posts').insert(postData);
   btn.disabled=false;btn.textContent='Share';
@@ -3676,6 +3831,9 @@ async function submitAdminMsgCompose(){
   if(field)field.value='';
   setTimeout(()=>closeAdminMsgCompose(),3000);
 }
+
+// Show iOS banner on page load
+showIosBannerIfNeeded();
 </script>
 </body>
 </html>
